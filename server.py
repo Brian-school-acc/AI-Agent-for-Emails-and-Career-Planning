@@ -1,7 +1,5 @@
 
-import asyncio
 import os
-from datetime import datetime
 from typing import Any
 
 from agent_framework import (  # Core chat primitives used to build requests
@@ -15,10 +13,14 @@ from agent_framework import (  # Core chat primitives used to build requests
     executor,  # Decorator to declare a Python function as a workflow executor
 )
 from agent_framework.foundry import FoundryChatClient  # Thin client wrapper for Azure OpenAI chat models
+from agent_framework_foundry_hosting import ResponsesHostServer
+from agent_framework._workflows._checkpoint import FileCheckpointStorage
+from azure.identity import DefaultAzureCredential
 from azure.identity import AzureCliCredential  # Uses your az CLI login for credentials
 from dotenv import load_dotenv
 from pydantic import BaseModel, Field  # Structured outputs for safer parsing
 from typing_extensions import Never
+
 
 # Load environment variables from .env file
 load_dotenv()
@@ -58,6 +60,16 @@ Notes:
 - The workflow completes when it becomes idle, not via explicit completion events.
 """
 
+# FIX: Resolved relative workspace checkpointing path to prevent deployment permission crashes
+# checkpoint_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), "samples", "checkpoints")
+# os.makedirs(checkpoint_dir, exist_ok=True)
+
+# checkpoint_storage = FileCheckpointStorage(
+#     checkpoint_dir,
+#     allowed_checkpoint_types=[
+#         "azure.ai.agentserver.responses.models._generated.sdk.models.models._enums:MessageRole",
+#     ],
+# )
 
 class TriageResult(BaseModel):
     """Structured routing schema for incoming documents."""
@@ -144,12 +156,12 @@ async def handle_workflow_output(response: AgentExecutorResponse, ctx: WorkflowC
 
 # --- AGENT CONSTRUCTORS ---
 
-def create_triage_manager_agent() -> Agent:
+def create_triage_manager_agent(credential=DefaultAzureCredential()) -> Agent:
     return Agent(
         client=FoundryChatClient(
             project_endpoint=os.environ["FOUNDRY_PROJECT_ENDPOINT"],
             model=os.environ["AZURE_AI_MODEL_DEPLOYMENT_NAME"],
-            credential=AzureCliCredential(),
+            credential=credential,
         ),
         instructions=(
             "You are a triage routing assistant that categorizes incoming user queries and documents.\n\n"
@@ -165,13 +177,13 @@ def create_triage_manager_agent() -> Agent:
     )
 
 
-def create_archivist_agent() -> Agent:
+def create_archivist_agent(credential=DefaultAzureCredential()) -> Agent:
     """Helper to create a document analyst agent."""
     return Agent(
         client=FoundryChatClient(
             project_endpoint=os.environ["FOUNDRY_PROJECT_ENDPOINT"],
             model=os.environ["AZURE_AI_MODEL_DEPLOYMENT_NAME"],
-            credential=AzureCliCredential(),
+            credential=credential,
         ),
         instructions=(
             "You are The Archivist. Your role is to handle tasks related to emails, "
@@ -183,12 +195,12 @@ def create_archivist_agent() -> Agent:
         default_options={"response_format": EmailResponse} # type: ignore
     )
 
-def create_document_executor_agent() -> Agent:
+def create_document_executor_agent(credential=DefaultAzureCredential()) -> Agent:
     return Agent(
         client=FoundryChatClient(
             project_endpoint=os.environ["FOUNDRY_PROJECT_ENDPOINT"],
             model=os.environ["AZURE_AI_MODEL_DEPLOYMENT_NAME"],
-            credential=AzureCliCredential(),
+            credential=credential,
         ),
         instructions=(
             "You are The Executive. Your role is to handle automated time management, writing documents, "
@@ -199,12 +211,12 @@ def create_document_executor_agent() -> Agent:
         default_options={"response_format": EmailResponse},  # type: ignore
     )
 
-def create_career_coach_agent() -> Agent:
+def create_career_coach_agent(credential=DefaultAzureCredential()) -> Agent:
     return Agent(
         client=FoundryChatClient(
             project_endpoint=os.environ["FOUNDRY_PROJECT_ENDPOINT"],
             model=os.environ["AZURE_AI_MODEL_DEPLOYMENT_NAME"],
-            credential=AzureCliCredential(),
+            credential=credential,
         ),
         instructions=(
             "You are The Career Coach. Your role is to guide professional readiness, academic tracking, "
@@ -216,20 +228,28 @@ def create_career_coach_agent() -> Agent:
     )
 
 
-async def main() -> None:
+def main() -> None:
     # Build the workflow graph.
     # Start at the spam detector.
     # If not spam, hop to a transformer that creates a new AgentExecutorRequest,
     # then call the email assistant, then finalize.
     # If spam, go directly to the spam handler and finalize.
-    triage_manager_agent = AgentExecutor(create_triage_manager_agent())
-    archivist_agent = AgentExecutor(create_archivist_agent())
-    document_executor_agent = AgentExecutor(create_document_executor_agent())
-    career_coach_agent = AgentExecutor(create_career_coach_agent())
+    # Use AzureCliCredential for local development, fallback to DefaultAzureCredential for Azure App Service/Container hosting
+    try:
+        credential = AzureCliCredential()
+    except Exception:
+        credential = DefaultAzureCredential()
+
+    triage_manager_agent = AgentExecutor(create_triage_manager_agent(credential=credential)) # type: ignore
+    archivist_agent = AgentExecutor(create_archivist_agent(credential=credential)) # type: ignore
+    document_executor_agent = AgentExecutor(create_document_executor_agent(credential=credential)) # type: ignore
+    career_coach_agent = AgentExecutor(create_career_coach_agent(credential=credential)) # type: ignore
 
     # Establish conditional DAG execution layout
     workflow = (
-        WorkflowBuilder(start_executor=triage_manager_agent)
+        WorkflowBuilder(
+            start_executor=triage_manager_agent,
+            name="agent-cuhk-workflow")
         
         # Branch 1: Read/Archival Path
         .add_edge(triage_manager_agent, to_archivist_request, condition=get_condition(True, "read"))
@@ -247,73 +267,13 @@ async def main() -> None:
         .add_edge(career_coach_agent, handle_workflow_output)
         
         .build()
+        .as_agent()
     )
 
-
-    # Fallback to local script relative folder structural reads to preserve your data pipeline setup
-    input_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),"user_input.txt")
-
-    if not os.path.exists(input_path):
-        # Graceful fallback mock data injection if local files are missing during testing
-        email = "I would like to have a Resume Check for the Academic Research Submission. Can you verify my timeline updates?"
-    else:
-        with open(input_path) as f:
-            email = f.read()
-
-    # Execute the workflow
-    request = AgentExecutorRequest(messages=[Message("user", contents=[email])], should_respond=True)
-    events = await workflow.run(request)
-    
-    print("\n=================== FULL WORKFLOW EXECUTION TRACE ===================")
-    # WorkflowRunResult is an iterable list of raw data-plane events!
-    for event in events:
-        print(f"\n[Event Type]: {event.type}")
-        # Look inside the event data package
-        if hasattr(event, "data") and event.data:
-            print(f"Payload: {event.data}")
-            
-    print("\n=================== SEPARATED OUTPUT GROUPS ===================")
-    # Fetch terminal answers explicitly
-    final_outputs = events.get_outputs()
-    print(f"Terminal Outputs Count: {len(final_outputs)}")
-    
-    if final_outputs:
-        for i, out in enumerate(final_outputs):
-            print(f"  -> Output [{i}]: {out}")
-        
-        print(f"\n=================== FINAL WORKFLOW OUTPUT ===================")
-        print(final_outputs[-1])
-        track_output(final_outputs)
-    
-def track_output(final_outputs):
-        output_filepath_1 = os.path.join(os.path.dirname(os.path.realpath(__file__)), "samples", "output-main-final-msg.txt")
-        output_filepath_2 = os.path.join(os.path.dirname(os.path.realpath(__file__)), "samples", "output-main-full-traces.txt")
-
-        to_write = {
-            output_filepath_1: final_outputs[-1],
-            output_filepath_2: final_outputs
-        }
-        
-        for fp, payload in to_write.items():
-
-            with open(fp, "a", encoding="utf-8") as f:
-                # 1. Generate a clean timestamp for context
-                timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                
-                # 2. Write structural padding barriers around the payload
-                f.write("\n" + "=" * 60 + "\n")
-                f.write(f" RUN TIME: {timestamp}\n")
-                f.write("=" * 60 + "\n\n")
-                
-                # 3. Append the actual agent response payload
-                if isinstance(payload, str):
-                    f.write(payload)
-                elif isinstance(payload, list):
-                    string_payloads = [str(item) if not hasattr(item, "text") else item.text for item in payload]
-                    f.write('\n'.join(string_payloads))
-                
-                # 4. Add trailing padding space for the next run
-                f.write("\n\n")
+    # --- HOSTING INITIALIZATION ---
+    print("🚀 Starting local Agent Response Server interface on http://localhost:8088...")
+    server = ResponsesHostServer(workflow)
+    server.run()
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    main()
