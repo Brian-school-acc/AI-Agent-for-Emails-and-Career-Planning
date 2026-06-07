@@ -1,0 +1,80 @@
+# ==========================================
+# Python Core & Virtual Environments
+# ==========================================
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+bin/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environments
+.venv/
+venv/
+ENV/
+env/
+ENV/
+pip-log.txt
+pip-delete-this-directory.txt
+
+# ==========================================
+# Environment Variables & Secrets (CRITICAL)
+# ==========================================
+# Never commit credentials, API keys, or project endpoints to git
+.env
+.env.local
+.env.*
+*.env
+secrets.json
+
+# ==========================================
+# IDEs and Editors
+# ==========================================
+# VS Code
+.vscode/
+!.vscode/extensions.json
+*.code-workspace
+
+# PyCharm / IntelliJ
+.idea/
+
+# Editors / OS artifacts
+.DS_Store
+Thumbs.db
+*.swp
+*.bak
+*.log
+
+# ==========================================
+# Framework & Testing Specifics
+# ==========================================
+# Pylance / Type checking cache
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+
+# Local data or test resources (optional custom rule)
+# Uncomment below if you want to keep test inputs local
+# resources/user_input.txt
+# resources/email.txt
+
+# Azure AI Foundry local state
+.foundry/

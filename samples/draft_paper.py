@@ -1,0 +1,3 @@
+curl -sS -H "Content-Type: application/json" -X POST http://localhost:8088/responses -d '{"input": "Write a haiku about deploying cloud applications.", "stream": false}'
+curl -sS -H "Content-Type: application/json" -X POST http://localhost:8088/responses -d '{"input": "Tell me about your how I can use your service.", "stream": false}'
+curl -sS -H "Content-Type: application/json" -X POST http://localhost:8088/responses -d '{"input": "I want plan ahead for my career", "stream": false}'
