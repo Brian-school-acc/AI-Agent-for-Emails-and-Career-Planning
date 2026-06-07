@@ -14,7 +14,8 @@ from agent_framework import (  # Core chat primitives used to build requests
 )
 from agent_framework.foundry import FoundryChatClient  # Thin client wrapper for Azure OpenAI chat models
 from agent_framework_foundry_hosting import ResponsesHostServer
-from agent_framework._workflows._checkpoint import FileCheckpointStorage
+from agent_framework._workflows._checkpoint import FileCheckpointStorage, InMemoryCheckpointStorage
+from azure.ai.agentserver.responses.models._generated.sdk.models.models._enums import MessageRole
 from azure.identity import DefaultAzureCredential
 from azure.identity import AzureCliCredential  # Uses your az CLI login for credentials
 from dotenv import load_dotenv
@@ -24,6 +25,8 @@ from typing_extensions import Never
 
 # Load environment variables from .env file
 load_dotenv()
+
+# TODO: Manage Memory & File Storage
 
 """
 Sample: Conditional routing with structured outputs
@@ -70,6 +73,8 @@ Notes:
 #         "azure.ai.agentserver.responses.models._generated.sdk.models.models._enums:MessageRole",
 #     ],
 # )
+
+
 
 class TriageResult(BaseModel):
     """Structured routing schema for incoming documents."""
@@ -144,6 +149,9 @@ async def to_career_request(response: AgentExecutorResponse, ctx: WorkflowContex
     user_msg = Message("user", contents=[detection.doc_content])
     await ctx.send_message(AgentExecutorRequest(messages=[user_msg], should_respond=True))
 
+@executor(id="handle_fallback")
+async def handle_fallback(response: AgentExecutorResponse, ctx: WorkflowContext[Never, str]) -> None:
+    await ctx.yield_output("I'm ready to help! Please send me a document, a request for a meeting, or a career question.")
 
 # --- TERMINAL HANDLERS (Receives agent responses and yields output) ---
 
@@ -227,6 +235,15 @@ def create_career_coach_agent(credential=DefaultAzureCredential()) -> Agent:
         default_options={"response_format": EmailResponse},  # type: ignore
     )
 
+def is_all_false(message: Any) -> bool:
+    """Checks if all routing flags are False."""
+    if not isinstance(message, AgentExecutorResponse):
+        return False
+    try:
+        detection = TriageResult.model_validate_json(message.agent_response.text)
+        return not (detection.is_exec or detection.is_read or detection.is_career)
+    except Exception:
+        return False
 
 def main() -> None:
     # Build the workflow graph.
@@ -235,10 +252,7 @@ def main() -> None:
     # then call the email assistant, then finalize.
     # If spam, go directly to the spam handler and finalize.
     # Use AzureCliCredential for local development, fallback to DefaultAzureCredential for Azure App Service/Container hosting
-    try:
-        credential = AzureCliCredential()
-    except Exception:
-        credential = DefaultAzureCredential()
+    credential = DefaultAzureCredential()
 
     triage_manager_agent = AgentExecutor(create_triage_manager_agent(credential=credential)) # type: ignore
     archivist_agent = AgentExecutor(create_archivist_agent(credential=credential)) # type: ignore
@@ -266,6 +280,8 @@ def main() -> None:
         .add_edge(to_career_request, career_coach_agent)
         .add_edge(career_coach_agent, handle_workflow_output)
         
+        # This edge only triggers if no flags are True
+        .add_edge(triage_manager_agent, handle_fallback, condition=lambda msg: not isinstance(msg, AgentExecutorResponse) or is_all_false(msg))
         .build()
         .as_agent()
     )
