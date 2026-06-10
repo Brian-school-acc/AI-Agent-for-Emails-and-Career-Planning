@@ -1,2 +1,3 @@
 agent-framework>=1.2.2
 agent_framework_foundry_hosting
+azure-ai-projects>=2.0.0b1

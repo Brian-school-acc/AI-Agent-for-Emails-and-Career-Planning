@@ -1,6 +1,34 @@
 
 import os
+import asyncio
 from typing import Any
+
+# --- 1. THE CRITICAL WORKAROUND (MONKEYPATCH) ---
+# We intercept the internal storage creation to inject the MessageRole whitelist
+# before the ResponsesHostServer can execute and crash on deserialization.
+import agent_framework._workflows._checkpoint as checkpoint_mod
+from azure.ai.agentserver.responses.models._generated.sdk.models.models._enums import MessageRole
+
+_original_init = checkpoint_mod.FileCheckpointStorage.__init__
+
+def _patched_init(self, *args, **kwargs):
+    allowed = kwargs.get("allowed_checkpoint_types")
+    if allowed is None:
+        allowed = set()
+    elif isinstance(allowed, list):
+        allowed = set(allowed)
+    else:
+        allowed = set(allowed)
+    
+    # Inject both the class and string identifiers into the secure unpickler
+    allowed.add(MessageRole)
+    allowed.add("azure.ai.agentserver.responses.models._generated.sdk.models.models._enums:MessageRole")
+    
+    kwargs["allowed_checkpoint_types"] = allowed
+    _original_init(self, *args, **kwargs)
+
+checkpoint_mod.FileCheckpointStorage.__init__ = _patched_init
+# ------------------------------------------------
 
 from agent_framework import (  # Core chat primitives used to build requests
     Agent,
@@ -14,8 +42,6 @@ from agent_framework import (  # Core chat primitives used to build requests
 )
 from agent_framework.foundry import FoundryChatClient  # Thin client wrapper for Azure OpenAI chat models
 from agent_framework_foundry_hosting import ResponsesHostServer
-from agent_framework._workflows._checkpoint import FileCheckpointStorage, InMemoryCheckpointStorage
-from azure.ai.agentserver.responses.models._generated.sdk.models.models._enums import MessageRole
 from azure.identity import DefaultAzureCredential
 from azure.identity import AzureCliCredential  # Uses your az CLI login for credentials
 from dotenv import load_dotenv
@@ -26,68 +52,7 @@ from typing_extensions import Never
 # Load environment variables from .env file
 load_dotenv()
 
-# --- 1. SETUP PERSISTENT MEMORY ---
-# Use FileCheckpointStorage so the conversation survives across turns.
-# We whitelist MessageRole (both the class and the fully qualified string name just to be safe)
-checkpoint_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), ".checkpoints")
-os.makedirs(checkpoint_dir, exist_ok=True)
-
-checkpoint_storage = FileCheckpointStorage(
-    checkpoint_dir,
-    allowed_checkpoint_types={
-        MessageRole,
-        "azure.ai.agentserver.responses.models._generated.sdk.models.models._enums:MessageRole"
-    } # type: ignore
-)
-
-
-"""
-Sample: Conditional routing with structured outputs
-
-What this sample is:
-- A minimal decision workflow that classifies an inbound email as spam or not spam, then routes to the
-appropriate handler.
-
-Purpose:
-- Show how to attach boolean edge conditions that inspect an AgentExecutorResponse.
-- Demonstrate using Pydantic models as response_format so the agent returns JSON we can validate and parse.
-- Illustrate how to transform one agent's structured result into a new AgentExecutorRequest for a downstream agent.
-
-Prerequisites:
-- FOUNDRY_PROJECT_ENDPOINT must be your Azure AI Foundry Agent Service (V2) project endpoint.
-- You understand the basics of WorkflowBuilder, executors, and events in this framework.
-- You know the concept of edge conditions and how they gate routes using a predicate function.
-- Azure OpenAI access is configured for FoundryChatClient. You should be logged in with Azure CLI (AzureCliCredential)
-and have the Foundry V2 Project environment variables set as documented in the getting started chat client README.
-- The sample email resource file exists at workflow/resources/email.txt.
-
-High level flow:
-1) archivist_agent reads an email and returns TriageResult.
-2) If not spam, we transform the detection output into a user message for career_coach_agent, then finish by
-yielding the drafted reply as workflow output.
-3) If spam, we short circuit to a spam handler that yields a spam notice as workflow output.
-
-Output:
-- The final workflow output is printed to stdout, either with a drafted reply or a spam notice.
-
-Notes:
-- Conditions read the agent response text and validate it into TriageResult for robust routing.
-- Executors are small and single purpose to keep control flow easy to follow.
-- The workflow completes when it becomes idle, not via explicit completion events.
-"""
-
-# FIX: Resolved relative workspace checkpointing path to prevent deployment permission crashes
-# checkpoint_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), "samples", "checkpoints")
-# os.makedirs(checkpoint_dir, exist_ok=True)
-
-# checkpoint_storage = FileCheckpointStorage(
-#     checkpoint_dir,
-#     allowed_checkpoint_types=[
-#         "azure.ai.agentserver.responses.models._generated.sdk.models.models._enums:MessageRole",
-#     ],
-# )
-
-
+# --- DATA MODELS ---
 
 class TriageResult(BaseModel):
     """Structured routing schema for incoming documents."""
@@ -108,17 +73,12 @@ class EmailResponse(BaseModel):
 
 
 def get_condition(expected_result: bool, agent_flag: str):
-    """Create a condition callable that routes based on TriageResult.is_spam."""
-
-    # The returned function will be used as an edge predicate.
-    # It receives whatever the upstream executor produced.
+    """Create a condition callable that routes based on TriageResult flags."""
     def condition(message: Any) -> bool:
-        # Defensive guard. If a non AgentExecutorResponse appears, let the edge pass to avoid dead ends.
         if not isinstance(message, AgentExecutorResponse):
             return True
 
         try:
-            # Use your new unified schema here as well!
             detection = TriageResult.model_validate_json(message.agent_response.text)
             
             match agent_flag:
@@ -130,13 +90,21 @@ def get_condition(expected_result: bool, agent_flag: str):
                     return detection.is_career == expected_result
                 case _:
                     return False
-        
         except Exception:
-            # Fail closed on parse errors so we do not accidentally route to the wrong path.
-            # Returning False prevents this edge from activating.
             return False
 
     return condition
+
+
+def is_all_false(message: Any) -> bool:
+    """Checks if all routing flags are False."""
+    if not isinstance(message, AgentExecutorResponse):
+        return False
+    try:
+        detection = TriageResult.model_validate_json(message.agent_response.text)
+        return not (detection.is_exec or detection.is_read or detection.is_career)
+    except Exception:
+        return False
 
 
 # --- BRIDGE EXECUTORS (Translates Triage Objects to downstream Agent Requests) ---
@@ -248,23 +216,8 @@ def create_career_coach_agent(credential=DefaultAzureCredential()) -> Agent:
         default_options={"response_format": EmailResponse},  # type: ignore
     )
 
-def is_all_false(message: Any) -> bool:
-    """Checks if all routing flags are False."""
-    if not isinstance(message, AgentExecutorResponse):
-        return False
-    try:
-        detection = TriageResult.model_validate_json(message.agent_response.text)
-        return not (detection.is_exec or detection.is_read or detection.is_career)
-    except Exception:
-        return False
 
 def main() -> None:
-    # Build the workflow graph.
-    # Start at the spam detector.
-    # If not spam, hop to a transformer that creates a new AgentExecutorRequest,
-    # then call the email assistant, then finalize.
-    # If spam, go directly to the spam handler and finalize.
-    # Use AzureCliCredential for local development, fallback to DefaultAzureCredential for Azure App Service/Container hosting
     credential = DefaultAzureCredential()
 
     triage_manager_agent = AgentExecutor(create_triage_manager_agent(credential=credential)) # type: ignore
@@ -302,7 +255,10 @@ def main() -> None:
 
     # --- HOSTING INITIALIZATION ---
     print("🚀 Starting local Agent Response Server interface on http://localhost:8088...")
-    server = ResponsesHostServer(workflow, checkpoint_storage=checkpoint_storage)
+    
+    # Notice: The checkpoint_storage kwarg has been completely removed! 
+    # The framework manages it internally, and our monkeypatch secures the type whitelist.
+    server = ResponsesHostServer(workflow)
     server.run()
 
 if __name__ == "__main__":
