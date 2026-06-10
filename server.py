@@ -26,7 +26,20 @@ from typing_extensions import Never
 # Load environment variables from .env file
 load_dotenv()
 
-# TODO: Manage Memory & File Storage
+# --- 1. SETUP PERSISTENT MEMORY ---
+# Use FileCheckpointStorage so the conversation survives across turns.
+# We whitelist MessageRole (both the class and the fully qualified string name just to be safe)
+checkpoint_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), ".checkpoints")
+os.makedirs(checkpoint_dir, exist_ok=True)
+
+checkpoint_storage = FileCheckpointStorage(
+    checkpoint_dir,
+    allowed_checkpoint_types={
+        MessageRole,
+        "azure.ai.agentserver.responses.models._generated.sdk.models.models._enums:MessageRole"
+    } # type: ignore
+)
+
 
 """
 Sample: Conditional routing with structured outputs
@@ -282,13 +295,14 @@ def main() -> None:
         
         # This edge only triggers if no flags are True
         .add_edge(triage_manager_agent, handle_fallback, condition=lambda msg: not isinstance(msg, AgentExecutorResponse) or is_all_false(msg))
+        
         .build()
         .as_agent()
     )
 
     # --- HOSTING INITIALIZATION ---
     print("🚀 Starting local Agent Response Server interface on http://localhost:8088...")
-    server = ResponsesHostServer(workflow)
+    server = ResponsesHostServer(workflow, checkpoint_storage=checkpoint_storage)
     server.run()
 
 if __name__ == "__main__":
