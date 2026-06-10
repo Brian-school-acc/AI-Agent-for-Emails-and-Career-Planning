@@ -220,34 +220,47 @@ def create_career_coach_agent(credential=DefaultAzureCredential()) -> Agent:
 def main() -> None:
     credential = DefaultAzureCredential()
 
-    triage_manager_agent = AgentExecutor(create_triage_manager_agent(credential=credential)) # type: ignore
-    archivist_agent = AgentExecutor(create_archivist_agent(credential=credential)) # type: ignore
-    document_executor_agent = AgentExecutor(create_document_executor_agent(credential=credential)) # type: ignore
-    career_coach_agent = AgentExecutor(create_career_coach_agent(credential=credential)) # type: ignore
+    # Create agents and session
+    triage_agent = create_triage_manager_agent(credential=credential)
+    
+    triage_session = triage_agent.create_session()
+    archivist_agent = create_archivist_agent(credential=credential)
+    document_executor_agent = create_document_executor_agent(credential=credential)
+    career_coach_agent = create_career_coach_agent(credential=credential)
+
+    archivist_session = archivist_agent.create_session()
+    document_executor_session = document_executor_agent.create_session()
+    career_coach_session = career_coach_agent.create_session()
+
+    triage_agent_executor = AgentExecutor(triage_agent, session=triage_session) # type: ignore
+    archivist_agent_executor = AgentExecutor(archivist_agent, session=archivist_session, context_mode="full") # type: ignore
+    document_executor_agent_executor = AgentExecutor(document_executor_agent, session=document_executor_session, context_mode="full") # type: ignore
+    career_coach_agent_executor = AgentExecutor(career_coach_agent, session=career_coach_session, context_mode="full") # type: ignore
+
 
     # Establish conditional DAG execution layout
     workflow = (
         WorkflowBuilder(
-            start_executor=triage_manager_agent,
+            start_executor=triage_agent_executor,
             name="agent-cuhk-workflow")
         
         # Branch 1: Read/Archival Path
-        .add_edge(triage_manager_agent, to_archivist_request, condition=get_condition(True, "read"))
-        .add_edge(to_archivist_request, archivist_agent)
-        .add_edge(archivist_agent, handle_workflow_output)
+        .add_edge(triage_agent_executor, to_archivist_request, condition=get_condition(True, "read"))
+        .add_edge(to_archivist_request, archivist_agent_executor)
+        .add_edge(archivist_agent_executor, handle_workflow_output)
         
         # Branch 2: Write/Executive Path
-        .add_edge(triage_manager_agent, to_executive_request, condition=get_condition(True, "exec"))
-        .add_edge(to_executive_request, document_executor_agent)
-        .add_edge(document_executor_agent, handle_workflow_output)
+        .add_edge(triage_agent_executor, to_executive_request, condition=get_condition(True, "exec"))
+        .add_edge(to_executive_request, document_executor_agent_executor)
+        .add_edge(document_executor_agent_executor, handle_workflow_output)
         
         # Branch 3: Career/Academic Path
-        .add_edge(triage_manager_agent, to_career_request, condition=get_condition(True, "career"))
-        .add_edge(to_career_request, career_coach_agent)
-        .add_edge(career_coach_agent, handle_workflow_output)
+        .add_edge(triage_agent_executor, to_career_request, condition=get_condition(True, "career"))
+        .add_edge(to_career_request, career_coach_agent_executor)
+        .add_edge(career_coach_agent_executor, handle_workflow_output)
         
         # This edge only triggers if no flags are True
-        .add_edge(triage_manager_agent, handle_fallback, condition=lambda msg: not isinstance(msg, AgentExecutorResponse) or is_all_false(msg))
+        .add_edge(triage_agent_executor, handle_fallback, condition=lambda msg: not isinstance(msg, AgentExecutorResponse) or is_all_false(msg))
         
         .build()
         .as_agent()
