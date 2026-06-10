@@ -5,7 +5,7 @@
     "zipRuntime": "python_3_13",
     "zipEntryPoint": [
       "python3",
-      "server.py"
+      "local_main.py"
     ]
   },
   "projectId": "7e362270-df3d-46e7-b0b8-b6fdac4fee60"

@@ -20,6 +20,12 @@ def _patched_init(self, *args, **kwargs):
     else:
         allowed = set(allowed)
     
+    # Add the missing OpenAI Streaming Event identifiers here:
+    allowed.update([
+        "openai.lib.streaming.responses._events:ResponseTextDeltaEvent",
+        "openai.lib.streaming.responses._events:ResponseTextDoneEvent"
+    ])
+    
     # Inject both the class and string identifiers into the secure unpickler
     allowed.add(MessageRole)
     allowed.add("azure.ai.agentserver.responses.models._generated.sdk.models.models._enums:MessageRole")
