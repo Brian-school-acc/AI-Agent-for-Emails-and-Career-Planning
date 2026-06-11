@@ -16,3 +16,12 @@ curl -sS -H "Content-Type: application/json" -X POST http://localhost:8088/respo
 
 # Fallback (no flags matched) branch
 curl -sS -X POST http://localhost:8088/responses -H "Content-Type: application/json" -d '{"input": "Hello, how are you?", "stream": false}'
+
+
+curl -sS -H "Content-Type: application/json" \
+ -X POST http://localhost:8088/responses \
+ -d '{"input":"I need to block out next Thursday afternoon for an architecture review.","stream":false}'
+
+curl -sS -H "Content-Type: application/json" \
+ -X POST http://localhost:8088/responses \
+ -d '{"input":"What was the review for? I have forgotten that.","stream":false, "agent_session_id": "d3a76465b41aee9d05919d455e598c6981a40cdf4d4054c3f5f0d85aa9a91b3"}'

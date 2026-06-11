@@ -53,7 +53,7 @@ from azure.identity import AzureCliCredential  # Uses your az CLI login for cred
 from dotenv import load_dotenv
 from pydantic import BaseModel, Field  # Structured outputs for safer parsing
 from typing_extensions import Never
-
+from prompt import TRIAGE_MANAGER_PROMPT, ARCHIVIST_PROMPT, EXECUTIVE_PROMPT, CAREER_COACH_PROMPT
 
 # Load environment variables from .env file
 load_dotenv()
@@ -82,24 +82,13 @@ def get_condition(expected_result: bool, agent_flag: str):
     """Create a condition callable that routes based on TriageResult flags."""
     def condition(message: Any) -> bool:
         if not isinstance(message, AgentExecutorResponse):
-            return True
-
+            return False          # No decision → stay on current node
         try:
             detection = TriageResult.model_validate_json(message.agent_response.text)
-            
-            match agent_flag:
-                case "read":
-                    return detection.is_read == expected_result
-                case "exec":
-                    return detection.is_exec == expected_result
-                case "career":
-                    return detection.is_career == expected_result
-                case _:
-                    return False
+            return getattr(detection, agent_flag) == expected_result
         except Exception:
             return False
 
-    return condition
 
 
 def is_all_false(message: Any) -> bool:
@@ -145,7 +134,12 @@ async def handle_fallback(response: AgentExecutorResponse, ctx: WorkflowContext[
 @executor(id="handle_workflow_output")
 async def handle_workflow_output(response: AgentExecutorResponse, ctx: WorkflowContext[Never, str]) -> None:
     """Consolidates output extraction for your specialized agents returning EmailResponses."""
-    final_payload = EmailResponse.model_validate_json(response.agent_response.text)
+    try:
+        final_payload = EmailResponse.model_validate_json(response.agent_response.text)
+    except Exception as e:
+        # Log the error and return a safe fallback
+        await ctx.yield_output(f"Error processing agent response: {e}")
+        return
     await ctx.yield_output(f"Processing Complete:\n{final_payload.response}")
 
 
@@ -158,17 +152,9 @@ def create_triage_manager_agent(credential=DefaultAzureCredential()) -> Agent:
             model=os.environ["AZURE_AI_MODEL_DEPLOYMENT_NAME"],
             credential=credential,
         ),
-        instructions=(
-            "You are a triage routing assistant that categorizes incoming user queries and documents.\n\n"
-            "CRITICAL OPERATIONAL RULES:\n"
-            "1. You must think first! Populate the 'reason' field by detailing exactly what the user wants.\n"
-            "2. Evaluate meeting requests, calendar planning, conference logistics, and timeline setups as 'is_exec = true'.\n"
-            "3. Evaluate document reads or log reviews as 'is_read = true'.\n"
-            "4. Evaluate resume edits, career prep, or academic goals as 'is_career = true'.\n\n"
-            "You must match at least one flag if a clear task is present. Preserve the text exactly in 'doc_content'."
-        ),
+        instructions=TRIAGE_MANAGER_PROMPT,
         name="triage_manager_agent",
-        default_options={"response_format": TriageResult},  # type: ignore
+        default_options={"response_format": TriageResult, "store": False},  # type: ignore
     )
 
 
@@ -180,30 +166,21 @@ def create_archivist_agent(credential=DefaultAzureCredential()) -> Agent:
             model=os.environ["AZURE_AI_MODEL_DEPLOYMENT_NAME"],
             credential=credential,
         ),
-        instructions=(
-            "You are The Archivist. Your role is to handle tasks related to emails, "
-            "college updates, deadlines, and SharePoint data. Extract critical info and "
-            "categorize it logically. Return JSON with a single field 'response' "
-            "containing the analysis output."
-        ),
+        instructions=ARCHIVIST_PROMPT,
         name="archivist_agent",
-        default_options={"response_format": EmailResponse} # type: ignore
+        default_options={"response_format": EmailResponse, "store": False, "reasoning": None},  # type: ignore
     )
 
-def create_document_executor_agent(credential=DefaultAzureCredential()) -> Agent:
+def create_executive_agent(credential=DefaultAzureCredential()) -> Agent:
     return Agent(
         client=FoundryChatClient(
             project_endpoint=os.environ["FOUNDRY_PROJECT_ENDPOINT"],
             model=os.environ["AZURE_AI_MODEL_DEPLOYMENT_NAME"],
             credential=credential,
         ),
-        instructions=(
-            "You are The Executive. Your role is to handle automated time management, writing documents, "
-            "calendar time-blocking, structural task updates, and workflow mapping tracking. "
-            "Return JSON with a single field 'response' containing your action blueprint/draft."
-        ),
+        instructions=EXECUTIVE_PROMPT,
         name="executive_agent",
-        default_options={"response_format": EmailResponse},  # type: ignore
+        default_options={"response_format": EmailResponse, "store": False, "reasoning": None},  # type: ignore
     )
 
 def create_career_coach_agent(credential=DefaultAzureCredential()) -> Agent:
@@ -213,13 +190,9 @@ def create_career_coach_agent(credential=DefaultAzureCredential()) -> Agent:
             model=os.environ["AZURE_AI_MODEL_DEPLOYMENT_NAME"],
             credential=credential,
         ),
-        instructions=(
-            "You are The Career Coach. Your role is to guide professional readiness, academic tracking, "
-            "optimize resumes, map workplace simulations, and provide career drafting assistance. "
-            "Return JSON with a single field 'response' containing the career development advice."
-        ),
+        instructions=CAREER_COACH_PROMPT,
         name="career_coach_agent",
-        default_options={"response_format": EmailResponse},  # type: ignore
+        default_options={"response_format": EmailResponse, "store": False, "reasoning": None},  # type: ignore
     )
 
 
@@ -227,40 +200,40 @@ def main() -> None:
     credential = DefaultAzureCredential()
 
     # Create agents and session
-    triage_agent = create_triage_manager_agent(credential=credential)
+    triage_manager_agent = create_triage_manager_agent(credential=credential)
     archivist_agent = create_archivist_agent(credential=credential)
-    document_executor_agent = create_document_executor_agent(credential=credential)
+    executive_agent = create_executive_agent(credential=credential)
     career_coach_agent = create_career_coach_agent(credential=credential)
 
-    triage_agent_executor = AgentExecutor(triage_agent, id="triage_exec") # type: ignore
-    archivist_agent_executor = AgentExecutor(archivist_agent, id="archivist_exec", context_mode="full") # type: ignore
-    document_executor_agent_executor = AgentExecutor(document_executor_agent, id="executive_exec", context_mode="full") # type: ignore
-    career_coach_agent_executor = AgentExecutor(career_coach_agent, id="career_coach_exec", context_mode="full") # type: ignore
+    triage_manager_agent_executor = AgentExecutor(triage_manager_agent, id="triage_manager_exec", context_mode="full") # type: ignore
+    archivist_agent_executor = AgentExecutor(archivist_agent, id="archivist_exec", context_mode="last_agent") # type: ignore
+    executive_agent_executor = AgentExecutor(executive_agent, id="executive_exec", context_mode="last_agent") # type: ignore
+    career_coach_agent_executor = AgentExecutor(career_coach_agent, id="career_coach_exec", context_mode="last_agent") # type: ignore
 
 
     # Establish conditional DAG execution layout
     workflow = (
         WorkflowBuilder(
-            start_executor=triage_agent_executor,
+            start_executor=triage_manager_agent_executor,
             name="agent-cuhk-workflow")
         
         # Branch 1: Read/Archival Path
-        .add_edge(triage_agent_executor, to_archivist_request, condition=get_condition(True, "read"))
+        .add_edge(triage_manager_agent_executor, to_archivist_request, condition=get_condition(True, "read"))
         .add_edge(to_archivist_request, archivist_agent_executor)
         .add_edge(archivist_agent_executor, handle_workflow_output)
         
         # Branch 2: Write/Executive Path
-        .add_edge(triage_agent_executor, to_executive_request, condition=get_condition(True, "exec"))
-        .add_edge(to_executive_request, document_executor_agent_executor)
-        .add_edge(document_executor_agent_executor, handle_workflow_output)
+        .add_edge(triage_manager_agent_executor, to_executive_request, condition=get_condition(True, "exec"))
+        .add_edge(to_executive_request, executive_agent_executor)
+        .add_edge(executive_agent_executor, handle_workflow_output)
         
         # Branch 3: Career/Academic Path
-        .add_edge(triage_agent_executor, to_career_request, condition=get_condition(True, "career"))
+        .add_edge(triage_manager_agent_executor, to_career_request, condition=get_condition(True, "career"))
         .add_edge(to_career_request, career_coach_agent_executor)
         .add_edge(career_coach_agent_executor, handle_workflow_output)
         
         # This edge only triggers if no flags are True
-        .add_edge(triage_agent_executor, handle_fallback, condition=lambda msg: not isinstance(msg, AgentExecutorResponse) or is_all_false(msg))
+        .add_edge(triage_manager_agent_executor, handle_fallback, condition=lambda msg: not isinstance(msg, AgentExecutorResponse) or is_all_false(msg))
         
         .build()
         .as_agent()
