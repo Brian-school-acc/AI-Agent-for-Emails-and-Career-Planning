@@ -228,20 +228,14 @@ def main() -> None:
 
     # Create agents and session
     triage_agent = create_triage_manager_agent(credential=credential)
-    
-    triage_session = triage_agent.create_session()
     archivist_agent = create_archivist_agent(credential=credential)
     document_executor_agent = create_document_executor_agent(credential=credential)
     career_coach_agent = create_career_coach_agent(credential=credential)
 
-    archivist_session = archivist_agent.create_session()
-    document_executor_session = document_executor_agent.create_session()
-    career_coach_session = career_coach_agent.create_session()
-
-    triage_agent_executor = AgentExecutor(triage_agent, session=triage_session) # type: ignore
-    archivist_agent_executor = AgentExecutor(archivist_agent, session=archivist_session, context_mode="full") # type: ignore
-    document_executor_agent_executor = AgentExecutor(document_executor_agent, session=document_executor_session, context_mode="full") # type: ignore
-    career_coach_agent_executor = AgentExecutor(career_coach_agent, session=career_coach_session, context_mode="full") # type: ignore
+    triage_agent_executor = AgentExecutor(triage_agent, id="triage_exec") # type: ignore
+    archivist_agent_executor = AgentExecutor(archivist_agent, id="archivist_exec", context_mode="full") # type: ignore
+    document_executor_agent_executor = AgentExecutor(document_executor_agent, id="executive_exec", context_mode="full") # type: ignore
+    career_coach_agent_executor = AgentExecutor(career_coach_agent, id="career_coach_exec", context_mode="full") # type: ignore
 
 
     # Establish conditional DAG execution layout

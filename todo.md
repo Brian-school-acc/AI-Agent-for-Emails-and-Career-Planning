@@ -6,6 +6,7 @@ TO-DO-
         - file-search
     - proper output format
     - use better prompts
+    - conversation_id session_id & agent_session_id
 
 - connection to microsoft services
 
