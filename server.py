@@ -226,22 +226,21 @@ def create_career_coach_agent(credential=DefaultAzureCredential()) -> Agent:
 def main() -> None:
     credential = DefaultAzureCredential()
 
-    # Create agents and session
+    # Create agents.
+    #
+    # We do NOT create long-lived Foundry sessions here. Instead, short-term
+    # conversational memory is handled per conversation by the Responses host
+    # and workflow checkpointing. Using context_mode="full" ensures each
+    # executor can see the accumulated history for that conversation.
     triage_agent = create_triage_manager_agent(credential=credential)
-    
-    triage_session = triage_agent.create_session()
     archivist_agent = create_archivist_agent(credential=credential)
     document_executor_agent = create_document_executor_agent(credential=credential)
     career_coach_agent = create_career_coach_agent(credential=credential)
 
-    archivist_session = archivist_agent.create_session()
-    document_executor_session = document_executor_agent.create_session()
-    career_coach_session = career_coach_agent.create_session()
-
-    triage_agent_executor = AgentExecutor(triage_agent, session=triage_session) # type: ignore
-    archivist_agent_executor = AgentExecutor(archivist_agent, session=archivist_session, context_mode="full") # type: ignore
-    document_executor_agent_executor = AgentExecutor(document_executor_agent, session=document_executor_session, context_mode="full") # type: ignore
-    career_coach_agent_executor = AgentExecutor(career_coach_agent, session=career_coach_session, context_mode="full") # type: ignore
+    triage_agent_executor = AgentExecutor(triage_agent, context_mode="full")  # type: ignore
+    archivist_agent_executor = AgentExecutor(archivist_agent, context_mode="full")  # type: ignore
+    document_executor_agent_executor = AgentExecutor(document_executor_agent, context_mode="full")  # type: ignore
+    career_coach_agent_executor = AgentExecutor(career_coach_agent, context_mode="full")  # type: ignore
 
 
     # Establish conditional DAG execution layout
