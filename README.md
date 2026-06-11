@@ -1,117 +1,219 @@
-# Multi-Agent Workflow (Responses Protocol)
+# Student Success Multi‑Agent Ecosystem
 
-An [Agent Framework](https://github.com/microsoft/agent-framework) workflow demonstrating **multi-agent chaining**, hosted on Microsoft Foundry using the **Responses protocol**. It shows how to use the Agent Framework's `WorkflowBuilder` to compose a pipeline of specialized agents — a slogan writer, a legal reviewer, and a formatter — that process a request sequentially. Each agent receives only the output of the previous agent, and only the final formatted result is returned to the caller.
+A hackathon project for **MSHK AI Agent Lab** – an intelligent multi‑agent workflow that routes user requests to specialized agents (Archivist, Executive, Career Coach) using Azure AI Foundry and Microsoft Graph integration.
 
-> This sample requires a more advanced model because the model needs to continue the conversation from an assistant message. Not all models perform well in this scenario. Tested with OpenAI's model `gpt-5.4`.
+![MIT License](https://img.shields.io/badge/license-MIT-green)
 
-> This sample requires a more advanced model because the model needs to continue the conversation from an assistant message. Not all models perform well in this scenario. Tested with OpenAI's model `gpt-5.4`.
+---
 
-## How it works
+## 📖 What This Project Does
 
-The agent creates three specialized `Agent` instances sharing the same `FoundryChatClient`: a **writer** that generates slogans, a **legal reviewer** that ensures compliance, and a **formatter** that styles the output. Each agent is wrapped in an `AgentExecutor` with `context_mode="last_agent"` so it only sees the previous agent's output. The `WorkflowBuilder` wires them into a linear pipeline and limits the output to the formatter's result. The workflow is converted to a standard agent via `.as_agent()` and served via `ResponsesHostServer`. See [main.py](main.py) for the implementation.
+Students face information overload, fragmented calendars, and unclear career guidance. This system orchestrates four AI agents:
 
-## Option 1: Azure Developer CLI (`azd`)
+| Agent | Role |
+|-------|------|
+| **Triage Manager** | Analyzes intent and routes to the correct specialist |
+| **Archivist** | Extracts deadlines and insights from emails/documents |
+| **Executive** | Creates schedules, tasks, and operational plans |
+| **Career Coach** | Improves resumes and provides career roadmaps |
 
-### Prerequisites
+All agents run locally via a **Responses API server** on `http://localhost:8088`. Send a request, the workflow routes it, and you receive a structured answer.
 
-1. **Azure Developer CLI (`azd`)** — [Install azd](https://learn.microsoft.com/en-us/azure/developer/azure-developer-cli/install-azd)
-2. Install the AI agent extension:
-   ```bash
-   azd ext install azure.ai.agents
-   ```
-3. Authenticate:
-   ```bash
-   azd auth login
-   ```
+---
 
-### Initialize the agent project
+## 🛠️ Setup Instructions (for programmers new to Git)
 
-No cloning required. Create a new folder and initialize from the manifest:
+### 1. Install Git & Python
 
-```bash
-mkdir my-workflow-agent && cd my-workflow-agent
+- **Git**: Download from [git-scm.com](https://git-scm.com/). Verify with `git --version`.
+- **Python 3.10+**: Download from [python.org](https://python.org). Verify with `python --version`.
 
-azd ai agent init -m https://github.com/microsoft-foundry/foundry-samples/blob/main/samples/python/hosted-agents/agent-framework/responses/05-workflows/agent.manifest.yaml
-```
-
-Follow the prompts to configure your Foundry project and model deployment. If you don't have an existing Foundry project, `azd ai agent init` will guide you through creating one.
-
-### Provision Azure resources (if needed)
-
-If you don't already have a Foundry project and model deployment:
+### 2. Clone the repository
 
 ```bash
-azd provision
+git clone https://github.com/your-org/student-success-agent.git
+cd student-success-agent
 ```
 
-### Run the agent locally
+### 3. Manage branches and changes (basic Git workflow)
 
 ```bash
-azd ai agent run
+# Create your own branch to work safely
+git checkout -b feature/your-name
+
+# After making changes, see what changed
+git status
+
+# Stage all changes
+git add .
+
+# Commit with a meaningful message
+git commit -m "Add: improved triage prompt"
+
+# Push your branch to the remote repository
+git push origin feature/your-name
 ```
 
-The agent host will start on `http://localhost:8088`.
+> **Tip**: Never commit directly to `main`. Always work on a feature branch and later create a Pull Request.
 
-### Invoke the local agent
-
-In a separate terminal, from the project directory:
+### 4. Set up Python environment
 
 ```bash
-azd ai agent invoke --local "Create a slogan for a new electric SUV that is affordable and fun to drive."
+# Create a virtual environment
+python -m venv venv
+
+# Activate it
+# On Windows:
+venv\Scripts\activate
+# On macOS/Linux:
+source venv/bin/activate
+
+# Install dependencies
+pip install -r requirements.txt
 ```
 
-### Deploy to Foundry
+### 5. Configure environment variables (`.env` file)
 
-Once tested locally, deploy to Microsoft Foundry:
+Create a file named `.env` in the project **root folder** (same level as `server.py`). Open it with any text editor and add the following lines:
+
+```ini
+FOUNDRY_PROJECT_ENDPOINT=https://your-foundry-project.openai.azure.com/
+AZURE_AI_MODEL_DEPLOYMENT_NAME=gpt-oss-120b
+```
+
+> **Explanation**:
+> - `FOUNDRY_PROJECT_ENDPOINT` – Your Azure AI Foundry project endpoint (e.g., `https://<region>.api.cognitive.microsoft.com/` or a custom domain).
+> - `AZURE_AI_MODEL_DEPLOYMENT_NAME` – The deployment name of your model in Azure AI Foundry. Here we use `gpt-oss-120b` (a placeholder – replace with your actual deployment name).
+
+If you also need to authenticate via Azure CLI or service principal, add these optional variables:
+
+```ini
+AZURE_CLIENT_ID=your-client-id
+AZURE_TENANT_ID=your-tenant-id
+AZURE_CLIENT_SECRET=your-client-secret
+```
+
+But the simplest is to run `az login` once – `DefaultAzureCredential()` will then work without extra variables.
+
+---
+
+## 🚀 How to Run the Server
 
 ```bash
-azd deploy
+python server.py
 ```
 
-For the full deployment guide, see [Deploy a hosted agent](https://learn.microsoft.com/en-us/azure/foundry/agents/how-to/deploy-hosted-agent).
+You should see:
 
-### Invoke the deployed agent
+```
+🚀 Starting local Agent Response Server interface on http://localhost:8088...
+```
+
+The server stays running until you press `Ctrl+C`. It exposes a single endpoint: `POST /responses`.
+
+---
+
+## 🧪 Testing with `curl` Commands
+
+Open a **new terminal** (keep the server running) and run the following examples.
+
+### 1. Archivist branch (read/analysis)
 
 ```bash
-azd ai agent invoke "Create a slogan for a new electric SUV that is affordable and fun to drive."
+curl -sS -X POST http://localhost:8088/responses \
+  -H "Content-Type: application/json" \
+  -d '{"input": "Please analyze this email about the Q3 deadline update from SharePoint.", "stream": false}'
 ```
 
-## Option 2: VS Code (Foundry Toolkit)
+### 2. Executive branch (meeting scheduling)
 
-### Prerequisites
+```bash
+curl -sS -X POST http://localhost:8088/responses \
+  -H "Content-Type: application/json" \
+  -d '{"input": "Schedule a project sync meeting for next Wednesday at 2 PM, and send calendar invites.", "stream": false}'
+```
 
-1. **VS Code** with the **[Foundry Toolkit](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.azure-ai-foundry)** extension installed.
-2. Sign in to Azure in VS Code.
+### 3. Career Coach branch
 
-### Create the project
+```bash
+curl -sS -X POST http://localhost:8088/responses \
+  -H "Content-Type: application/json" \
+  -d '{"input": "I want to plan ahead for my career", "stream": false}'
+```
 
-1. Open the Command Palette (`Ctrl+Shift+P`) and run **Foundry Toolkit: Create Hosted Agent**.
-2. Select this sample from the gallery. The extension scaffolds the project into a new workspace and generates `agent.yaml`, `.env`, and `.vscode/tasks.json` + `launch.json` automatically.
-3. Complete the **Foundry Project Setup** to pick the subscription and Foundry project (or create a new one).
+### 4. Fallback branch (no flags matched)
 
-### Run and debug the agent
+```bash
+curl -sS -X POST http://localhost:8088/responses \
+  -H "Content-Type: application/json" \
+  -d '{"input": "Hello, how are you?", "stream": false}'
+```
 
-Press **F5** to start the agent in debug mode. The agent host will start on `http://localhost:8088`.
+### 5. Multi-turn conversation (using `agent_session_id`)
 
-### Test with Agent Inspector
+First request creates a session; copy the returned `agent_session_id`. Use it in later requests to maintain context:
 
-1. Open the Command Palette (`Ctrl+Shift+P`) and run **Foundry Toolkit: Open Agent Inspector**.
-2. The Inspector connects to the running agent. Send messages to chat and view streamed responses.
+```bash
+# Request 1
+curl -sS -X POST http://localhost:8088/responses \
+  -H "Content-Type: application/json" \
+  -d '{"input": "I need to block out next Thursday afternoon for an architecture review.", "stream": false}'
 
-### Deploy to Foundry
+# Request 2 (continuing the same session)
+curl -sS -X POST http://localhost:8088/responses \
+  -H "Content-Type: application/json" \
+  -d '{"input": "What was the review for? I have forgotten that.", "stream": false, "agent_session_id": "d3a76465b41aee9d05919d455e598c6981a40cdf4d4054c3f5f0d85aa9a91b3"}'
+```
 
-1. Open the Command Palette (`Ctrl+Shift+P`) and run **Foundry Toolkit: Deploy Hosted Agent**. The extension opens a **Deploy Hosted Agent** wizard and reads `agent.yaml` to auto-populate settings.
-2. If prompted, complete **Foundry Project Setup** to select subscription and project.
-3. On the **Basics** tab, choose deployment method (**Code** or **Container**) and confirm the agent name.
-4. On **Review + Deploy**, confirm runtime details, pick **CPU and Memory** size, and click **Deploy**.
-5. After deployment, invoke the agent in the Agent Playground and stream live logs from the **Logs** tab.
+> Replace the session ID with the one you received from the first response.
 
-## Next steps
+---
 
-- [Quickstart: Create a hosted agent](https://learn.microsoft.com/en-us/azure/foundry/agents/quickstarts/quickstart-hosted-agent) — end-to-end walkthrough using `azd`
-- [Agent Framework workflows](https://learn.microsoft.com/en-us/agent-framework/workflows/) — learn more about building workflows
-- [Workflow as an agent](https://learn.microsoft.com/en-us/agent-framework/workflows/as-agents?pivots=programming-language-python) — serving workflows via the Responses protocol
-- [Manage hosted agents](https://learn.microsoft.com/en-us/azure/foundry/agents/how-to/manage-hosted-agent) — monitor and manage deployed agents
-- [Basic agent](https://github.com/microsoft-foundry/foundry-samples/tree/ad7fe2846bb0065dadc45f60fb51df1ba655e05d/samples/python/hosted-agents/agent-framework/responses/01-basic/) — minimal agent with no tools
-- [Declarative workflows](https://github.com/microsoft-foundry/foundry-samples/tree/ad7fe2846bb0065dadc45f60fb51df1ba655e05d/samples/python/hosted-agents/agent-framework/responses/06-declarative-customer-support/) — YAML-defined workflow with multi-turn routing
-"# AI-Agent-for-Emails-and-Career-Planning" 
+## 📝 TODO List (`todo.md`)
+
+The following items are planned for future iterations. We maintain a separate `todo.md` file in the repository. Its current content:
+
+```markdown
+# TODO
+
+## Agents
+- [ ] Add a fallback **FrontDeskAgent** for general conversation
+- [ ] Integrate tools:
+  - [ ] Web search (Bing / Tavily)
+  - [ ] File search (local / SharePoint)
+- [ ] Improve response output format (currently raw JSON in playground)
+- [ ] Refine prompts for better accuracy
+
+## Microsoft Services Integration
+- [ ] Outlook (calendar read/write)
+- [ ] Word (document generation)
+- [ ] PowerPoint (slide creation)
+
+## Testing
+- [ ] Quality of document content analysis
+- [ ] Accuracy of CUHK‑specific data retrieval
+
+## Out of Scope (Will NOT do)
+- Memory (short/long term) → requires Redis, too heavy
+- Persistent storage → built on memory only
+- Conversation orchestration → Copilot should handle that
+```
+
+---
+
+## 🧑‍💻 Developer Notes
+
+- The workflow is defined in `server.py` using `WorkflowBuilder`. It’s a DAG with conditional edges.
+- Structured outputs (`TriageResult`, `EmailResponse`) guarantee type safety.
+- Monkeypatching of `FileCheckpointStorage` allows serialization of Azure SDK enums (MessageRole) and streaming events.
+- All agents use the same `FoundryChatClient` – swap the model by changing `AZURE_AI_MODEL_DEPLOYMENT_NAME` in `.env`.
+
+---
+
+## 📄 License
+
+MIT – feel free to use and extend for your own hackathon or production project.
+
+---
+
+**Built with ❤️ for MSHK AI Agent Lab**
