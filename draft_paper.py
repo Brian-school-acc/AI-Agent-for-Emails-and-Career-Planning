@@ -6,21 +6,21 @@ curl -X POST -H "Content-Type: application/json" -d '{"message":"dev123"}' http:
 
 
 # Archivist (read/analysis) branch
-curl -sS -X POST http://localhost:8088/responses -H "Content-Type: application/json" -d '{"input": "Please analyze this email about the Q3 deadline update from SharePoint.", "stream": false}'
+curl -sS -X POST http://localhost:8088/responses -H "Content-Type: application/json" -d '{"input": "Please analyze this email about the Q3 deadline update from SharePoint."}'
 
 #  Executive (meeting scheduling) branch
-curl -sS -X POST http://localhost:8088/responses -H "Content-Type: application/json" -d '{"input": "Schedule a project sync meeting for next Wednesday at 2 PM, and send calendar invites.", "stream": false}'
+curl -sS -X POST http://localhost:8088/responses -H "Content-Type: application/json" -d '{"input": "Schedule a project sync meeting for next Wednesday at 2 PM, and send calendar invites."}'
 
 # Career Coach
-curl -sS -H "Content-Type: application/json" -X POST http://localhost:8088/responses -d '{"input": "I want plan ahead for my career", "stream": false}'
+curl -sS -H "Content-Type: application/json" -X POST http://localhost:8088/responses -d '{"input": "I want plan ahead for my career"}'
 
 # Fallback (no flags matched) branch
-curl -sS -X POST http://localhost:8088/responses -H "Content-Type: application/json" -d '{"input": "Hello, how are you?", "stream": false}'
+curl -sS -X POST http://localhost:8088/responses -H "Content-Type: application/json" -d '{"input": "Hello, how are you?"}'
 
 
 curl -sS -H "Content-Type: application/json" \
  -X POST http://localhost:8088/responses \
- -d '{"input":"I need to block out next Thursday afternoon for an architecture review.","stream":false}'
+ -d '{"input":"I need to block out next Thursday afternoon for an architecture review."}'
 
 curl -sS -H "Content-Type: application/json" \
  -X POST http://localhost:8088/responses \
