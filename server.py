@@ -58,6 +58,21 @@ from typing_extensions import Never
 # Load environment variables from .env file
 load_dotenv()
 
+
+def _get_required_env(*names: str) -> str:
+    """Return the first available environment variable value from the provided aliases."""
+    for name in names:
+        value = os.getenv(name)
+        if value:
+            return value
+
+    raise RuntimeError(
+        "Missing required environment variable. Set one of: "
+        + ", ".join(names)
+        + ". In hosted Foundry deployments this is usually AZURE_AI_MODEL_DEPLOYMENT_NAME "
+        + "or AZURE_OPENAI_CHAT_DEPLOYMENT_NAME."
+    )
+
 # --- DATA MODELS ---
 
 class TriageResult(BaseModel):
@@ -154,8 +169,12 @@ async def handle_workflow_output(response: AgentExecutorResponse, ctx: WorkflowC
 def create_triage_manager_agent(credential=DefaultAzureCredential()) -> Agent:
     return Agent(
         client=FoundryChatClient(
-            project_endpoint=os.environ["FOUNDRY_PROJECT_ENDPOINT"],
-            model=os.environ["AZURE_AI_MODEL_DEPLOYMENT_NAME"],
+            project_endpoint=_get_required_env("FOUNDRY_PROJECT_ENDPOINT"),
+            model=_get_required_env(
+                "AZURE_AI_MODEL_DEPLOYMENT_NAME",
+                "AZURE_OPENAI_CHAT_DEPLOYMENT_NAME",
+                "AZURE_OPENAI_MODEL_DEPLOYMENT_NAME",
+            ),
             credential=credential,
         ),
         instructions=(
@@ -176,8 +195,12 @@ def create_archivist_agent(credential=DefaultAzureCredential()) -> Agent:
     """Helper to create a document analyst agent."""
     return Agent(
         client=FoundryChatClient(
-            project_endpoint=os.environ["FOUNDRY_PROJECT_ENDPOINT"],
-            model=os.environ["AZURE_AI_MODEL_DEPLOYMENT_NAME"],
+            project_endpoint=_get_required_env("FOUNDRY_PROJECT_ENDPOINT"),
+            model=_get_required_env(
+                "AZURE_AI_MODEL_DEPLOYMENT_NAME",
+                "AZURE_OPENAI_CHAT_DEPLOYMENT_NAME",
+                "AZURE_OPENAI_MODEL_DEPLOYMENT_NAME",
+            ),
             credential=credential,
         ),
         instructions=(
@@ -193,8 +216,12 @@ def create_archivist_agent(credential=DefaultAzureCredential()) -> Agent:
 def create_document_executor_agent(credential=DefaultAzureCredential()) -> Agent:
     return Agent(
         client=FoundryChatClient(
-            project_endpoint=os.environ["FOUNDRY_PROJECT_ENDPOINT"],
-            model=os.environ["AZURE_AI_MODEL_DEPLOYMENT_NAME"],
+            project_endpoint=_get_required_env("FOUNDRY_PROJECT_ENDPOINT"),
+            model=_get_required_env(
+                "AZURE_AI_MODEL_DEPLOYMENT_NAME",
+                "AZURE_OPENAI_CHAT_DEPLOYMENT_NAME",
+                "AZURE_OPENAI_MODEL_DEPLOYMENT_NAME",
+            ),
             credential=credential,
         ),
         instructions=(
@@ -209,8 +236,12 @@ def create_document_executor_agent(credential=DefaultAzureCredential()) -> Agent
 def create_career_coach_agent(credential=DefaultAzureCredential()) -> Agent:
     return Agent(
         client=FoundryChatClient(
-            project_endpoint=os.environ["FOUNDRY_PROJECT_ENDPOINT"],
-            model=os.environ["AZURE_AI_MODEL_DEPLOYMENT_NAME"],
+            project_endpoint=_get_required_env("FOUNDRY_PROJECT_ENDPOINT"),
+            model=_get_required_env(
+                "AZURE_AI_MODEL_DEPLOYMENT_NAME",
+                "AZURE_OPENAI_CHAT_DEPLOYMENT_NAME",
+                "AZURE_OPENAI_MODEL_DEPLOYMENT_NAME",
+            ),
             credential=credential,
         ),
         instructions=(
