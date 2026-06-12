@@ -59,16 +59,17 @@ load_dotenv()
 
 # --- DATA MODELS ---
 
+from typing import Literal
+
 class TriageResult(BaseModel):
     """Structured routing schema for incoming documents."""
     
-    # 1. ALWAYS FORCE THINKING FIRST
-    reason: str = Field(description="Analyze the user request step-by-step and explain which category rules it satisfies before picking flags.")
+    reason: str = Field(description="Analyze the user request step-by-step.")
     
-    # 2. THEN SET THE FLAGS
-    is_exec: bool = Field(description="True if the request mentions scheduling, planning, meetings, timelines, tracking, or task management.")
-    is_read: bool = Field(description="True if the text requires analyzing, reading logs, or looking up info.")
-    is_career: bool = Field(description="True if the text relates to resumes, job searching, or academic studies.")
+    # Force the model to choose EXACTLY ONE target domain track
+    route: Literal["read", "exec", "career", "fallback"] = Field(
+        description="Select 'read' for analysis/lookup, 'exec' for timelines/deadlines/tasks, 'career' for resumes, or 'fallback' if general/unclear."
+    )
     
     doc_content: str = Field(description="The exact unaltered original document text.")
 
@@ -79,27 +80,72 @@ class ResponseModel(BaseModel):
 
 # --- CENTRALIZED DISPATCHER ROUTER ---
 
+@executor(id="triage_manager_agent_executor")
+async def triage_manager_exec(ctx: WorkflowContext[Any, Any]):
+    """Triage node responsible for identifying user intent flags."""
+    user_prompt = ctx.get_state("input")
+    
+    if not user_prompt:
+        messages = ctx.get_state("messages", [])
+        if messages and isinstance(messages, list):
+            user_prompt = messages[-1].get("content", "")
+            
+    if not user_prompt or len(str(user_prompt).strip()) == 0:
+        fallback_error = TriageResult(
+            reason="Input container was empty or unreadable.",
+            route="fallback",
+            doc_content="Data insufficient"
+        )
+        await ctx.yield_output(fallback_error.model_dump_json())
+        return
+
+    # Forward exactly ONE message context payload to fire the model once
+    user_msg = Message("user", contents=[str(user_prompt)])
+    agent_request = AgentExecutorRequest(messages=[user_msg], should_respond=True)
+    await ctx.send_message(agent_request)
+
 @executor(id="route_to_agent")
 async def route_to_agent(response: AgentExecutorResponse, ctx: WorkflowContext[AgentExecutorRequest]) -> None:
-    """Parses the triage evaluation schema and explicitly targets the correct downstream agent."""
-    detection = TriageResult.model_validate_json(response.agent_response.text)
-    user_msg = Message("user", contents=[detection.doc_content])
+    raw_text = response.agent_response.text.strip()
+    
+    if raw_text.startswith("```json"):
+        raw_text = raw_text.split("```json", 1)[1].rsplit("```", 1)[0].strip()
+    elif raw_text.startswith("```"):
+        raw_text = raw_text.split("```", 1)[1].rsplit("```", 1)[0].strip()
+
+    try:
+        detection = TriageResult.model_validate_json(raw_text)
+        route_target = detection.route
+    except Exception as e:
+        print(f"❌ Dispatcher validation failed: {e}. Defaulting to fallback route.")
+        route_target = "fallback"
+        detection = TriageResult(reason="Fail-safe routing", route="fallback", doc_content=raw_text)
+    
+    original_prompt = ctx.get_state("input")
+    if not original_prompt:
+        messages = ctx.get_state("messages", [])
+        if messages and isinstance(messages, list):
+            original_prompt = messages[-1].get("content", "")
+            
+    if not original_prompt:
+        original_prompt = detection.doc_content
+        
+    user_msg = Message("user", contents=[str(original_prompt)])
     request = AgentExecutorRequest(messages=[user_msg], should_respond=True)
     
-    # Mutual exclusivity enforcement logic
-    if detection.is_read:
+    # Precise enum evaluation
+    if route_target == "read":
         print("➡️ Dispatcher: Routing to Archivist Agent.")
         await ctx.send_message(request, "archivist_exec")
-    elif detection.is_exec:
+    elif route_target == "exec":
         print("➡️ Dispatcher: Routing to Executive Agent.")
         await ctx.send_message(request, "executive_exec")
-    elif detection.is_career:
+    elif route_target == "career":
         print("➡️ Dispatcher: Routing to Career Coach Agent.")
         await ctx.send_message(request, "career_coach_exec")
     else:
-        print("➡️ Dispatcher: No core tracks hit. Routing to Front Desk Fallback.")
+        print("➡️ Dispatcher: Routing to Front Desk Fallback.")
         await ctx.send_message(request, "front_desk_exec")
-
 
 # --- TERMINAL HANDLERS (Receives agent responses and yields output) ---
 
@@ -112,7 +158,7 @@ async def handle_workflow_output(response: AgentExecutorResponse, ctx: WorkflowC
         # Log the error and return a safe fallback
         await ctx.yield_output(f"Error processing agent response: {e}")
         return
-    await ctx.yield_output(f"Processing Complete:\n{final_payload.response}")
+    await ctx.yield_output(final_payload.response)
 
 
 # --- AGENT CONSTRUCTORS ---
@@ -199,8 +245,10 @@ def main() -> None:
     # Establish clean structural layout using programmatic routing
     workflow = (
         WorkflowBuilder(
+            name="agent-cuhk-workflow",
+            description="a workflow to take user request and respond accordingly with tools",
             start_executor=triage_manager_agent_executor,
-            name="agent-cuhk-workflow")
+            output_from=[handle_workflow_output])
         
         # 1. Unconditionally forward triage evaluation to our dispatcher function
         .add_edge(triage_manager_agent_executor, route_to_agent)
