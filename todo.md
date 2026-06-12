@@ -5,7 +5,7 @@ TODO !!!
     - tool 
         - web-search
         - file-search
-    - proper response output format (ugly outpu on playground because there are a lot of json objects)
+    - proper response output format (ugly output on playground because there are a lot of json objects)
     - make better prompts
 2. connection to microsoft services
     - Outlook
