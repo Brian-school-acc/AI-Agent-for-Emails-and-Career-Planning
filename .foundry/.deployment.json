@@ -2,7 +2,7 @@
   "hostedAgentDeployOptions": {
     "deploymentMethod": "zip",
     "zipPackageMode": "remote",
-    "zipRuntime": "python_3_14",
+    "zipRuntime": "python_3_13",
     "zipEntryPoint": [
       "python3",
       "server.py"
