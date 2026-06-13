@@ -1,0 +1,38 @@
+{
+  "workflow_name": "WorkflowBuilder-8b828b94-4f63-4fb1-8aa6-6edbadea1137",
+  "graph_signature_hash": "c37a04df1c287aa783c213fb7001ac3c53e8ef70fa8c8a71fe13c8a47b3a7585",
+  "checkpoint_id": "b0b51584-dee5-4f74-aab6-8942f9ad2be6",
+  "previous_checkpoint_id": null,
+  "timestamp": "2026-06-13T02:35:49.962156+00:00",
+  "messages": {},
+  "state": {
+    "_workflow_run_kwargs": {},
+    "_executor_state": {
+      "magentic_orchestrator": {
+        "conversation": [],
+        "round_index": 1,
+        "orchestrator_name": "magentic_orchestrator",
+        "metadata": {},
+        "terminated": true,
+        "magentic_context": {
+          "task": "I want plan ahead for my career. Give a detailed plan to become a Miscrosoft employee",
+          "chat_history": [
+            {
+              "type": "message",
+              "role": "user",
+              "contents": [
+                {
+                  "type": "text",
+                  "text": "I want plan ahead for my career. Give a detailed plan to become a Miscrosoft employee",
+                  "additional_properties": {}
+                }
+              ],
+              "additional_properties": {}
+            },
+            {
+              "type": "message",
+              "role": "assistant",
+              "contents": [
+                {
+                  "type": "text",
+                  "text": 

@@ -47,11 +47,13 @@ from agent_framework import (  # Core chat primitives used to build requests
 )
 from agent_framework.foundry import FoundryChatClient  # Thin client wrapper for Azure OpenAI chat models
 from agent_framework_foundry_hosting import ResponsesHostServer
+from agent_framework.orchestrations import MagenticBuilder
 from azure.identity import DefaultAzureCredential
 from azure.identity import AzureCliCredential  # Uses your az CLI login for credentials
 from dotenv import load_dotenv
 from pydantic import BaseModel, Field  # Structured outputs for safer parsing
 from typing_extensions import Never
+
 from prompt import TRIAGE_MANAGER_PROMPT, ARCHIVIST_PROMPT, EXECUTIVE_PROMPT, CAREER_COACH_PROMPT, FRONTDESK_PROMPT
 
 # Load environment variables from .env file
@@ -243,35 +245,49 @@ def main() -> None:
     front_desk_agent_executor = AgentExecutor(front_desk_agent, id="front_desk_exec", context_mode="last_agent") # type: ignore
 
     # Establish clean structural layout using programmatic routing
-    workflow = (
-        WorkflowBuilder(
-            name="agent-cuhk-workflow",
-            description="a workflow to take user request and respond accordingly with tools",
-            start_executor=triage_manager_agent_executor,
-            output_from=[handle_workflow_output])
-        
-        # 1. Unconditionally forward triage evaluation to our dispatcher function
-        .add_edge(triage_manager_agent_executor, route_to_agent)
-        
-        # 2. Expose valid topology paths to the graph compiler 
-        .add_edge(route_to_agent, archivist_agent_executor)
-        .add_edge(route_to_agent, executive_agent_executor)
-        .add_edge(route_to_agent, career_coach_agent_executor)
-        .add_edge(route_to_agent, front_desk_agent_executor)
-        
-        # 3. Connect all execution terminals to the shared payload visualizer
-        .add_edge(archivist_agent_executor, handle_workflow_output)
-        .add_edge(executive_agent_executor, handle_workflow_output)
-        .add_edge(career_coach_agent_executor, handle_workflow_output)
-        .add_edge(front_desk_agent_executor, handle_workflow_output)
-        
+    # workflow = (
+    workflow_agent = (
+        MagenticBuilder(
+            participants=[archivist_agent, executive_agent, career_coach_agent, front_desk_agent],
+            intermediate_output_from=[archivist_agent, executive_agent, career_coach_agent, front_desk_agent],
+            manager_agent=triage_manager_agent,
+            max_round_count=10,
+            max_stall_count=3,
+            max_reset_count=2,
+        )
         .build()
-        .as_agent()
+        .as_agent(
+            name="TriageDelegatorAgent",
+        )
     )
+
+    #         name="agent-cuhk-workflow",
+    #         description="a workflow to take user request and respond accordingly with tools",
+    #         start_executor=triage_manager_agent_executor,
+    #         output_from=[handle_workflow_output])
+        
+    #     # 1. Unconditionally forward triage evaluation to our dispatcher function
+    #     .add_edge(triage_manager_agent_executor, route_to_agent)
+        
+    #     # 2. Expose valid topology paths to the graph compiler 
+    #     .add_edge(route_to_agent, archivist_agent_executor)
+    #     .add_edge(route_to_agent, executive_agent_executor)
+    #     .add_edge(route_to_agent, career_coach_agent_executor)
+    #     .add_edge(route_to_agent, front_desk_agent_executor)
+        
+    #     # 3. Connect all execution terminals to the shared payload visualizer
+    #     .add_edge(archivist_agent_executor, handle_workflow_output)
+    #     .add_edge(executive_agent_executor, handle_workflow_output)
+    #     .add_edge(career_coach_agent_executor, handle_workflow_output)
+    #     .add_edge(front_desk_agent_executor, handle_workflow_output)
+        
+    #     .build()
+    #     .as_agent()
+    # )
 
     # --- HOSTING INITIALIZATION ---
     print("🚀 Starting local Agent Response Server interface on http://localhost:8088...")
-    server = ResponsesHostServer(workflow)
+    server = ResponsesHostServer(workflow_agent)
     server.run()
 
 if __name__ == "__main__":
