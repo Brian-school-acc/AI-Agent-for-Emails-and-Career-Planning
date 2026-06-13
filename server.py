@@ -73,11 +73,6 @@ class TriageResult(BaseModel):
     
     doc_content: str = Field(description="The exact unaltered original document text.")
 
-class ResponseModel(BaseModel):
-    """Represents the ultimate text response generated from processing agents."""
-    response: str
-
-
 # --- CENTRALIZED DISPATCHER ROUTER ---
 
 @executor(id="route_to_agent")
@@ -163,7 +158,7 @@ def create_archivist_agent(credential=DefaultAzureCredential()) -> Agent:
         ),
         instructions=ARCHIVIST_PROMPT,
         name="archivist_agent",
-        default_options={"response_format": ResponseModel, "store": False, "reasoning": None},  # type: ignore
+        default_options={"store": False, "reasoning": None},  # type: ignore
     )
 
 def create_executive_agent(credential=DefaultAzureCredential()) -> Agent:
@@ -175,7 +170,7 @@ def create_executive_agent(credential=DefaultAzureCredential()) -> Agent:
         ),
         instructions=EXECUTIVE_PROMPT,
         name="executive_agent",
-        default_options={"response_format": ResponseModel, "store": False, "reasoning": None},  # type: ignore
+        default_options={"store": False, "reasoning": None},  # type: ignore
     )
 
 def create_career_coach_agent(credential=DefaultAzureCredential()) -> Agent:
@@ -187,7 +182,7 @@ def create_career_coach_agent(credential=DefaultAzureCredential()) -> Agent:
         ),
         instructions=CAREER_COACH_PROMPT,
         name="career_coach_agent",
-        default_options={"response_format": ResponseModel, "store": False, "reasoning": None},  # type: ignore
+        default_options={"store": False, "reasoning": None},  # type: ignore
     )
 
 def create_front_desk_agent(credential=DefaultAzureCredential()) -> Agent:
@@ -200,7 +195,7 @@ def create_front_desk_agent(credential=DefaultAzureCredential()) -> Agent:
         ),
         instructions=FRONTDESK_PROMPT,
         name="front_desk_agent",
-        default_options={"response_format": ResponseModel, "store": False, "reasoning": None},  # type: ignore
+        default_options={"store": False, "reasoning": None},  # type: ignore
     )
 
 def main() -> None:
