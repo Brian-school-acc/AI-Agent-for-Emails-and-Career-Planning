@@ -158,7 +158,7 @@ async def handle_workflow_output(response: AgentExecutorResponse, ctx: WorkflowC
         # Log the error and return a safe fallback
         await ctx.yield_output(f"Error processing agent response: {e}")
         return
-    await ctx.yield_output(final_payload.response)
+    await ctx.yield_output(f"response: {final_payload.response}")
 
 
 # --- AGENT CONSTRUCTORS ---
@@ -271,7 +271,10 @@ def main() -> None:
 
     # --- HOSTING INITIALIZATION ---
     print("🚀 Starting local Agent Response Server interface on http://localhost:8088...")
-    server = ResponsesHostServer(workflow)
+    server = ResponsesHostServer(
+        workflow, 
+        output_formatter=lambda output: output  # output is the exact dict we yielded)
+    )
     server.run()
 
 if __name__ == "__main__":
