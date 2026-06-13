@@ -102,7 +102,7 @@ async def triage_manager_exec(ctx: WorkflowContext[Any, Any]):
     # Forward exactly ONE message context payload to fire the model once
     user_msg = Message("user", contents=[str(user_prompt)])
     agent_request = AgentExecutorRequest(messages=[user_msg], should_respond=True)
-    await ctx.send_message(agent_request)
+    await ctx.send_message(agent_request, "triage_manager_exec")
 
 @executor(id="route_to_agent")
 async def route_to_agent(response: AgentExecutorResponse, ctx: WorkflowContext[AgentExecutorRequest]) -> None:
