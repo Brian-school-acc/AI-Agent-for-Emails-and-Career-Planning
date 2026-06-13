@@ -52,7 +52,7 @@ from azure.identity import AzureCliCredential  # Uses your az CLI login for cred
 from dotenv import load_dotenv
 from pydantic import BaseModel, Field  # Structured outputs for safer parsing
 from typing_extensions import Never
-from prompt import TRIAGE_PROMPT, ARCHIVIST_PROMPT, EXECUTIVE_PROMPT, CAREER_COACH_PROMPT, FRONTDESK_PROMPT
+from refined_prompt import TRIAGE_PROMPT, ARCHIVIST_PROMPT, EXECUTIVE_PROMPT, CAREER_COACH_PROMPT, FRONTDESK_PROMPT
 
 # Load environment variables from .env file
 load_dotenv()
@@ -122,16 +122,16 @@ async def route_to_agent(response: AgentExecutorResponse, ctx: WorkflowContext[A
 
 # --- TERMINAL HANDLERS (Receives agent responses and yields output) ---
 
-@executor(id="handle_workflow_output")
-async def handle_workflow_output(response: AgentExecutorResponse, ctx: WorkflowContext[Never, str]) -> None:
-    """Consolidates output extraction for your specialized agents returning EmailResponses."""
-    try:
-        final_payload = ResponseModel.model_validate_json(response.agent_response.text)
-    except Exception as e:
-        # Log the error and return a safe fallback
-        await ctx.yield_output(f"Error processing agent response: {e}")
-        return
-    await ctx.yield_output(f"RESPONSE: {final_payload.response}")
+# @executor(id="handle_workflow_output")
+# async def handle_workflow_output(response: AgentExecutorResponse, ctx: WorkflowContext[Never, str]) -> None:
+#     """Consolidates output extraction for your specialized agents returning EmailResponses."""
+#     try:
+#         final_payload = ResponseModel.model_validate_json(response.agent_response.text)
+#     except Exception as e:
+#         # Log the error and return a safe fallback
+#         await ctx.yield_output(f"Error processing agent response: {e}")
+#         return
+#     await ctx.yield_output(f"RESPONSE: {final_payload.response}")
 
 
 # --- AGENT CONSTRUCTORS ---
@@ -209,7 +209,7 @@ def main() -> None:
     front_desk_agent = create_front_desk_agent(credential=credential)
 
     # Wrap agents inside Executors with corresponding internal string IDs
-    triage_agent_executor = AgentExecutor(triage_agent, id="triage_exec", context_mode="full") # type: ignore
+    triage_agent_executor = AgentExecutor(triage_agent, id="triage_exec", context_mode="last_agent") # type: ignore
     archivist_agent_executor = AgentExecutor(archivist_agent, id="archivist_exec", context_mode="last_agent") # type: ignore
     executive_agent_executor = AgentExecutor(executive_agent, id="executive_exec", context_mode="last_agent") # type: ignore
     career_coach_agent_executor = AgentExecutor(career_coach_agent, id="career_coach_exec", context_mode="last_agent") # type: ignore
@@ -233,10 +233,10 @@ def main() -> None:
         .add_edge(route_to_agent, front_desk_agent_executor)
         
         # 3. Connect all execution terminals to the shared payload visualizer
-        .add_edge(archivist_agent_executor, handle_workflow_output)
-        .add_edge(executive_agent_executor, handle_workflow_output)
-        .add_edge(career_coach_agent_executor, handle_workflow_output)
-        .add_edge(front_desk_agent_executor, handle_workflow_output)
+        # .add_edge(archivist_agent_executor, handle_workflow_output)
+        # .add_edge(executive_agent_executor, handle_workflow_output)
+        # .add_edge(career_coach_agent_executor, handle_workflow_output)
+        # .add_edge(front_desk_agent_executor, handle_workflow_output)
         
         .build()
         .as_agent()
