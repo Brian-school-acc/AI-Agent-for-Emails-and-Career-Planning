@@ -80,30 +80,6 @@ class ResponseModel(BaseModel):
 
 # --- CENTRALIZED DISPATCHER ROUTER ---
 
-@executor(id="perform_triage")
-async def perform_triage(ctx: WorkflowContext[list[Message], Any]):
-    """Triage node responsible for identifying user intent flags."""
-    user_prompt = ctx.get_state("input")
-    
-    if not user_prompt:
-        messages = ctx.get_state("messages", [])
-        if messages and isinstance(messages, list):
-            user_prompt = messages[-1].get("content", "")
-            
-    if not user_prompt or len(str(user_prompt).strip()) == 0:
-        fallback_error = TriageResult(
-            reason="Input container was empty or unreadable.",
-            route="fallback",
-            doc_content="Data insufficient"
-        )
-        # await ctx.yield_output(fallback_error.model_dump_json())
-        return
-
-    # Forward exactly ONE message context payload to fire the model once
-    user_msg = Message("user", contents=[str(user_prompt)])
-    agent_request = AgentExecutorRequest(messages=[user_msg], should_respond=True)
-    await ctx.send_message(agent_request, "triage_exec")
-
 @executor(id="route_to_agent")
 async def route_to_agent(response: AgentExecutorResponse, ctx: WorkflowContext[AgentExecutorRequest]) -> None:
     raw_text = response.agent_response.text.strip()
@@ -123,11 +99,13 @@ async def route_to_agent(response: AgentExecutorResponse, ctx: WorkflowContext[A
     
     original_prompt = ctx.get_state("input")
     if not original_prompt:
+        print("ORIGINAL_PROMPT NOT GET STATE input")
         messages = ctx.get_state("messages", [])
         if messages and isinstance(messages, list):
             original_prompt = messages[-1].get("content", "")
             
     if not original_prompt:
+        print("ORIGINAL_PROMPT NOT GET POPULATE")
         original_prompt = detection.doc_content
         
     user_msg = Message("user", contents=[str(original_prompt)])
@@ -247,11 +225,10 @@ def main() -> None:
         WorkflowBuilder(
             name="agent-cuhk-workflow",
             description="a workflow to take user request and respond accordingly with tools",
-            start_executor=perform_triage,
+            start_executor=triage_agent_executor,
         )
         
         # 1. Unconditionally forward triage evaluation to our dispatcher function
-        .add_edge(perform_triage, triage_agent_executor)
         .add_edge(triage_agent_executor, route_to_agent)
         
         # 2. Expose valid topology paths to the graph compiler 
