@@ -6,3 +6,4 @@ azure-ai-projects>=2.0.0b1
 # For Tools
 python-docx==1.2.0
 python-pptx==1.0.2
+duckduckgo-search==8.1.1

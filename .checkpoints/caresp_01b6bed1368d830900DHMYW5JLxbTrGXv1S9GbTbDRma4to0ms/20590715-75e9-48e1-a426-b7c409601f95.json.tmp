@@ -1,0 +1,91 @@
+{
+  "workflow_name": "agent-cuhk-workflow",
+  "graph_signature_hash": "40cdf920d61e23b2559ba0c4fad8b5774316cd2943612c893a67419d3d016e2c",
+  "checkpoint_id": "20590715-75e9-48e1-a426-b7c409601f95",
+  "previous_checkpoint_id": null,
+  "timestamp": "2026-06-14T15:39:18.658504+00:00",
+  "messages": {},
+  "state": {
+    "_workflow_run_kwargs": {},
+    "_executor_state": {
+      "triage_and_route": {},
+      "archivist_exec": {
+        "cache": [],
+        "full_conversation": [],
+        "agent_session": {
+          "type": "session",
+          "session_id": "915b87f7-64e3-4472-b66d-8b1a62c36b04",
+          "service_session_id": null,
+          "state": {}
+        },
+        "pending_agent_requests": {},
+        "pending_responses_to_agent": []
+      },
+      "executive_exec": {
+        "cache": [],
+        "full_conversation": [],
+        "agent_session": {
+          "type": "session",
+          "session_id": "5fa122fa-7a7b-41c6-b103-b6fca0612568",
+          "service_session_id": null,
+          "state": {}
+        },
+        "pending_agent_requests": {},
+        "pending_responses_to_agent": []
+      },
+      "career_coach_exec": {
+        "cache": [],
+        "full_conversation": [],
+        "agent_session": {
+          "type": "session",
+          "session_id": "cc745783-485b-41e5-9e81-491014613128",
+          "service_session_id": null,
+          "state": {}
+        },
+        "pending_agent_requests": {},
+        "pending_responses_to_agent": []
+      },
+      "front_desk_exec": {
+        "cache": [],
+        "full_conversation": [
+          {
+            "__pickled__": "gAWVwAIAAAAAAACMFmFnZW50X2ZyYW1ld29yay5fdHlwZXOUjAdNZXNzYWdllJOUKYGUfZQojARyb2xllIwEdXNlcpSMCGNvbnRlbnRzlF2UaACMB0NvbnRlbnSUk5QpgZR9lCiMBHR5cGWUjAR0ZXh0lIwLYW5ub3RhdGlvbnOUTowVYWRkaXRpb25hbF9wcm9wZXJ0aWVzlH2UjBJyYXdfcmVwcmVzZW50YXRpb26UTmgOjDNIZWxsbywgaG93IGFyZSB5b3U/IEFuZCB3aGF0IGlzIHRoZSB3ZWF0aGVyIHRvZGF5PyCUjA5wcm90ZWN0ZWRfZGF0YZROjAN1cmmUTowKbWVkaWFfdHlwZZROjAdtZXNzYWdllE6MCmVycm9yX2NvZGWUTowNZXJyb3JfZGV0YWlsc5ROjA11c2FnZV9kZXRhaWxzlE6MB2NhbGxfaWSUTowEbmFtZZROjAlhcmd1bWVudHOUTowJZXhjZXB0aW9ulE6MBnJlc3VsdJROjAVpdGVtc5ROjAdmaWxlX2lklE6MD3ZlY3Rvcl9zdG9yZV9pZJROjAZpbnB1dHOUTowHb3V0cHV0c5ROjAhpbWFnZV9pZJROjAhjb21tYW5kc5ROjAp0aW1lb3V0X21zlE6MEW1heF9vdXRwdXRfbGVuZ3RolE6MBnN0YXR1c5ROjAZzdGRvdXSUTowGc3RkZXJylE6MCWV4aXRfY29kZZROjAl0aW1lZF9vdXSUTowJdG9vbF9uYW1llE6MC3NlcnZlcl9uYW1llE6MBm91dHB1dJROjAJpZJROjA1mdW5jdGlvbl9jYWxslE6MEnVzZXJfaW5wdXRfcmVxdWVzdJROjAhhcHByb3ZlZJROjAxjb25zZW50X2xpbmuUTnViYYwLYXV0aG9yX25hbWWUTowKbWVzc2FnZV9pZJROaBB9lGgSTnViLg==",
+            "__type__": "agent_framework._types:Message"
+          },
+          {
+            "__pickled__": "gAWV+QcAAAAAAACMFmFnZW50X2ZyYW1ld29yay5fdHlwZXOUjAdNZXNzYWdllJOUKYGUfZQojARyb2xllIwJYXNzaXN0YW50lIwIY29udGVudHOUXZQoaACMB0NvbnRlbnSUk5QpgZR9lCiMBHR5cGWUjA50ZXh0X3JlYXNvbmluZ5SMC2Fubm90YXRpb25zlE6MFWFkZGl0aW9uYWxfcHJvcGVydGllc5R9lIwScmF3X3JlcHJlc2VudGF0aW9ulIwub3BlbmFpLnR5cGVzLnJlc3BvbnNlcy5yZXNwb25zZV9yZWFzb25pbmdfaXRlbZSMB1N1bW1hcnmUk5QpgZR9lCiMCF9fZGljdF9flH2UKIwEdGV4dJRYogEAAFRoZSB1c2VyIHNheXM6ICJIZWxsbywgaG93IGFyZSB5b3U/IEFuZCB3aGF0IGlzIHRoZSB3ZWF0aGVyIHRvZGF5PyIgQWNjb3JkaW5nIHRvIGd1aWRlbGluZXM6IGdyZWV0IGJhY2ssIGFuc3dlciBzaW1wbGUgcXVlc3Rpb24uIEFsc28gY2FuIHVzZSBnZXRfd2VhdGhlciB0b29sICh0aG91Z2ggbG9jYXRpb24gbm90IGdpdmVuKS4gV2UgbmVlZCBsb2NhdGlvbjsgdW5jbGVhci4gU2hvdWxkIGFwb2xvZ2l6ZSBmb3IgdW5jbGVhciBhbmQgYXNrIGZvciBsb2NhdGlvbi4gQWxzbyBmb2xsb3cgc2NvcGUgZ3VpZGFuY2U6IGxpc3Qgc3BlY2lhbGl6ZWQgYWdlbnRzLiBSZXNwb25zZSB1bmRlciAxMDAgd29yZHMuIExldCdzIHByb2R1Y2UgZ3JlZXRpbmcsIGFzayBsb2NhdGlvbiBmb3Igd2VhdGhlciwgYW5kIGluY2x1ZGUgYWdlbnQgbGlzdC6UaA2MDHN1bW1hcnlfdGV4dJR1jBJfX3B5ZGFudGljX2V4dHJhX1+UfZSMF19fcHlkYW50aWNfZmllbGRzX3NldF9flI+UKGgaaA2QjBRfX3B5ZGFudGljX3ByaXZhdGVfX5ROdWJoGmgbjA5wcm90ZWN0ZWRfZGF0YZROjAN1cmmUTowKbWVkaWFfdHlwZZROjAdtZXNzYWdllE6MCmVycm9yX2NvZGWUTowNZXJyb3JfZGV0YWlsc5ROjA11c2FnZV9kZXRhaWxzlE6MB2NhbGxfaWSUTowEbmFtZZROjAlhcmd1bWVudHOUTowJZXhjZXB0aW9ulE6MBnJlc3VsdJROjAVpdGVtc5ROjAdmaWxlX2lklE6MD3ZlY3Rvcl9zdG9yZV9pZJROjAZpbnB1dHOUTowHb3V0cHV0c5ROjAhpbWFnZV9pZJROjAhjb21tYW5kc5ROjAp0aW1lb3V0X21zlE6MEW1heF9vdXRwdXRfbGVuZ3RolE6MBnN0YXR1c5ROjAZzdGRvdXSUTowGc3RkZXJylE6MCWV4aXRfY29kZZROjAl0aW1lZF9vdXSUTowJdG9vbF9uYW1llE6MC3NlcnZlcl9uYW1llE6MBm91dHB1dJROjAJpZJSMNXJzXzA1MjU3ZmYyZmIyMjQyMDkwMTZhMmVjYjI1OTU5NDgxOTA5ZmY5MzM5MWI2ZDJlZmM3lIwNZnVuY3Rpb25fY2FsbJROjBJ1c2VyX2lucHV0X3JlcXVlc3SUTowIYXBwcm92ZWSUTowMY29uc2VudF9saW5rlE51YmgKKYGUfZQoaA1oGmgPTmgQfZRoEowrb3BlbmFpLnR5cGVzLnJlc3BvbnNlcy5yZXNwb25zZV9vdXRwdXRfdGV4dJSMElJlc3BvbnNlT3V0cHV0VGV4dJSTlCmBlH2UKGgYfZQoaA9dlGgaWJ4BAABIZWxsbyEgSeKAmW0gZG9pbmcgZ3JlYXQsIHRoYW5rcyBmb3IgYXNraW5nLiBDb3VsZCB5b3UgbGV0IG1lIGtub3cgeW91ciBjaXR5IG9yIFpJUCBjb2RlIHNvIEkgY2FuIGNoZWNrIHRoZSB3ZWF0aGVyIGZvciB5b3U/CgpIZXJl4oCZcyBhIHF1aWNrIHJlbWluZGVyIG9mIHRoZSBzcGVjaWFsaXplZCBhZ2VudHMgd2UgaGF2ZToKCi0g8J+TmiAqKkFyY2hpdmlzdCoqIOKGkiBlbWFpbC9kb2N1bWVudCBzZWFyY2ggJiBkZWFkbGluZSBleHRyYWN0aW9uICAKLSDwn5OFICoqRXhlY3V0aXZlKiog4oaSIHNjaGVkdWxpbmcsIHRhc2tzLCBhcHByb3ZhbHMgIAotIPCfkrwgKipDYXJlZXIgQ29hY2gqKiDihpIgcmVzdW1lcywgaW50ZXJ2aWV3cywgc2tpbGwgYW5hbHlzaXMgIAoKV2hhdCB3b3VsZCB5b3UgbGlrZSB0byBkbyB0b2RheT+UaA2MC291dHB1dF90ZXh0lIwIbG9ncHJvYnOUXZR1aB19lGgfj5QoaBpoUWgPaA2QaCFOdWJoGmhPaCJOaCNOaCROaCVOaCZOaCdOaChOaClOaCpOaCtOaCxOaC1OaC5OaC9OaDBOaDFOaDJOaDNOaDROaDVOaDZOaDdOaDhOaDlOaDpOaDtOaDxOaD1OaD5OaD9OaEFOaEJOaENOaEROdWJljAthdXRob3JfbmFtZZSMEGZyb250X2Rlc2tfYWdlbnSUjAptZXNzYWdlX2lklE5oEH2UaBJOdWIu",
+            "__type__": "agent_framework._types:Message"
+          }
+        ],
+        "agent_session": {
+          "type": "session",
+          "session_id": "6bc959a9-ec4c-4b33-b84a-f71db64b4137",
+          "service_session_id": null,
+          "state": {
+            "in_memory": {
+              "messages": [
+                {
+                  "type": "message",
+                  "role": "user",
+                  "contents": [
+                    {
+                      "type": "text",
+                      "text": "Hello, how are you? And what is the weather today? ",
+                      "additional_properties": {}
+                    }
+                  ],
+                  "additional_properties": {}
+                },
+                {
+                  "type": "message",
+                  "role": "assistant",
+                  "contents": [
+                    {
+                      "type": "text_reasoning",
+                      "text": "The user says: \"Hello, how are you? And what is the weather today?\" According to guidelines: greet back, answer simple question. Also can use get_weather tool (though location not given). We need location; unclear. Should apologize for unclear and ask for location. Also follow scope guidance: list specialized agents. Response under 100 words. Let's produce greeting, ask location for weather, and include agent list.",
+                      "id": "rs_05257ff2fb224209016a2ecb25959481909ff93391b6d2efc7",
+                      "additional_properties": {}
+                    },
+                    {
+                      "type": "text",
+                      "text": 
