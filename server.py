@@ -32,30 +32,16 @@ def _patched_init(self, *args, **kwargs):
 checkpoint_mod.FileCheckpointStorage.__init__ = _patched_init
 # ------------------------------------------------------------------------------------------------
 
+# Import packages
 
-# import os
-# import asyncio
-# from typing import Any
-# from tools import file_search
-
-from agent_framework import (  # Core chat primitives used to build requests
-    # Agent,
+from agent_framework import (
     AgentExecutor,
-    # AgentExecutorRequest,  # Input message bundle for an AgentExecutor
-    # AgentExecutorResponse,
-    # Message,
-    WorkflowBuilder,  # Fluent builder for wiring executors and edges
-    # WorkflowContext,  # Per-run context and event bus
-    # executor,  # Decorator to declare a Python function as a workflow executor
+    WorkflowBuilder,
 )
-# from agent_framework.foundry import FoundryChatClient  # Thin client wrapper for Azure OpenAI chat models
+
 from agent_framework_foundry_hosting import ResponsesHostServer
 from azure.identity import DefaultAzureCredential
-# from azure.identity import AzureCliCredential  # Uses your az CLI login for credentials
 from dotenv import load_dotenv
-# from pydantic import BaseModel, Field  # Structured outputs for safer parsing
-# from typing_extensions import Never
-# from refined_prompt import TRIAGE_PROMPT, ARCHIVIST_PROMPT, EXECUTIVE_PROMPT, CAREER_COACH_PROMPT, FRONTDESK_PROMPT
 
 from predefined_dataModel_n_agents import (
     triage_and_route,
