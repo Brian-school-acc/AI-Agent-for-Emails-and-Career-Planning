@@ -87,7 +87,7 @@ async def triage_and_route(messages: list[Message], ctx: WorkflowContext[list[Me
     if hasattr(last_message, "contents") and last_message.contents:
         original_prompt = str(last_message.contents[0])
     elif hasattr(last_message, "content"):
-        original_prompt = str(last_message.content)
+        original_prompt = str(last_message.content)  # type: ignore
     else:
         original_prompt = str(last_message)
     
@@ -130,16 +130,16 @@ async def triage_and_route(messages: list[Message], ctx: WorkflowContext[list[Me
     # 4. Route directly to the targeted specialist executor matching the IDs in main()
     if route_target == "read":
         print("➡️ Dispatcher: Routing to Archivist Agent.")
-        await ctx.send_message(specialist_request, "archivist_exec")
+        await ctx.send_message(specialist_request, "archivist_exec")  # type: ignore
     elif route_target == "exec":
         print("➡️ Dispatcher: Routing to Executive Agent.")
-        await ctx.send_message(specialist_request, "executive_exec")
+        await ctx.send_message(specialist_request, "executive_exec")  # type: ignore
     elif route_target == "career":
         print("➡️ Dispatcher: Routing to Career Coach Agent.")
-        await ctx.send_message(specialist_request, "career_coach_exec")
+        await ctx.send_message(specialist_request, "career_coach_exec")  # type: ignore
     else:
         print("➡️ Dispatcher: Routing to Front Desk Fallback.")
-        await ctx.send_message(specialist_request, "front_desk_exec")
+        await ctx.send_message(specialist_request, "front_desk_exec")  # type: ignore
 
 
 # --- AGENT CONSTRUCTORS ---
