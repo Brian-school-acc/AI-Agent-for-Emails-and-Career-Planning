@@ -53,7 +53,7 @@ from azure.identity import AzureCliCredential  # Uses your az CLI login for cred
 from dotenv import load_dotenv
 from pydantic import BaseModel, Field  # Structured outputs for safer parsing
 from typing_extensions import Never
-from prompt import TRIAGE_MANAGER_PROMPT, ARCHIVIST_PROMPT, EXECUTIVE_PROMPT, CAREER_COACH_PROMPT, FRONTDESK_PROMPT
+from refined_prompt import TRIAGE_PROMPT, ARCHIVIST_PROMPT, EXECUTIVE_PROMPT, CAREER_COACH_PROMPT, FRONTDESK_PROMPT
 
 # Load environment variables from .env file
 load_dotenv()
@@ -74,41 +74,42 @@ class TriageResult(BaseModel):
     
     doc_content: str = Field(description="The exact unaltered original document text.")
 
-class ResponseModel(BaseModel):
-    """Represents the ultimate text response generated from processing agents."""
-    response: str
-
-
 # --- CENTRALIZED DISPATCHER ROUTER ---
 
-@executor(id="triage_manager_agent_executor")
-async def triage_manager_exec(ctx: WorkflowContext[Any, Any]):
-    """Triage node responsible for identifying user intent flags."""
-    user_prompt = ctx.get_state("input")
-    
-    if not user_prompt:
-        messages = ctx.get_state("messages", [])
-        if messages and isinstance(messages, list):
-            user_prompt = messages[-1].get("content", "")
-            
-    if not user_prompt or len(str(user_prompt).strip()) == 0:
-        fallback_error = TriageResult(
-            reason="Input container was empty or unreadable.",
-            route="fallback",
-            doc_content="Data insufficient"
-        )
-        await ctx.yield_output(fallback_error.model_dump_json())
+@executor(id="triage_and_route")
+async def triage_and_route(messages: list[Message], ctx: WorkflowContext[list[Message]]) -> None:
+    if not messages:
+        print("❌ No input messages received at entrypoint.")
         return
-
-    # Forward exactly ONE message context payload to fire the model once
-    user_msg = Message("user", contents=[str(user_prompt)])
-    agent_request = AgentExecutorRequest(messages=[user_msg], should_respond=True)
-    await ctx.send_message(agent_request, "triage_manager_exec")
-
-@executor(id="route_to_agent")
-async def route_to_agent(response: AgentExecutorResponse, ctx: WorkflowContext[AgentExecutorRequest]) -> None:
-    raw_text = response.agent_response.text.strip()
+        
+    # Extract the text string from the last conversation turn safely
+    last_message = messages[-1]
+    if hasattr(last_message, "contents") and last_message.contents:
+        original_prompt = str(last_message.contents[0])
+    elif hasattr(last_message, "content"):
+        original_prompt = str(last_message.content)
+    else:
+        original_prompt = str(last_message)
     
+    
+    # 2. Build the triage agent locally to run SILENTLY (Isolated from the stream)
+    credential = DefaultAzureCredential()
+    triage_agent = Agent(
+        client=FoundryChatClient(
+            project_endpoint=os.environ["FOUNDRY_PROJECT_ENDPOINT"],
+            model=os.environ["AZURE_AI_MODEL_DEPLOYMENT_NAME"],
+            credential=credential,
+        ),
+        instructions=TRIAGE_PROMPT,
+        name="triage_agent",
+        default_options={"response_format": TriageResult, "store": False},  # type: ignore
+    )
+
+    print("🔍 Executing silent triage classification...")
+    triage_response = await triage_agent.run(original_prompt)
+    raw_text = triage_response.text.strip()
+    
+    # Clean up markdown code blocks if the model wrapped them
     if raw_text.startswith("```json"):
         raw_text = raw_text.split("```json", 1)[1].rsplit("```", 1)[0].strip()
     elif raw_text.startswith("```"):
@@ -121,58 +122,37 @@ async def route_to_agent(response: AgentExecutorResponse, ctx: WorkflowContext[A
         print(f"❌ Dispatcher validation failed: {e}. Defaulting to fallback route.")
         route_target = "fallback"
         detection = TriageResult(reason="Fail-safe routing", route="fallback", doc_content=raw_text)
-    
-    original_prompt = ctx.get_state("input")
-    if not original_prompt:
-        messages = ctx.get_state("messages", [])
-        if messages and isinstance(messages, list):
-            original_prompt = messages[-1].get("content", "")
-            
-    if not original_prompt:
-        original_prompt = detection.doc_content
         
+    # 3. Package the request bundle for your specialist agents
     user_msg = Message("user", contents=[str(original_prompt)])
-    request = AgentExecutorRequest(messages=[user_msg], should_respond=True)
+    specialist_request = AgentExecutorRequest(messages=[user_msg], should_respond=True)
     
-    # Precise enum evaluation
+    # 4. Route directly to the targeted specialist executor matching the IDs in main()
     if route_target == "read":
         print("➡️ Dispatcher: Routing to Archivist Agent.")
-        await ctx.send_message(request, "archivist_exec")
+        await ctx.send_message(specialist_request, "archivist_exec")
     elif route_target == "exec":
         print("➡️ Dispatcher: Routing to Executive Agent.")
-        await ctx.send_message(request, "executive_exec")
+        await ctx.send_message(specialist_request, "executive_exec")
     elif route_target == "career":
         print("➡️ Dispatcher: Routing to Career Coach Agent.")
-        await ctx.send_message(request, "career_coach_exec")
+        await ctx.send_message(specialist_request, "career_coach_exec")
     else:
         print("➡️ Dispatcher: Routing to Front Desk Fallback.")
-        await ctx.send_message(request, "front_desk_exec")
-
-# --- TERMINAL HANDLERS (Receives agent responses and yields output) ---
-
-@executor(id="handle_workflow_output")
-async def handle_workflow_output(response: AgentExecutorResponse, ctx: WorkflowContext[Never, str]) -> None:
-    """Consolidates output extraction for your specialized agents returning EmailResponses."""
-    try:
-        final_payload = ResponseModel.model_validate_json(response.agent_response.text)
-    except Exception as e:
-        # Log the error and return a safe fallback
-        await ctx.yield_output(f"Error processing agent response: {e}")
-        return
-    await ctx.yield_output(final_payload.response)
+        await ctx.send_message(specialist_request, "front_desk_exec")
 
 
 # --- AGENT CONSTRUCTORS ---
 
-def create_triage_manager_agent(credential=DefaultAzureCredential()) -> Agent:
+def create_triage_agent(credential=DefaultAzureCredential()) -> Agent:
     return Agent(
         client=FoundryChatClient(
             project_endpoint=os.environ["FOUNDRY_PROJECT_ENDPOINT"],
             model=os.environ["AZURE_AI_MODEL_DEPLOYMENT_NAME"],
             credential=credential,
         ),
-        instructions=TRIAGE_MANAGER_PROMPT,
-        name="triage_manager_agent",
+        instructions=TRIAGE_PROMPT,
+        name="triage_agent",
         default_options={"response_format": TriageResult, "store": False},  # type: ignore
     )
 
@@ -187,7 +167,7 @@ def create_archivist_agent(credential=DefaultAzureCredential()) -> Agent:
         instructions=ARCHIVIST_PROMPT,
         name="archivist_agent",
         tools=[file_search],                                                       # 👈 ADD THIS LINE
-        default_options={"response_format": ResponseModel, "store": False, "reasoning": None},  # type: ignore
+        default_options={"store": False, "reasoning": None},  # type: ignore
     )
 
 def create_executive_agent(credential=DefaultAzureCredential()) -> Agent:
@@ -199,7 +179,7 @@ def create_executive_agent(credential=DefaultAzureCredential()) -> Agent:
         ),
         instructions=EXECUTIVE_PROMPT,
         name="executive_agent",
-        default_options={"response_format": ResponseModel, "store": False, "reasoning": None},  # type: ignore
+        default_options={"store": False, "reasoning": None},  # type: ignore
     )
 
 def create_career_coach_agent(credential=DefaultAzureCredential()) -> Agent:
@@ -211,7 +191,7 @@ def create_career_coach_agent(credential=DefaultAzureCredential()) -> Agent:
         ),
         instructions=CAREER_COACH_PROMPT,
         name="career_coach_agent",
-        default_options={"response_format": ResponseModel, "store": False, "reasoning": None},  # type: ignore
+        default_options={"store": False, "reasoning": None},  # type: ignore
     )
 
 def create_front_desk_agent(credential=DefaultAzureCredential()) -> Agent:
@@ -224,21 +204,19 @@ def create_front_desk_agent(credential=DefaultAzureCredential()) -> Agent:
         ),
         instructions=FRONTDESK_PROMPT,
         name="front_desk_agent",
-        default_options={"response_format": ResponseModel, "store": False, "reasoning": None},  # type: ignore
+        default_options={"store": False, "reasoning": None},  # type: ignore
     )
 
 def main() -> None:
     credential = DefaultAzureCredential()
 
-    # Create agents
-    triage_manager_agent = create_triage_manager_agent(credential=credential)
+    # Create specialized agents (We don't need triage wrapped in an Executor anymore)
     archivist_agent = create_archivist_agent(credential=credential)
     executive_agent = create_executive_agent(credential=credential)
     career_coach_agent = create_career_coach_agent(credential=credential)
     front_desk_agent = create_front_desk_agent(credential=credential)
 
-    # Wrap agents inside Executors with corresponding internal string IDs
-    triage_manager_agent_executor = AgentExecutor(triage_manager_agent, id="triage_manager_exec", context_mode="full") # type: ignore
+    # Wrap only specialist agents inside target Executors
     archivist_agent_executor = AgentExecutor(archivist_agent, id="archivist_exec", context_mode="last_agent") # type: ignore
     executive_agent_executor = AgentExecutor(executive_agent, id="executive_exec", context_mode="last_agent") # type: ignore
     career_coach_agent_executor = AgentExecutor(career_coach_agent, id="career_coach_exec", context_mode="last_agent") # type: ignore
@@ -249,23 +227,14 @@ def main() -> None:
         WorkflowBuilder(
             name="agent-cuhk-workflow",
             description="a workflow to take user request and respond accordingly with tools",
-            start_executor=triage_manager_agent_executor,
-    )
+            start_executor=triage_and_route,  # Set your custom routing function as entrypoint!
+        )
         
-        # 1. Unconditionally forward triage evaluation to our dispatcher function
-        .add_edge(triage_manager_agent_executor, route_to_agent)
-        
-        # 2. Expose valid topology paths to the graph compiler 
-        .add_edge(route_to_agent, archivist_agent_executor)
-        .add_edge(route_to_agent, executive_agent_executor)
-        .add_edge(route_to_agent, career_coach_agent_executor)
-        .add_edge(route_to_agent, front_desk_agent_executor)
-        
-        # 3. Connect all execution terminals to the shared payload visualizer
-        .add_edge(archivist_agent_executor, handle_workflow_output)
-        .add_edge(executive_agent_executor, handle_workflow_output)
-        .add_edge(career_coach_agent_executor, handle_workflow_output)
-        .add_edge(front_desk_agent_executor, handle_workflow_output)
+        # Expose topology paths out of your triage function to the specialized executors
+        .add_edge(triage_and_route, archivist_agent_executor)
+        .add_edge(triage_and_route, executive_agent_executor)
+        .add_edge(triage_and_route, career_coach_agent_executor)
+        .add_edge(triage_and_route, front_desk_agent_executor)
         
         .build()
         .as_agent()
@@ -273,7 +242,9 @@ def main() -> None:
 
     # --- HOSTING INITIALIZATION ---
     print("🚀 Starting local Agent Response Server interface on http://localhost:8088...")
-    server = ResponsesHostServer(workflow)
+    server = ResponsesHostServer(
+        workflow, 
+    )
     server.run()
 
 if __name__ == "__main__":
