@@ -1,5 +1,6 @@
 import os
-from typing import Any
+from dotenv import load_dotenv
+from typing import Any, Literal
 from tools import file_search
 
 from agent_framework import (
@@ -12,24 +13,52 @@ from agent_framework import (
 from agent_framework.foundry import FoundryChatClient
 from azure.identity import DefaultAzureCredential
 from pydantic import BaseModel, Field  # Structured outputs for safer parsing
-from refined_prompt import TRIAGE_PROMPT, ARCHIVIST_PROMPT, EXECUTIVE_PROMPT, CAREER_COACH_PROMPT, FRONTDESK_PROMPT
+from refined_prompt import (
+    TRIAGE_PROMPT,
+    ARCHIVIST_PROMPT,
+    EXECUTIVE_PROMPT,
+    CAREER_COACH_PROMPT,
+    FRONTDESK_PROMPT
+)
+from document_tools import (
+    generate_word_document,
+    generate_powerpoint_presentation
+)
 
+load_dotenv()
 
-# --- DATA MODELS ---
+PROJECT_ENDPOINT = os.environ.get("FOUNDRY_PROJECT_ENDPOINT", "")
+MODEL_NAME = os.environ.get("AZURE_AI_MODEL_DEPLOYMENT_NAME", "")
+MCP_GATEWAY_URL = os.environ.get("MCP_GATEWAY_URL", "")
 
-from typing import Literal
+# --- 1. DATA MODELS ---
+
 
 class TriageResult(BaseModel):
     """Structured routing schema for incoming documents."""
-    
+
     reason: str = Field(description="Analyze the user request step-by-step.")
-    
+
     # Force the model to choose EXACTLY ONE target domain track
     route: Literal["read", "exec", "career", "fallback"] = Field(
         description="Select 'read' for analysis/lookup, 'exec' for timelines/deadlines/tasks, 'career' for resumes, or 'fallback' if general/unclear."
     )
-    
+
     doc_content: str = Field(description="The exact unaltered original document text.")
+
+
+# --- 2. Helper Function: CLIENT FACTORY ---
+def _get_foundry_client(credential: DefaultAzureCredential) -> FoundryChatClient:
+    """Helper method to construct the centralized inference provider client."""
+    if not PROJECT_ENDPOINT:
+        raise ValueError("Missing environment variable: FOUNDRY_PROJECT_ENDPOINT")
+
+    return FoundryChatClient(
+        project_endpoint=PROJECT_ENDPOINT,
+        model=MODEL_NAME,
+        credential=credential
+    )
+
 
 # --- CENTRALIZED DISPATCHER ROUTER ---
 
@@ -52,11 +81,7 @@ async def triage_and_route(messages: list[Message], ctx: WorkflowContext[list[Me
     # 2. Build the triage agent locally to run SILENTLY (Isolated from the stream)
     credential = DefaultAzureCredential()
     triage_agent = Agent(
-        client=FoundryChatClient(
-            project_endpoint=os.environ["FOUNDRY_PROJECT_ENDPOINT"],
-            model=os.environ["AZURE_AI_MODEL_DEPLOYMENT_NAME"],
-            credential=credential,
-        ),
+        client=_get_foundry_client(credential),
         instructions=TRIAGE_PROMPT,
         name="triage_agent",
         default_options={"response_format": TriageResult, "store": False},  # type: ignore
@@ -103,11 +128,7 @@ async def triage_and_route(messages: list[Message], ctx: WorkflowContext[list[Me
 
 def create_triage_agent(credential=DefaultAzureCredential()) -> Agent:
     return Agent(
-        client=FoundryChatClient(
-            project_endpoint=os.environ["FOUNDRY_PROJECT_ENDPOINT"],
-            model=os.environ["AZURE_AI_MODEL_DEPLOYMENT_NAME"],
-            credential=credential,
-        ),
+        client=_get_foundry_client(credential),
         instructions=TRIAGE_PROMPT,
         name="triage_agent",
         default_options={"response_format": TriageResult, "store": False},  # type: ignore
@@ -115,51 +136,62 @@ def create_triage_agent(credential=DefaultAzureCredential()) -> Agent:
 
 def create_archivist_agent(credential=DefaultAzureCredential()) -> Agent:
     """Helper to create a document analyst agent."""
+    client: FoundryChatClient = _get_foundry_client(credential)
+    tool_list: list[Any] = [file_search]
+
+    # 1. Pull the hosted M365 MCP tool.
+    # This single tool automatically exposes capabilities like searching messages and files!
+    try:
+        m365_mcp_tool = client.get_mcp_tool(
+            name="M365 Enterprise Gateway",
+            url=MCP_GATEWAY_URL,
+            approval_mode="never_require",
+        )
+        tool_list.append(m365_mcp_tool)
+    except Exception as e:
+        print("Error for getting M365 MCP TOOL: {e}")
+
     return Agent(
-        client=FoundryChatClient(
-            project_endpoint=os.environ["FOUNDRY_PROJECT_ENDPOINT"],
-            model=os.environ["AZURE_AI_MODEL_DEPLOYMENT_NAME"],
-            credential=credential,
-        ),
+        client=client,
         instructions=ARCHIVIST_PROMPT,
         name="archivist_agent",
-        tools=[file_search],                                                       # 👈 ADD THIS LINE
+        tools=tool_list,
         default_options={"store": False, "reasoning": None},  # type: ignore
     )
 
 def create_executive_agent(credential=DefaultAzureCredential()) -> Agent:
+    client = _get_foundry_client(credential)
+    tool_list: list[Any] = [generate_word_document, generate_powerpoint_presentation]
+
     return Agent(
-        client=FoundryChatClient(
-            project_endpoint=os.environ["FOUNDRY_PROJECT_ENDPOINT"],
-            model=os.environ["AZURE_AI_MODEL_DEPLOYMENT_NAME"],
-            credential=credential,
-        ),
+        client=client,
         instructions=EXECUTIVE_PROMPT,
         name="executive_agent",
+        tools=tool_list,
         default_options={"store": False, "reasoning": None},  # type: ignore
     )
 
 def create_career_coach_agent(credential=DefaultAzureCredential()) -> Agent:
+    client = _get_foundry_client(credential)
+    tool_list: list[Any] = []
+
     return Agent(
-        client=FoundryChatClient(
-            project_endpoint=os.environ["FOUNDRY_PROJECT_ENDPOINT"],
-            model=os.environ["AZURE_AI_MODEL_DEPLOYMENT_NAME"],
-            credential=credential,
-        ),
+        client=client,
         instructions=CAREER_COACH_PROMPT,
         name="career_coach_agent",
+        tools=tool_list,
         default_options={"store": False, "reasoning": None},  # type: ignore
     )
 
 def create_front_desk_agent(credential=DefaultAzureCredential()) -> Agent:
     """Handles general chit-chat, greetings, and unsupported requests."""
+    client = _get_foundry_client(credential)
+    tool_list: list[Any] = []
+
     return Agent(
-        client=FoundryChatClient(
-            project_endpoint=os.environ["FOUNDRY_PROJECT_ENDPOINT"],
-            model=os.environ["AZURE_AI_MODEL_DEPLOYMENT_NAME"],
-            credential=credential,
-        ),
+        client=client,
         instructions=FRONTDESK_PROMPT,
         name="front_desk_agent",
+        tools=tool_list,
         default_options={"store": False, "reasoning": None},  # type: ignore
     )

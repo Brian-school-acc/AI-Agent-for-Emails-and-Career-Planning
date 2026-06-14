@@ -1,5 +1,5 @@
-
-# --- 1. THE CRITICAL WORKAROUND (MONKEYPATCH) ---
+# ===================== 1. THE CRITICAL WORKAROUND (MONKEYPATCH) =====================
+# ====================================================================================
 # We intercept the internal storage creation to inject the MessageRole whitelist
 # before the ResponsesHostServer can execute and crash on deserialization.
 import agent_framework._workflows._checkpoint as checkpoint_mod
@@ -30,7 +30,8 @@ def _patched_init(self, *args, **kwargs):
     _original_init(self, *args, **kwargs)
 
 checkpoint_mod.FileCheckpointStorage.__init__ = _patched_init
-# ------------------------------------------------------------------------------------------------
+# ====================================================================================
+# ====================================================================================
 
 # Import packages
 
@@ -38,9 +39,9 @@ from agent_framework import (
     AgentExecutor,
     WorkflowBuilder,
 )
-
 from agent_framework_foundry_hosting import ResponsesHostServer
 from azure.identity import DefaultAzureCredential
+
 from dotenv import load_dotenv
 
 from predefined_dataModel_n_agents import (
