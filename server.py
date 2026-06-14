@@ -1,6 +1,7 @@
 import os
 import asyncio
 from typing import Any
+from tools import file_search
 
 # --- 1. THE CRITICAL WORKAROUND (MONKEYPATCH) ---
 # We intercept the internal storage creation to inject the MessageRole whitelist
@@ -185,6 +186,7 @@ def create_archivist_agent(credential=DefaultAzureCredential()) -> Agent:
         ),
         instructions=ARCHIVIST_PROMPT,
         name="archivist_agent",
+        tools=[file_search],                                                       # 👈 ADD THIS LINE
         default_options={"response_format": ResponseModel, "store": False, "reasoning": None},  # type: ignore
     )
 
