@@ -20,10 +20,7 @@ from refined_prompt import (
     FRONTDESK_PROMPT
 )
 # from tools import file_search, summarize_document, search_the_web
-from front_desk_tools import (
-    get_weather
-    # , get_current_time, get_general_faq
-)
+from temp_tool import get_current_time
 
 # from document_tools import (
 #     generate_word_document,
@@ -42,13 +39,13 @@ class TriageResult(BaseModel):
     """Structured routing schema for incoming documents."""
 
     reason: str = Field(description="Analyze the user request step-by-step.")
-
-    # Force the model to choose EXACTLY ONE target domain track
     route: Literal["read", "exec", "career", "fallback"] = Field(
         description="Select 'read' for analysis/lookup, 'exec' for timelines/deadlines/tasks, 'career' for resumes, or 'fallback' if general/unclear."
     )
-
-    doc_content: str = Field(description="The exact unaltered original document text.")
+    
+    doc_content: str = Field(
+        default="", description="The exact unaltered original document text."
+    )
 
 
 # --- 2. Helper Function: CLIENT FACTORY ---
@@ -133,6 +130,7 @@ def create_archivist_agent(credential=DefaultAzureCredential()) -> Agent:
     """Helper to create a document analyst agent."""
     client: FoundryChatClient = _get_foundry_client(credential)
     tool_list: list[Any] = [
+        # get_weather
         # file_search, summarize_document,
     ]
 
@@ -148,17 +146,18 @@ def create_archivist_agent(credential=DefaultAzureCredential()) -> Agent:
         instructions=ARCHIVIST_PROMPT,
         name="archivist_agent",
         tools=tool_list,
-        default_options={"store": False, "reasoning": None, "allow_multiple_tool_calls": False},  # type: ignore
+        # default_options={"store": False, "reasoning": None, "allow_multiple_tool_calls": False},
     )
 
 def create_executive_agent(credential=DefaultAzureCredential()) -> Agent:
     client = _get_foundry_client(credential)
-    
-    image_gen_tool = client.get_image_generation_tool(
-        model="gpt-image-1", 
-        quality="high",
-        )
+
+    # image_gen_tool = client.get_image_generation_tool(
+    #     model="gpt-image-1",
+    #     quality="high",
+    # )
     tool_list: list[Any] = [
+        # get_weather
         # image_gen_tool
     ]
     # tool_list: list[Any] = [generate_word_document, generate_powerpoint_presentation]
@@ -168,27 +167,29 @@ def create_executive_agent(credential=DefaultAzureCredential()) -> Agent:
         instructions=EXECUTIVE_PROMPT,
         name="executive_agent",
         tools=tool_list,
-        default_options={"store": False, "reasoning": None, "allow_multiple_tool_calls": False},  # type: ignore
+        # default_options={"store": False, "reasoning": None, "allow_multiple_tool_calls": False},
     )
 
 def create_career_coach_agent(credential=DefaultAzureCredential()) -> Agent:
     client = _get_foundry_client(credential)
-    tool_list: list[Any] = []
+    tool_list: list[Any] = [
+        # get_weather
+    ]
 
     return Agent(
         client=client,
         instructions=CAREER_COACH_PROMPT,
         name="career_coach_agent",
         tools=tool_list,
-        default_options={"store": False, "reasoning": None, "allow_multiple_tool_calls": False},  # type: ignore
+        # default_options={"store": False, "reasoning": None, "allow_multiple_tool_calls": False},
     )
 
 def create_front_desk_agent(credential=DefaultAzureCredential()) -> Agent:
     """Handles general chit-chat, greetings, and unsupported requests."""
     client = _get_foundry_client(credential)
     tool_list: list[Any] = [
-        get_weather,
-        # get_current_time,
+        # get_weather,
+        get_current_time,
         # get_general_faq,
         # search_the_web
     ]
@@ -198,5 +199,5 @@ def create_front_desk_agent(credential=DefaultAzureCredential()) -> Agent:
         instructions=FRONTDESK_PROMPT,
         name="front_desk_agent",
         tools=tool_list,
-        default_options={"store": False, "reasoning": None, "allow_multiple_tool_calls": False},  # type: ignore
+        # default_options={"store": False, "reasoning": None, "allow_multiple_tool_calls": False},
     )

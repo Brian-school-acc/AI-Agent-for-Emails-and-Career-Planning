@@ -6,17 +6,41 @@ from agent_framework import tool
 from datetime import datetime, timedelta
 from typing import Annotated
 from pydantic import Field
-from random import randint
 from zoneinfo import ZoneInfo
 
-# Assuming this is available in your local setup
-# from refined_prompt import FREQUENT_FAQ
+# IMPORTANT
+# Note that modifying tools need to update prompt as well
+# IMPORTANT
+
+# @tool(approval_mode="never_require")
+# def get_weather(location: Annotated[str,Field(description="The city name or location string (e.g., 'Seattle', 'Hong Kong')."),],) -> str:
+#     """Get the current weather conditions and temperature for a given location."""
+#     conditions = ["sunny", "cloudy", "rainy", "overcast", "clear"]
+#     chosen_condition = random.choice(conditions)
+#     high_temp = random.randint(15, 32)
+#     low_temp = high_temp - random.randint(5, 10)
+
+#     return f"The weather in {location} is currently {chosen_condition} with a high of {high_temp}°C and a low of {low_temp}°C."
 
 
-@tool(approval_mode="never_require")
-def get_weather(
-    location: Annotated[str, Field(description="The city name or location string (e.g., 'Seattle', 'Hong Kong').")]
-) -> str:
+# @tool(approval_mode="never_require")
+# def get_weather(location: str) -> str:
+#     """
+#     Get the current weather conditions and temperature for a given location.
+
+#     Args:
+#         location: The city name or location string (e.g., 'Seattle', 'Hong Kong').
+#     """
+#     conditions = ["sunny", "cloudy", "rainy", "overcast", "clear"]
+#     chosen_condition = random.choice(conditions)
+#     high_temp = random.randint(15, 32)
+#     low_temp = high_temp - random.randint(5, 10)
+
+#     return f"The weather in {location} is currently {chosen_condition} with a high of {high_temp}°C and a low of {low_temp}°C."
+
+
+@tool
+def get_weather(location: Annotated[str, "The city name or location string (e.g., 'Seattle', 'Hong Kong')."],) -> str:
     """Get the current weather conditions and temperature for a given location."""
     conditions = ["sunny", "cloudy", "rainy", "overcast", "clear"]
     chosen_condition = random.choice(conditions)
@@ -26,26 +50,12 @@ def get_weather(
     return f"The weather in {location} is currently {chosen_condition} with a high of {high_temp}°C and a low of {low_temp}°C."
 
 
-@tool(approval_mode="never_require")
-def get_current_time(
-    timezone_offset_hours: Annotated[
-        float,
-        Field(
-            description="The hour offset from UTC (e.g., -5.0 for EST, 8.0 for HK/Beijing, 0.0 for UTC)."
-        ),
-    ] = 0.0,
-) -> str:
-    """Get the current date and time, adjusted by a UTC timezone offset."""
-    # Fixed: Grab pure UTC time before applying the requested offset
-    utc_now = datetime.now(ZoneInfo("UTC"))
-    adjusted_time = utc_now + timedelta(hours=timezone_offset_hours)
+@tool
+def get_current_time() -> str:
+    """Get the current local time to help answer relative time and date questions."""
+    # M365 Copilot often benefits from highly specific time formatting
+    return datetime.now().strftime("%I:%M %p on %A, %B %d, %Y")
 
-    date_str = adjusted_time.strftime("%A, %B %d, %Y")
-    time_str = adjusted_time.strftime("%I:%M %p")
-
-    return (
-        f"The current time is {time_str} on {date_str} (UTC{timezone_offset_hours:+g})."
-    )
 
 @tool(approval_mode="never_require")
 def get_general_faq(
