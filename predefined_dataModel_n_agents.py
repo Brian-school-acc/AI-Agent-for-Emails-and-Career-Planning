@@ -21,9 +21,12 @@ from refined_prompt import (
 )
 from tools import file_search, summarize_document
 from front_desk_tools import get_weather, get_current_time, get_general_faq
-from document_tools import (
+from executive_tools import (
+    draft_lecturer_email,
+    create_planner_task,
+    schedule_calendar_event,
     generate_word_document,
-    generate_powerpoint_presentation
+    generate_presentation_slides,
 )
 
 load_dotenv()
@@ -160,13 +163,15 @@ def create_executive_agent(credential=DefaultAzureCredential()) -> Agent:
     client = _get_foundry_client(credential)
 
     image_gen_tool = client.get_image_generation_tool(
-        model="gpt-image-1",
+        model="gpt-image-2",
         quality="high",
     )
     tool_list: list[Any] = [
-        image_gen_tool,
+        draft_lecturer_email,
+        create_planner_task,
+        schedule_calendar_event,
         generate_word_document,
-        generate_powerpoint_presentation,
+        generate_presentation_slides,
     ]
 
     return Agent(

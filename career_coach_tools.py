@@ -1,4 +1,3 @@
-
 import json
 from agent_framework import tool
 from random import choice
@@ -53,3 +52,6 @@ def generate_mock_interview_scenario(
             "starting_question": choice(questions),
         }
     )
+
+
+def simulate_workplace()

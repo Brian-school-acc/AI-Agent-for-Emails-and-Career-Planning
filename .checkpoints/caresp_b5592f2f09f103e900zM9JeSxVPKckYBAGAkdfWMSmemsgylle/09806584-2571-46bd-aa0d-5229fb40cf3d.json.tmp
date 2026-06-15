@@ -1,0 +1,71 @@
+{
+  "workflow_name": "agent-cuhk-workflow",
+  "graph_signature_hash": "40cdf920d61e23b2559ba0c4fad8b5774316cd2943612c893a67419d3d016e2c",
+  "checkpoint_id": "09806584-2571-46bd-aa0d-5229fb40cf3d",
+  "previous_checkpoint_id": null,
+  "timestamp": "2026-06-15T16:44:57.853148+00:00",
+  "messages": {},
+  "state": {
+    "_workflow_run_kwargs": {},
+    "_executor_state": {
+      "triage_and_route": {},
+      "archivist_exec": {
+        "cache": [],
+        "full_conversation": [],
+        "agent_session": {
+          "type": "session",
+          "session_id": "281aefb9-4bc4-4b81-b63b-4fa164deeffd",
+          "service_session_id": null,
+          "state": {}
+        },
+        "pending_agent_requests": {},
+        "pending_responses_to_agent": []
+      },
+      "executive_exec": {
+        "cache": [],
+        "full_conversation": [
+          {
+            "__pickled__": "gAWV2AIAAAAAAACMFmFnZW50X2ZyYW1ld29yay5fdHlwZXOUjAdNZXNzYWdllJOUKYGUfZQojARyb2xllIwEdXNlcpSMCGNvbnRlbnRzlF2UaACMB0NvbnRlbnSUk5QpgZR9lCiMBHR5cGWUjAR0ZXh0lIwLYW5ub3RhdGlvbnOUTowVYWRkaXRpb25hbF9wcm9wZXJ0aWVzlH2UjBJyYXdfcmVwcmVzZW50YXRpb26UTmgOjEtMZXQgdGhlIGV4ZWN1dGl2ZSB0byBjcmVhdGUgYW55IHBwdHggZmlsZXMgZm9yIG1lLCBmb3IgZXhhbXBsZSwgYWJvdXQgY2F0cyCUjA5wcm90ZWN0ZWRfZGF0YZROjAN1cmmUTowKbWVkaWFfdHlwZZROjAdtZXNzYWdllE6MCmVycm9yX2NvZGWUTowNZXJyb3JfZGV0YWlsc5ROjA11c2FnZV9kZXRhaWxzlE6MB2NhbGxfaWSUTowEbmFtZZROjAlhcmd1bWVudHOUTowJZXhjZXB0aW9ulE6MBnJlc3VsdJROjAVpdGVtc5ROjAdmaWxlX2lklE6MD3ZlY3Rvcl9zdG9yZV9pZJROjAZpbnB1dHOUTowHb3V0cHV0c5ROjAhpbWFnZV9pZJROjAhjb21tYW5kc5ROjAp0aW1lb3V0X21zlE6MEW1heF9vdXRwdXRfbGVuZ3RolE6MBnN0YXR1c5ROjAZzdGRvdXSUTowGc3RkZXJylE6MCWV4aXRfY29kZZROjAl0aW1lZF9vdXSUTowJdG9vbF9uYW1llE6MC3NlcnZlcl9uYW1llE6MBm91dHB1dJROjAJpZJROjA1mdW5jdGlvbl9jYWxslE6MEnVzZXJfaW5wdXRfcmVxdWVzdJROjAhhcHByb3ZlZJROjAxjb25zZW50X2xpbmuUTnViYYwLYXV0aG9yX25hbWWUTowKbWVzc2FnZV9pZJROaBB9lGgSTnViLg==",
+            "__type__": "agent_framework._types:Message"
+          },
+          {
+            "__pickled__": "gAWVDQsAAAAAAACMFmFnZW50X2ZyYW1ld29yay5fdHlwZXOUjAdNZXNzYWdllJOUKYGUfZQojARyb2xllIwJYXNzaXN0YW50lIwIY29udGVudHOUXZRoAIwHQ29udGVudJSTlCmBlH2UKIwEdHlwZZSMDWZ1bmN0aW9uX2NhbGyUjAthbm5vdGF0aW9uc5ROjBVhZGRpdGlvbmFsX3Byb3BlcnRpZXOUfZQojAVmY19pZJSMNWZjXzAyMjc3NWQyNWFjYThhYWEwMTZhMzAyYzAxNjUyMDgxOTNhYjQwMDZjMTkyYTc2ZDA3lIwGc3RhdHVzlIwJY29tcGxldGVklHWMEnJhd19yZXByZXNlbnRhdGlvbpSMMm9wZW5haS50eXBlcy5yZXNwb25zZXMucmVzcG9uc2VfZnVuY3Rpb25fdG9vbF9jYWxslIwYUmVzcG9uc2VGdW5jdGlvblRvb2xDYWxslJOUKYGUfZQojAhfX2RpY3RfX5R9lCiMCWFyZ3VtZW50c5RYqQYAAHsicHJlc2VudGF0aW9uX3RpdGxlIjoiVGhlIEZhc2NpbmF0aW5nIFdvcmxkIG9mIENhdHMiLCJzbGlkZXMiOlt7InRpdGxlIjoiSW50cm9kdWN0aW9uIHRvIENhdHMiLCJib2R5Ijoi4oCiIENhdHMgYXJlIG9uZSBvZiB0aGUgbW9zdCBwb3B1bGFyIHBldHMgd29ybGR3aWRlLlxu4oCiIEtub3duIGZvciB0aGVpciBpbmRlcGVuZGVuY2UsIGFnaWxpdHksIGFuZCBteXN0ZXJpb3VzIG5hdHVyZS5cbuKAoiBTeW1ib2xpYyByZWxldmFuY2UgaW4gdmFyaW91cyBjdWx0dXJlcy4iLCJsYXlvdXQiOiJjb250ZW50Iiwic3BlYWtlcl9ub3RlcyI6IktpY2sgb2ZmIHRoZSBwcmVzZW50YXRpb24gYnkgZXN0YWJsaXNoaW5nIHRoZSBnbG9iYWwgYWRtaXJhdGlvbiBhbmQgY3VsdHVyYWwgc2lnbmlmaWNhbmNlIG9mIGNhdHMuIn0seyJ0aXRsZSI6IkNhdCBCcmVlZHMgYW5kIENoYXJhY3RlcmlzdGljcyIsImJvZHkiOlsiUG9wdWxhciBicmVlZHM6Iiwi4oCiIFBlcnNpYW46IEVsZWdhbnQgYW5kIGNhbG0uIiwi4oCiIE1haW5lIENvb246IExhcmdlIGFuZCBnZW50bGUuIiwi4oCiIFNpYW1lc2U6IFZvY2FsIGFuZCBhZmZlY3Rpb25hdGUuIiwi4oCiIEJlbmdhbDogRW5lcmdldGljIGFuZCBleG90aWMgYXBwZWFyYW5jZS4iXSwibGF5b3V0IjoiY29udGVudCIsInNwZWFrZXJfbm90ZXMiOiJTaG93Y2FzZSB0aGUgZGl2ZXJzaXR5IGluIGJyZWVkcyBhbmQgdGhlaXIgZGlzdGluY3QgcGVyc29uYWxpdGllcy4ifSx7InRpdGxlIjoiV2h5IENhdHMgTWFrZSBHcmVhdCBQZXRzIiwiYm9keSI6IuKAoiBMb3ctbWFpbnRlbmFuY2UgY29tcGFyZWQgdG8gZG9ncy5cbuKAoiBOYXR1cmFsIGh1bnRlcnM6IEtlZXAgcm9kZW50cyBpbiBjaGVjay5cbuKAoiBBZmZlY3Rpb25hdGUgYW5kIGJvbmQgY2xvc2VseSB3aXRoIG93bmVycy5cbuKAoiBUaGVyYXBldXRpYyBwcmVzZW5jZSBmb3IgbWVudGFsIGhlYWx0aC4iLCJsYXlvdXQiOiJjb250ZW50Iiwic3BlYWtlcl9ub3RlcyI6IkhpZ2hsaWdodCB0aGVpciBiZW5lZml0cyBhbmQgY29udmluY2UgYW55IHNrZXB0aWNzLiJ9LHsidGl0bGUiOiJGdW4gQ2F0IEZhY3RzIiwiYm9keSI6IuKAoiBDYXRzIGNhbiByb3RhdGUgdGhlaXIgZWFycyAxODAgZGVncmVlcy5cbuKAoiBUaGV5IHNwZW5kIDcwJSBvZiB0aGVpciBsaXZlcyBzbGVlcGluZy5cbuKAoiBUaGUgb2xkZXN0IGNhdCBvbiByZWNvcmQgbGl2ZWQgMzggeWVhcnMuXG7igKIgQ2F0cyBncmVldCBlYWNoIG90aGVyIGJ5IG5vc2UgdG91Y2hpbmcuIiwibGF5b3V0IjoiY29udGVudCIsInNwZWFrZXJfbm90ZXMiOiJLZWVwIGl0IGxpZ2h0IGFuZCBlbmdhZ2luZyBieSBzaGFyaW5nIGFzdG9uaXNoaW5nIGZhY3RzLiJ9LHsidGl0bGUiOiJDb25jbHVzaW9uIiwiYm9keSI6IuKAoiBDYXRzIGFyZSBtb3JlIHRoYW4ganVzdCBwZXRz4oCUdGhleeKAmXJlIGNvbXBhbmlvbnMgYW5kIHNvdXJjZXMgb2Ygam95Llxu4oCiIEVtYnJhY2UgdGhlIGNoYXJtIGFuZCBxdWlya3Mgb2YgdGhlc2UgZmVsaW5lIGZyaWVuZHMuIiwibGF5b3V0IjoiY29udGVudCIsInNwZWFrZXJfbm90ZXMiOiJMZWF2ZSB0aGUgYXVkaWVuY2Ugc21pbGluZyBhbmQgY29uc2lkZXJpbmcgYWRvcHRpbmcgYSBjYXQhIn1dLCJzdWJ0aXRsZSI6IkV4cGxvcmluZyB0aGUgTGl2ZXMgYW5kIExvdmVzIG9mIEZlbGluZXMiLCJjb2xvcl90aGVtZSI6IkNyaW1zb24gQWNjZW50In2UjAdjYWxsX2lklIwdY2FsbF92OWxVbEJNUVhLMWNyNU0ycGYwQTNrN1mUjARuYW1llIwcZ2VuZXJhdGVfcHJlc2VudGF0aW9uX3NsaWRlc5RoDWgOjAJpZJRoE4wJbmFtZXNwYWNllE5oFGgVdYwSX19weWRhbnRpY19leHRyYV9flH2UjAtyZXNwb25zZV9pZJSMN3Jlc3BfMDIyNzc1ZDI1YWNhOGFhYTAxNmEzMDJjMDA3OWM4ODE5M2JmY2U2NDM0N2Y4NTAwMDeUc4wXX19weWRhbnRpY19maWVsZHNfc2V0X1+Uj5QoaChoFGgeaCBoImgNaCSQjBRfX3B5ZGFudGljX3ByaXZhdGVfX5ROdWKMBHRleHSUTowOcHJvdGVjdGVkX2RhdGGUTowDdXJplE6MCm1lZGlhX3R5cGWUTowHbWVzc2FnZZROjAplcnJvcl9jb2RllE6MDWVycm9yX2RldGFpbHOUTowNdXNhZ2VfZGV0YWlsc5ROaCBoIWgiaCNoHmgfjAlleGNlcHRpb26UTowGcmVzdWx0lE6MBWl0ZW1zlE6MB2ZpbGVfaWSUTowPdmVjdG9yX3N0b3JlX2lklE6MBmlucHV0c5ROjAdvdXRwdXRzlE6MCGltYWdlX2lklE6MCGNvbW1hbmRzlE6MCnRpbWVvdXRfbXOUTowRbWF4X291dHB1dF9sZW5ndGiUTmgUTowGc3Rkb3V0lE6MBnN0ZGVycpROjAlleGl0X2NvZGWUTowJdGltZWRfb3V0lE6MCXRvb2xfbmFtZZROjAtzZXJ2ZXJfbmFtZZROjAZvdXRwdXSUTmgkTmgOTowSdXNlcl9pbnB1dF9yZXF1ZXN0lE6MCGFwcHJvdmVklE6MDGNvbnNlbnRfbGlua5ROdWJhjAthdXRob3JfbmFtZZSMD2V4ZWN1dGl2ZV9hZ2VudJSMCm1lc3NhZ2VfaWSUTmgQfZRoFk51Yi4=",
+            "__type__": "agent_framework._types:Message"
+          },
+          {
+            "__pickled__": "gAWVlgQAAAAAAACMFmFnZW50X2ZyYW1ld29yay5fdHlwZXOUjAdNZXNzYWdllJOUKYGUfZQojARyb2xllIwEdG9vbJSMCGNvbnRlbnRzlF2UaACMB0NvbnRlbnSUk5QpgZR9lCiMBHR5cGWUjA9mdW5jdGlvbl9yZXN1bHSUjAthbm5vdGF0aW9uc5ROjBVhZGRpdGlvbmFsX3Byb3BlcnRpZXOUfZQojAVmY19pZJSMNWZjXzAyMjc3NWQyNWFjYThhYWEwMTZhMzAyYzAxNjUyMDgxOTNhYjQwMDZjMTkyYTc2ZDA3lIwGc3RhdHVzlIwJY29tcGxldGVklHWMEnJhd19yZXByZXNlbnRhdGlvbpROjAR0ZXh0lE6MDnByb3RlY3RlZF9kYXRhlE6MA3VyaZROjAptZWRpYV90eXBllE6MB21lc3NhZ2WUTowKZXJyb3JfY29kZZROjA1lcnJvcl9kZXRhaWxzlE6MDXVzYWdlX2RldGFpbHOUTowHY2FsbF9pZJSMHWNhbGxfdjlsVWxCTVFYSzFjcjVNMnBmMEEzazdZlIwEbmFtZZROjAlhcmd1bWVudHOUTowJZXhjZXB0aW9ulE6MBnJlc3VsdJSM9VByZXNlbnRhdGlvbiBzbGlkZXMgJ1RoZSBGYXNjaW5hdGluZyBXb3JsZCBvZiBDYXRzJyBzdWNjZXNzZnVsbHkgZ2VuZXJhdGVkIHdpdGggNSBzbGlkZXMuIFNhZmUgZmlsZSBwYXRoOiBDOlxDVUhLXEVDQVxNU0hLIEFJIEFnZW50IExhYiAoSGFja2F0aG9uKVxhZ2VudC1jdWhrXHRoZV9mYXNjaW5hdGluZ193b3JsZF9vZl9jYXRzX3NsaWRlcy5wcHR4LiBEZXNpZ24gY29uZmlndXJhdGlvbiB0aGVtZTogQ3JpbXNvbiBBY2NlbnQulIwFaXRlbXOUXZRoCimBlH2UKGgNaBdoD05oEH2UaBZOaBdoJWgYTmgZTmgaTmgbTmgcTmgdTmgeTmgfTmghTmgiTmgjTmgkTmgmTowHZmlsZV9pZJROjA92ZWN0b3Jfc3RvcmVfaWSUTowGaW5wdXRzlE6MB291dHB1dHOUTowIaW1hZ2VfaWSUTowIY29tbWFuZHOUTowKdGltZW91dF9tc5ROjBFtYXhfb3V0cHV0X2xlbmd0aJROaBROjAZzdGRvdXSUTowGc3RkZXJylE6MCWV4aXRfY29kZZROjAl0aW1lZF9vdXSUTowJdG9vbF9uYW1llE6MC3NlcnZlcl9uYW1llE6MBm91dHB1dJROjAJpZJROjA1mdW5jdGlvbl9jYWxslE6MEnVzZXJfaW5wdXRfcmVxdWVzdJROjAhhcHByb3ZlZJROjAxjb25zZW50X2xpbmuUTnViYWgrTmgsTmgtTmguTmgvTmgwTmgxTmgyTmgUTmgzTmg0Tmg1Tmg2Tmg3Tmg4Tmg5Tmg6Tmg7Tmg8Tmg9Tmg+TnViYYwLYXV0aG9yX25hbWWUjA9leGVjdXRpdmVfYWdlbnSUjAptZXNzYWdlX2lklE5oEH2UaBZOdWIu",
+            "__type__": "agent_framework._types:Message"
+          },
+          {
+            "__pickled__": "gAWVxAQAAAAAAACMFmFnZW50X2ZyYW1ld29yay5fdHlwZXOUjAdNZXNzYWdllJOUKYGUfZQojARyb2xllIwJYXNzaXN0YW50lIwIY29udGVudHOUXZRoAIwHQ29udGVudJSTlCmBlH2UKIwEdHlwZZSMBHRleHSUjAthbm5vdGF0aW9uc5ROjBVhZGRpdGlvbmFsX3Byb3BlcnRpZXOUfZSMEnJhd19yZXByZXNlbnRhdGlvbpSMK29wZW5haS50eXBlcy5yZXNwb25zZXMucmVzcG9uc2Vfb3V0cHV0X3RleHSUjBJSZXNwb25zZU91dHB1dFRleHSUk5QpgZR9lCiMCF9fZGljdF9flH2UKGgPXZRoDlhJAQAAWW91ciBlbmdhZ2luZyBwcmVzZW50YXRpb24gZGVjayBvbiAiVGhlIEZhc2NpbmF0aW5nIFdvcmxkIG9mIENhdHMiIGlzIHJlYWR5IGluICoqUFBUWCBmb3JtYXQqKiEg8J+YugoKLSAqKkZpbGUgUGF0aCoqOiBgQzpcQ1VIS1xFQ0FcTVNISyBBSSBBZ2VudCBMYWIgKEhhY2thdGhvbilcYWdlbnQtY3Voa1x0aGVfZmFzY2luYXRpbmdfd29ybGRfb2ZfY2F0c19zbGlkZXMucHB0eGAKLSAqKlRoZW1lKio6IENyaW1zb24gQWNjZW50Ci0gKipTbGlkZSBDb3VudCoqOiA1IHNsaWRlcwoKTGV0IG1lIGtub3cgaWYgeW91J2QgbGlrZSBhbnkgdXBkYXRlcyBvciBhZGRpdGlvbnMhIPCfkL6UaA2MC291dHB1dF90ZXh0lIwIbG9ncHJvYnOUXZR1jBJfX3B5ZGFudGljX2V4dHJhX1+UfZSMF19fcHlkYW50aWNfZmllbGRzX3NldF9flI+UKGgOaA1oHWgPkIwUX19weWRhbnRpY19wcml2YXRlX1+UTnViaA5oG4wOcHJvdGVjdGVkX2RhdGGUTowDdXJplE6MCm1lZGlhX3R5cGWUTowHbWVzc2FnZZROjAplcnJvcl9jb2RllE6MDWVycm9yX2RldGFpbHOUTowNdXNhZ2VfZGV0YWlsc5ROjAdjYWxsX2lklE6MBG5hbWWUTowJYXJndW1lbnRzlE6MCWV4Y2VwdGlvbpROjAZyZXN1bHSUTowFaXRlbXOUTowHZmlsZV9pZJROjA92ZWN0b3Jfc3RvcmVfaWSUTowGaW5wdXRzlE6MB291dHB1dHOUTowIaW1hZ2VfaWSUTowIY29tbWFuZHOUTowKdGltZW91dF9tc5ROjBFtYXhfb3V0cHV0X2xlbmd0aJROjAZzdGF0dXOUTowGc3Rkb3V0lE6MBnN0ZGVycpROjAlleGl0X2NvZGWUTowJdGltZWRfb3V0lE6MCXRvb2xfbmFtZZROjAtzZXJ2ZXJfbmFtZZROjAZvdXRwdXSUTowCaWSUTowNZnVuY3Rpb25fY2FsbJROjBJ1c2VyX2lucHV0X3JlcXVlc3SUTowIYXBwcm92ZWSUTowMY29uc2VudF9saW5rlE51YmGMC2F1dGhvcl9uYW1llIwPZXhlY3V0aXZlX2FnZW50lIwKbWVzc2FnZV9pZJROaBB9lGgSTnViLg==",
+            "__type__": "agent_framework._types:Message"
+          }
+        ],
+        "agent_session": {
+          "type": "session",
+          "session_id": "3dbd2167-d539-4691-8e59-105615232728",
+          "service_session_id": null,
+          "state": {
+            "in_memory": {
+              "messages": [
+                {
+                  "type": "message",
+                  "role": "user",
+                  "contents": [
+                    {
+                      "type": "text",
+                      "text": "write me a short poem in chinese and let the executive to write it down in a word document ",
+                      "additional_properties": {}
+                    }
+                  ],
+                  "additional_properties": {}
+                },
+                {
+                  "type": "message",
+                  "role": "assistant",
+                  "contents": [
+                    {
+                      "type": "function_call",
+                      "call_id": "call_NkTVIny5In9MXhXxtfiH9C3w",
+                      "name": "generate_word_document",
+                      "arguments": 

@@ -10,6 +10,8 @@ curl -sS -H "Content-Type: application/json" -X POST http://localhost:8088/respo
 # Fallback (no flags matched) branch
 curl -sS -X POST http://localhost:8088/responses -H "Content-Type: application/json" -d '{"input": "Hello, how are you?"}'
 curl -sS -X POST http://localhost:8088/responses -H "Content-Type: application/json" -d '{"input": "Hello, how are you? And what is the weather today? "}'
+curl -sS -X POST http://localhost:8088/responses -H "Content-Type: application/json" -d '{"input": "Hello, what is the time now? "}'
+curl -sS -X POST http://localhost:8088/responses -H "Content-Type: application/json" -d '{"input": "Hello, how to connect to the wifi in campus? Where to park my Tesla? What shuttles can I take to Shaw College? "}'
 
 
 curl -sS -H "Content-Type: application/json" \

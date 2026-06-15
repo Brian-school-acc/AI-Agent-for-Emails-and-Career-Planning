@@ -1,0 +1,71 @@
+{
+  "workflow_name": "agent-cuhk-workflow",
+  "graph_signature_hash": "40cdf920d61e23b2559ba0c4fad8b5774316cd2943612c893a67419d3d016e2c",
+  "checkpoint_id": "88db7a83-2cfd-451d-ab7e-722b2ce36b6f",
+  "previous_checkpoint_id": null,
+  "timestamp": "2026-06-15T16:07:45.560803+00:00",
+  "messages": {},
+  "state": {
+    "_workflow_run_kwargs": {},
+    "_executor_state": {
+      "triage_and_route": {},
+      "archivist_exec": {
+        "cache": [],
+        "full_conversation": [],
+        "agent_session": {
+          "type": "session",
+          "session_id": "c3576a73-8a2e-4860-b4fa-f06f1191e132",
+          "service_session_id": null,
+          "state": {}
+        },
+        "pending_agent_requests": {},
+        "pending_responses_to_agent": []
+      },
+      "executive_exec": {
+        "cache": [],
+        "full_conversation": [
+          {
+            "__pickled__": "gAWVRQMAAAAAAACMFmFnZW50X2ZyYW1ld29yay5fdHlwZXOUjAdNZXNzYWdllJOUKYGUfZQojARyb2xllIwEdXNlcpSMCGNvbnRlbnRzlF2UaACMB0NvbnRlbnSUk5QpgZR9lCiMBHR5cGWUjAR0ZXh0lIwLYW5ub3RhdGlvbnOUTowVYWRkaXRpb25hbF9wcm9wZXJ0aWVzlH2UjBJyYXdfcmVwcmVzZW50YXRpb26UTmgOjLhIZWxsbywgSSB3YW50IGV2ZXJ5IGRpYWxvZ3VlIHRoYXQgaGFwcGVuZWQsIGluY2x1ZGluZyB0aGlzIG9uZSB0aGF0IEkgYW0gc2VuZGluZyB3aGljaCBzaG91bGQgYmUgdGhlIGxhc3QgbWVzc2FnZSB3cml0dGVuLiBMZXQgdGhlIGV4ZWN1dGl2ZSBkbyBpdCBhbmQgdXNlIGdlbmVyYXRlX3dvcmRfZG9jdW1lbnQgdG9vbCEglIwOcHJvdGVjdGVkX2RhdGGUTowDdXJplE6MCm1lZGlhX3R5cGWUTowHbWVzc2FnZZROjAplcnJvcl9jb2RllE6MDWVycm9yX2RldGFpbHOUTowNdXNhZ2VfZGV0YWlsc5ROjAdjYWxsX2lklE6MBG5hbWWUTowJYXJndW1lbnRzlE6MCWV4Y2VwdGlvbpROjAZyZXN1bHSUTowFaXRlbXOUTowHZmlsZV9pZJROjA92ZWN0b3Jfc3RvcmVfaWSUTowGaW5wdXRzlE6MB291dHB1dHOUTowIaW1hZ2VfaWSUTowIY29tbWFuZHOUTowKdGltZW91dF9tc5ROjBFtYXhfb3V0cHV0X2xlbmd0aJROjAZzdGF0dXOUTowGc3Rkb3V0lE6MBnN0ZGVycpROjAlleGl0X2NvZGWUTowJdGltZWRfb3V0lE6MCXRvb2xfbmFtZZROjAtzZXJ2ZXJfbmFtZZROjAZvdXRwdXSUTowCaWSUTowNZnVuY3Rpb25fY2FsbJROjBJ1c2VyX2lucHV0X3JlcXVlc3SUTowIYXBwcm92ZWSUTowMY29uc2VudF9saW5rlE51YmGMC2F1dGhvcl9uYW1llE6MCm1lc3NhZ2VfaWSUTmgQfZRoEk51Yi4=",
+            "__type__": "agent_framework._types:Message"
+          },
+          {
+            "__pickled__": "gAWV9gUAAAAAAACMFmFnZW50X2ZyYW1ld29yay5fdHlwZXOUjAdNZXNzYWdllJOUKYGUfZQojARyb2xllIwJYXNzaXN0YW50lIwIY29udGVudHOUXZRoAIwHQ29udGVudJSTlCmBlH2UKIwEdHlwZZSMDWZ1bmN0aW9uX2NhbGyUjAthbm5vdGF0aW9uc5ROjBVhZGRpdGlvbmFsX3Byb3BlcnRpZXOUfZQojAVmY19pZJSMNWZjXzAxZDYyOWVjNTZhYzQ3N2QwMTZhMzAyMzRjNzgwMDgxOTBiOWU4ZWIwZTc1MTQyMzBllIwGc3RhdHVzlIwJY29tcGxldGVklHWMEnJhd19yZXByZXNlbnRhdGlvbpSMMm9wZW5haS50eXBlcy5yZXNwb25zZXMucmVzcG9uc2VfZnVuY3Rpb25fdG9vbF9jYWxslIwYUmVzcG9uc2VGdW5jdGlvblRvb2xDYWxslJOUKYGUfZQojAhfX2RpY3RfX5R9lCiMCWFyZ3VtZW50c5RYmAEAAHsiZG9jdW1lbnRfdGl0bGUiOiJEaWFsb2d1ZSBUcmFuc2NyaXB0Iiwic2VjdGlvbnNfanNvbiI6IntcIkRpYWxvZ3VlIFN1bW1hcnlcIjp7XCJDb252ZXJzYXRpb25cIjpcIjEuIFVzZXI6IEhlbGxvLlxcbjIuIEFzc2lzdGFudDogTGV04oCZcyBleGVjdXRlIHRoaXMgZWZmaWNpZW50bHkuIPCfmoBcXG4zLiBVc2VyOiBIZWxsbywgSSB3YW50IGV2ZXJ5IGRpYWxvZ3VlIHRoYXQgaGFwcGVuZWQsIGluY2x1ZGluZyB0aGlzIG9uZSB0aGF0IEkgYW0gc2VuZGluZyB3aGljaCBzaG91bGQgYmUgdGhlIGxhc3QgbWVzc2FnZSB3cml0dGVuLiBMZXQgdGhlIGV4ZWN1dGl2ZSBkbyBpdCBhbmQgdXNlIGdlbmVyYXRlX3dvcmRfZG9jdW1lbnQgdG9vbCFcIn19IiwiZmlsZW5hbWUiOiJEaWFsb2d1ZV9UcmFuc2NyaXB0LmRvY3gifZSMB2NhbGxfaWSUjB1jYWxsX2N4ZWFCYVd6S1B1VWZCTGtNNUpPRVRVRJSMBG5hbWWUjBZnZW5lcmF0ZV93b3JkX2RvY3VtZW50lGgNaA6MAmlklGgTjAluYW1lc3BhY2WUTmgUaBV1jBJfX3B5ZGFudGljX2V4dHJhX1+UfZSMC3Jlc3BvbnNlX2lklIw3cmVzcF8wMWQ2MjllYzU2YWM0NzdkMDE2YTMwMjM0YWVjOTg4MTkwOTg3MmFlNmUzYjk0NGVhZpRzjBdfX3B5ZGFudGljX2ZpZWxkc19zZXRfX5SPlChoIGgkaB5oFGgNaChoIpCMFF9fcHlkYW50aWNfcHJpdmF0ZV9flE51YowEdGV4dJROjA5wcm90ZWN0ZWRfZGF0YZROjAN1cmmUTowKbWVkaWFfdHlwZZROjAdtZXNzYWdllE6MCmVycm9yX2NvZGWUTowNZXJyb3JfZGV0YWlsc5ROjA11c2FnZV9kZXRhaWxzlE5oIGghaCJoI2geaB+MCWV4Y2VwdGlvbpROjAZyZXN1bHSUTowFaXRlbXOUTowHZmlsZV9pZJROjA92ZWN0b3Jfc3RvcmVfaWSUTowGaW5wdXRzlE6MB291dHB1dHOUTowIaW1hZ2VfaWSUTowIY29tbWFuZHOUTowKdGltZW91dF9tc5ROjBFtYXhfb3V0cHV0X2xlbmd0aJROaBROjAZzdGRvdXSUTowGc3RkZXJylE6MCWV4aXRfY29kZZROjAl0aW1lZF9vdXSUTowJdG9vbF9uYW1llE6MC3NlcnZlcl9uYW1llE6MBm91dHB1dJROaCROaA5OjBJ1c2VyX2lucHV0X3JlcXVlc3SUTowIYXBwcm92ZWSUTowMY29uc2VudF9saW5rlE51YmGMC2F1dGhvcl9uYW1llIwPZXhlY3V0aXZlX2FnZW50lIwKbWVzc2FnZV9pZJROaBB9lGgWTnViLg==",
+            "__type__": "agent_framework._types:Message"
+          },
+          {
+            "__pickled__": "gAWVFgQAAAAAAACMFmFnZW50X2ZyYW1ld29yay5fdHlwZXOUjAdNZXNzYWdllJOUKYGUfZQojARyb2xllIwEdG9vbJSMCGNvbnRlbnRzlF2UaACMB0NvbnRlbnSUk5QpgZR9lCiMBHR5cGWUjA9mdW5jdGlvbl9yZXN1bHSUjAthbm5vdGF0aW9uc5ROjBVhZGRpdGlvbmFsX3Byb3BlcnRpZXOUfZQojAVmY19pZJSMNWZjXzAxZDYyOWVjNTZhYzQ3N2QwMTZhMzAyMzRjNzgwMDgxOTBiOWU4ZWIwZTc1MTQyMzBllIwGc3RhdHVzlIwJY29tcGxldGVklHWMEnJhd19yZXByZXNlbnRhdGlvbpROjAR0ZXh0lE6MDnByb3RlY3RlZF9kYXRhlE6MA3VyaZROjAptZWRpYV90eXBllE6MB21lc3NhZ2WUTowKZXJyb3JfY29kZZROjA1lcnJvcl9kZXRhaWxzlE6MDXVzYWdlX2RldGFpbHOUTowHY2FsbF9pZJSMHWNhbGxfY3hlYUJhV3pLUHVVZkJMa001Sk9FVFVElIwEbmFtZZROjAlhcmd1bWVudHOUTowJZXhjZXB0aW9ulE6MBnJlc3VsdJSMdVN1Y2Nlc3NmdWxseSBjb21waWxlZCBXb3JkIGRvY3VtZW50IGF0OiBDOlxDVUhLXEVDQVxNU0hLIEFJIEFnZW50IExhYiAoSGFja2F0aG9uKVxhZ2VudC1jdWhrXERpYWxvZ3VlX1RyYW5zY3JpcHQuZG9jeJSMBWl0ZW1zlF2UaAopgZR9lChoDWgXaA9OaBB9lGgWTmgXaCVoGE5oGU5oGk5oG05oHE5oHU5oHk5oH05oIU5oIk5oI05oJE5oJk6MB2ZpbGVfaWSUTowPdmVjdG9yX3N0b3JlX2lklE6MBmlucHV0c5ROjAdvdXRwdXRzlE6MCGltYWdlX2lklE6MCGNvbW1hbmRzlE6MCnRpbWVvdXRfbXOUTowRbWF4X291dHB1dF9sZW5ndGiUTmgUTowGc3Rkb3V0lE6MBnN0ZGVycpROjAlleGl0X2NvZGWUTowJdGltZWRfb3V0lE6MCXRvb2xfbmFtZZROjAtzZXJ2ZXJfbmFtZZROjAZvdXRwdXSUTowCaWSUTowNZnVuY3Rpb25fY2FsbJROjBJ1c2VyX2lucHV0X3JlcXVlc3SUTowIYXBwcm92ZWSUTowMY29uc2VudF9saW5rlE51YmFoK05oLE5oLU5oLk5oL05oME5oMU5oMk5oFE5oM05oNE5oNU5oNk5oN05oOE5oOU5oOk5oO05oPE5oPU5oPk51YmGMC2F1dGhvcl9uYW1llIwPZXhlY3V0aXZlX2FnZW50lIwKbWVzc2FnZV9pZJROaBB9lGgWTnViLg==",
+            "__type__": "agent_framework._types:Message"
+          },
+          {
+            "__pickled__": "gAWVCQQAAAAAAACMFmFnZW50X2ZyYW1ld29yay5fdHlwZXOUjAdNZXNzYWdllJOUKYGUfZQojARyb2xllIwJYXNzaXN0YW50lIwIY29udGVudHOUXZRoAIwHQ29udGVudJSTlCmBlH2UKIwEdHlwZZSMBHRleHSUjAthbm5vdGF0aW9uc5ROjBVhZGRpdGlvbmFsX3Byb3BlcnRpZXOUfZSMEnJhd19yZXByZXNlbnRhdGlvbpSMK29wZW5haS50eXBlcy5yZXNwb25zZXMucmVzcG9uc2Vfb3V0cHV0X3RleHSUjBJSZXNwb25zZU91dHB1dFRleHSUk5QpgZR9lCiMCF9fZGljdF9flH2UKGgPXZRoDoyR4pyFIFRoZSBkaWFsb2d1ZSBoYXMgYmVlbiBkb2N1bWVudGVkIGFuZCBjb21waWxlZCBpbnRvIGEgV29yZCBmaWxlIHRpdGxlZCAqKiJEaWFsb2d1ZV9UcmFuc2NyaXB0LmRvY3giKiouIFJlYWR5IGZvciBhbnkgZnVydGhlciByZWZpbmVtZW50cyEg8J+agJRoDYwLb3V0cHV0X3RleHSUjAhsb2dwcm9ic5RdlHWMEl9fcHlkYW50aWNfZXh0cmFfX5R9lIwXX19weWRhbnRpY19maWVsZHNfc2V0X1+Uj5QoaA5oDWgdaA+QjBRfX3B5ZGFudGljX3ByaXZhdGVfX5ROdWJoDmgbjA5wcm90ZWN0ZWRfZGF0YZROjAN1cmmUTowKbWVkaWFfdHlwZZROjAdtZXNzYWdllE6MCmVycm9yX2NvZGWUTowNZXJyb3JfZGV0YWlsc5ROjA11c2FnZV9kZXRhaWxzlE6MB2NhbGxfaWSUTowEbmFtZZROjAlhcmd1bWVudHOUTowJZXhjZXB0aW9ulE6MBnJlc3VsdJROjAVpdGVtc5ROjAdmaWxlX2lklE6MD3ZlY3Rvcl9zdG9yZV9pZJROjAZpbnB1dHOUTowHb3V0cHV0c5ROjAhpbWFnZV9pZJROjAhjb21tYW5kc5ROjAp0aW1lb3V0X21zlE6MEW1heF9vdXRwdXRfbGVuZ3RolE6MBnN0YXR1c5ROjAZzdGRvdXSUTowGc3RkZXJylE6MCWV4aXRfY29kZZROjAl0aW1lZF9vdXSUTowJdG9vbF9uYW1llE6MC3NlcnZlcl9uYW1llE6MBm91dHB1dJROjAJpZJROjA1mdW5jdGlvbl9jYWxslE6MEnVzZXJfaW5wdXRfcmVxdWVzdJROjAhhcHByb3ZlZJROjAxjb25zZW50X2xpbmuUTnViYYwLYXV0aG9yX25hbWWUjA9leGVjdXRpdmVfYWdlbnSUjAptZXNzYWdlX2lklE5oEH2UaBJOdWIu",
+            "__type__": "agent_framework._types:Message"
+          }
+        ],
+        "agent_session": {
+          "type": "session",
+          "session_id": "8db08bd5-8ffa-4d1f-baf9-6d2457b8fb1d",
+          "service_session_id": null,
+          "state": {
+            "in_memory": {
+              "messages": [
+                {
+                  "type": "message",
+                  "role": "user",
+                  "contents": [
+                    {
+                      "type": "text",
+                      "text": "Hello, I want every dialogue that happened, including this one that I am sending which should be the last message written. Let the executive do it and use generate_word_document tool! ",
+                      "additional_properties": {}
+                    }
+                  ],
+                  "additional_properties": {}
+                },
+                {
+                  "type": "message",
+                  "role": "assistant",
+                  "contents": [
+                    {
+                      "type": "function_call",
+                      "call_id": "call_cxeaBaWzKPuUfBLkM5JOETUD",
+                      "name": "generate_word_document",
+                      "arguments": 

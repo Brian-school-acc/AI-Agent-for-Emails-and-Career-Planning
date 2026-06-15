@@ -1,0 +1,322 @@
+{
+  "workflow_name": "agent-cuhk-workflow",
+  "graph_signature_hash": "40cdf920d61e23b2559ba0c4fad8b5774316cd2943612c893a67419d3d016e2c",
+  "checkpoint_id": "3ad0fea2-ec7d-4180-98e9-36de3c9020f6",
+  "previous_checkpoint_id": "3a81a495-c6b4-4071-975d-61dfe8045bba",
+  "timestamp": "2026-06-15T15:33:50.975449+00:00",
+  "messages": {},
+  "state": {
+    "_workflow_run_kwargs": {},
+    "_executor_state": {
+      "triage_and_route": {},
+      "archivist_exec": {
+        "cache": [],
+        "full_conversation": [],
+        "agent_session": {
+          "type": "session",
+          "session_id": "4c74775f-2a1d-4628-84b3-305878eb422f",
+          "service_session_id": null,
+          "state": {}
+        },
+        "pending_agent_requests": {},
+        "pending_responses_to_agent": []
+      },
+      "executive_exec": {
+        "cache": [],
+        "full_conversation": [],
+        "agent_session": {
+          "type": "session",
+          "session_id": "f50b80e7-a51f-4117-a7fa-ec7703eca410",
+          "service_session_id": null,
+          "state": {}
+        },
+        "pending_agent_requests": {},
+        "pending_responses_to_agent": []
+      },
+      "career_coach_exec": {
+        "cache": [],
+        "full_conversation": [],
+        "agent_session": {
+          "type": "session",
+          "session_id": "1b775f40-530b-43d7-96ff-db5f18d95896",
+          "service_session_id": null,
+          "state": {}
+        },
+        "pending_agent_requests": {},
+        "pending_responses_to_agent": []
+      },
+      "front_desk_exec": {
+        "cache": [],
+        "full_conversation": [
+          {
+            "__pickled__": "gAWV/AIAAAAAAACMFmFnZW50X2ZyYW1ld29yay5fdHlwZXOUjAdNZXNzYWdllJOUKYGUfZQojARyb2xllIwEdXNlcpSMCGNvbnRlbnRzlF2UaACMB0NvbnRlbnSUk5QpgZR9lCiMBHR5cGWUjAR0ZXh0lIwLYW5ub3RhdGlvbnOUTowVYWRkaXRpb25hbF9wcm9wZXJ0aWVzlH2UjBJyYXdfcmVwcmVzZW50YXRpb26UTmgOjG9IZWxsbywgaG93IHRvIGNvbm5lY3QgdG8gdGhlIHdpZmkgaW4gY2FtcHVzPyBXaGVyZSB0byBwYXJrIG15IFRlc2xhPyBXaGF0IHNodXR0bGVzIGNhbiBJIHRha2UgdG8gU2hhdyBDb2xsZWdlPyCUjA5wcm90ZWN0ZWRfZGF0YZROjAN1cmmUTowKbWVkaWFfdHlwZZROjAdtZXNzYWdllE6MCmVycm9yX2NvZGWUTowNZXJyb3JfZGV0YWlsc5ROjA11c2FnZV9kZXRhaWxzlE6MB2NhbGxfaWSUTowEbmFtZZROjAlhcmd1bWVudHOUTowJZXhjZXB0aW9ulE6MBnJlc3VsdJROjAVpdGVtc5ROjAdmaWxlX2lklE6MD3ZlY3Rvcl9zdG9yZV9pZJROjAZpbnB1dHOUTowHb3V0cHV0c5ROjAhpbWFnZV9pZJROjAhjb21tYW5kc5ROjAp0aW1lb3V0X21zlE6MEW1heF9vdXRwdXRfbGVuZ3RolE6MBnN0YXR1c5ROjAZzdGRvdXSUTowGc3RkZXJylE6MCWV4aXRfY29kZZROjAl0aW1lZF9vdXSUTowJdG9vbF9uYW1llE6MC3NlcnZlcl9uYW1llE6MBm91dHB1dJROjAJpZJROjA1mdW5jdGlvbl9jYWxslE6MEnVzZXJfaW5wdXRfcmVxdWVzdJROjAhhcHByb3ZlZJROjAxjb25zZW50X2xpbmuUTnViYYwLYXV0aG9yX25hbWWUTowKbWVzc2FnZV9pZJROaBB9lGgSTnViLg==",
+            "__type__": "agent_framework._types:Message"
+          },
+          {
+            "__pickled__": "gAWVZQQAAAAAAACMFmFnZW50X2ZyYW1ld29yay5fdHlwZXOUjAdNZXNzYWdllJOUKYGUfZQojARyb2xllIwJYXNzaXN0YW50lIwIY29udGVudHOUXZRoAIwHQ29udGVudJSTlCmBlH2UKIwEdHlwZZSMDWZ1bmN0aW9uX2NhbGyUjAthbm5vdGF0aW9uc5ROjBVhZGRpdGlvbmFsX3Byb3BlcnRpZXOUfZQojAVmY19pZJSMNWZjXzA2Y2YyNzEzNGJkZjVhN2QwMTZhMzAxYjRmOTU1MDgxOTZhYjE5M2Y1NDQ1NmUxY2UylIwGc3RhdHVzlIwJY29tcGxldGVklHWMEnJhd19yZXByZXNlbnRhdGlvbpSMMm9wZW5haS50eXBlcy5yZXNwb25zZXMucmVzcG9uc2VfZnVuY3Rpb25fdG9vbF9jYWxslIwYUmVzcG9uc2VGdW5jdGlvblRvb2xDYWxslJOUKYGUfZQojAhfX2RpY3RfX5R9lCiMCWFyZ3VtZW50c5SMEHsidG9waWMiOiJ3aWZpIn2UjAdjYWxsX2lklIwdY2FsbF84eDFuU2RrRWY5a1JLaUhJU0tjaGxSTWmUjARuYW1llIwPZ2V0X2dlbmVyYWxfZmFxlGgNaA6MAmlklGgTjAluYW1lc3BhY2WUTmgUaBV1jBJfX3B5ZGFudGljX2V4dHJhX1+UfZSMC3Jlc3BvbnNlX2lklIw3cmVzcF8wNmNmMjcxMzRiZGY1YTdkMDE2YTMwMWI0Yzc5NWM4MTk2ODg2ODdmZTAzYTAyMmY3ZZRzjBdfX3B5ZGFudGljX2ZpZWxkc19zZXRfX5SPlChoKGgiaB5oIGgkaBRoDZCMFF9fcHlkYW50aWNfcHJpdmF0ZV9flE51YowEdGV4dJROjA5wcm90ZWN0ZWRfZGF0YZROjAN1cmmUTowKbWVkaWFfdHlwZZROjAdtZXNzYWdllE6MCmVycm9yX2NvZGWUTowNZXJyb3JfZGV0YWlsc5ROjA11c2FnZV9kZXRhaWxzlE5oIGghaCJoI2geaB+MCWV4Y2VwdGlvbpROjAZyZXN1bHSUTowFaXRlbXOUTowHZmlsZV9pZJROjA92ZWN0b3Jfc3RvcmVfaWSUTowGaW5wdXRzlE6MB291dHB1dHOUTowIaW1hZ2VfaWSUTowIY29tbWFuZHOUTowKdGltZW91dF9tc5ROjBFtYXhfb3V0cHV0X2xlbmd0aJROaBROjAZzdGRvdXSUTowGc3RkZXJylE6MCWV4aXRfY29kZZROjAl0aW1lZF9vdXSUTowJdG9vbF9uYW1llE6MC3NlcnZlcl9uYW1llE6MBm91dHB1dJROaCROaA5OjBJ1c2VyX2lucHV0X3JlcXVlc3SUTowIYXBwcm92ZWSUTowMY29uc2VudF9saW5rlE51YmGMC2F1dGhvcl9uYW1llIwQZnJvbnRfZGVza19hZ2VudJSMCm1lc3NhZ2VfaWSUTmgQfZRoFk51Yi4=",
+            "__type__": "agent_framework._types:Message"
+          },
+          {
+            "__pickled__": "gAWVeQQAAAAAAACMFmFnZW50X2ZyYW1ld29yay5fdHlwZXOUjAdNZXNzYWdllJOUKYGUfZQojARyb2xllIwEdG9vbJSMCGNvbnRlbnRzlF2UaACMB0NvbnRlbnSUk5QpgZR9lCiMBHR5cGWUjA9mdW5jdGlvbl9yZXN1bHSUjAthbm5vdGF0aW9uc5ROjBVhZGRpdGlvbmFsX3Byb3BlcnRpZXOUfZQojAVmY19pZJSMNWZjXzA2Y2YyNzEzNGJkZjVhN2QwMTZhMzAxYjRmOTU1MDgxOTZhYjE5M2Y1NDQ1NmUxY2UylIwGc3RhdHVzlIwJY29tcGxldGVklHWMEnJhd19yZXByZXNlbnRhdGlvbpROjAR0ZXh0lE6MDnByb3RlY3RlZF9kYXRhlE6MA3VyaZROjAptZWRpYV90eXBllE6MB21lc3NhZ2WUTowKZXJyb3JfY29kZZROjA1lcnJvcl9kZXRhaWxzlE6MDXVzYWdlX2RldGFpbHOUTowHY2FsbF9pZJSMHWNhbGxfOHgxblNka0VmOWtSS2lISVNLY2hsUk1plIwEbmFtZZROjAlhcmd1bWVudHOUTowJZXhjZXB0aW9ulE6MBnJlc3VsdJSM11RvIGNvbm5lY3QgdG8gdGhlIGNhbXB1cyBXaUZpLCBzZWxlY3QgJ0NVSEsxeCcgKG9yICdXaUZpIENVSEsxeCcpLiBTdHVkZW50cywgc3RhZmYsIGFuZCByZWdpc3RlcmVkIGd1ZXN0cyBjYW4gbG9nIGluIHdpdGggdGhlaXIgT25lUGFzcyBjcmVkZW50aWFscy4gQ292ZXJhZ2UgaW5jbHVkZXMgbW9zdCBhY2FkZW1pYyBidWlsZGluZ3MsIGxpYnJhcmllcywgYW5kIGhvc3RlbHMulIwFaXRlbXOUXZRoCimBlH2UKGgNaBdoD05oEH2UaBZOaBdoJWgYTmgZTmgaTmgbTmgcTmgdTmgeTmgfTmghTmgiTmgjTmgkTmgmTowHZmlsZV9pZJROjA92ZWN0b3Jfc3RvcmVfaWSUTowGaW5wdXRzlE6MB291dHB1dHOUTowIaW1hZ2VfaWSUTowIY29tbWFuZHOUTowKdGltZW91dF9tc5ROjBFtYXhfb3V0cHV0X2xlbmd0aJROaBROjAZzdGRvdXSUTowGc3RkZXJylE6MCWV4aXRfY29kZZROjAl0aW1lZF9vdXSUTowJdG9vbF9uYW1llE6MC3NlcnZlcl9uYW1llE6MBm91dHB1dJROjAJpZJROjA1mdW5jdGlvbl9jYWxslE6MEnVzZXJfaW5wdXRfcmVxdWVzdJROjAhhcHByb3ZlZJROjAxjb25zZW50X2xpbmuUTnViYWgrTmgsTmgtTmguTmgvTmgwTmgxTmgyTmgUTmgzTmg0Tmg1Tmg2Tmg3Tmg4Tmg5Tmg6Tmg7Tmg8Tmg9Tmg+TnViYYwLYXV0aG9yX25hbWWUjBBmcm9udF9kZXNrX2FnZW50lIwKbWVzc2FnZV9pZJROaBB9lGgWTnViLg==",
+            "__type__": "agent_framework._types:Message"
+          },
+          {
+            "__pickled__": "gAWVaAQAAAAAAACMFmFnZW50X2ZyYW1ld29yay5fdHlwZXOUjAdNZXNzYWdllJOUKYGUfZQojARyb2xllIwJYXNzaXN0YW50lIwIY29udGVudHOUXZRoAIwHQ29udGVudJSTlCmBlH2UKIwEdHlwZZSMDWZ1bmN0aW9uX2NhbGyUjAthbm5vdGF0aW9uc5ROjBVhZGRpdGlvbmFsX3Byb3BlcnRpZXOUfZQojAVmY19pZJSMNWZjXzA2Y2YyNzEzNGJkZjVhN2QwMTZhMzAxYjUyNDAwODgxOTZhMGRhZmU4M2VkYWQwMDhmlIwGc3RhdHVzlIwJY29tcGxldGVklHWMEnJhd19yZXByZXNlbnRhdGlvbpSMMm9wZW5haS50eXBlcy5yZXNwb25zZXMucmVzcG9uc2VfZnVuY3Rpb25fdG9vbF9jYWxslIwYUmVzcG9uc2VGdW5jdGlvblRvb2xDYWxslJOUKYGUfZQojAhfX2RpY3RfX5R9lCiMCWFyZ3VtZW50c5SME3sidG9waWMiOiJwYXJraW5nIn2UjAdjYWxsX2lklIwdY2FsbF9HSmV4WENPUFBYTGhFcGNSUGpLVGcyaFmUjARuYW1llIwPZ2V0X2dlbmVyYWxfZmFxlGgNaA6MAmlklGgTjAluYW1lc3BhY2WUTmgUaBV1jBJfX3B5ZGFudGljX2V4dHJhX1+UfZSMC3Jlc3BvbnNlX2lklIw3cmVzcF8wNmNmMjcxMzRiZGY1YTdkMDE2YTMwMWI1MDZiODQ4MTk2YWI0NmFlZTJkMzZiNzZkMZRzjBdfX3B5ZGFudGljX2ZpZWxkc19zZXRfX5SPlChoKGgiaB5oIGgkaBRoDZCMFF9fcHlkYW50aWNfcHJpdmF0ZV9flE51YowEdGV4dJROjA5wcm90ZWN0ZWRfZGF0YZROjAN1cmmUTowKbWVkaWFfdHlwZZROjAdtZXNzYWdllE6MCmVycm9yX2NvZGWUTowNZXJyb3JfZGV0YWlsc5ROjA11c2FnZV9kZXRhaWxzlE5oIGghaCJoI2geaB+MCWV4Y2VwdGlvbpROjAZyZXN1bHSUTowFaXRlbXOUTowHZmlsZV9pZJROjA92ZWN0b3Jfc3RvcmVfaWSUTowGaW5wdXRzlE6MB291dHB1dHOUTowIaW1hZ2VfaWSUTowIY29tbWFuZHOUTowKdGltZW91dF9tc5ROjBFtYXhfb3V0cHV0X2xlbmd0aJROaBROjAZzdGRvdXSUTowGc3RkZXJylE6MCWV4aXRfY29kZZROjAl0aW1lZF9vdXSUTowJdG9vbF9uYW1llE6MC3NlcnZlcl9uYW1llE6MBm91dHB1dJROaCROaA5OjBJ1c2VyX2lucHV0X3JlcXVlc3SUTowIYXBwcm92ZWSUTowMY29uc2VudF9saW5rlE51YmGMC2F1dGhvcl9uYW1llIwQZnJvbnRfZGVza19hZ2VudJSMCm1lc3NhZ2VfaWSUTmgQfZRoFk51Yi4=",
+            "__type__": "agent_framework._types:Message"
+          },
+          {
+            "__pickled__": "gAWVcQQAAAAAAACMFmFnZW50X2ZyYW1ld29yay5fdHlwZXOUjAdNZXNzYWdllJOUKYGUfZQojARyb2xllIwEdG9vbJSMCGNvbnRlbnRzlF2UaACMB0NvbnRlbnSUk5QpgZR9lCiMBHR5cGWUjA9mdW5jdGlvbl9yZXN1bHSUjAthbm5vdGF0aW9uc5ROjBVhZGRpdGlvbmFsX3Byb3BlcnRpZXOUfZQojAVmY19pZJSMNWZjXzA2Y2YyNzEzNGJkZjVhN2QwMTZhMzAxYjUyNDAwODgxOTZhMGRhZmU4M2VkYWQwMDhmlIwGc3RhdHVzlIwJY29tcGxldGVklHWMEnJhd19yZXByZXNlbnRhdGlvbpROjAR0ZXh0lE6MDnByb3RlY3RlZF9kYXRhlE6MA3VyaZROjAptZWRpYV90eXBllE6MB21lc3NhZ2WUTowKZXJyb3JfY29kZZROjA1lcnJvcl9kZXRhaWxzlE6MDXVzYWdlX2RldGFpbHOUTowHY2FsbF9pZJSMHWNhbGxfR0pleFhDT1BQWExoRXBjUlBqS1RnMmhZlIwEbmFtZZROjAlhcmd1bWVudHOUTowJZXhjZXB0aW9ulE6MBnJlc3VsdJSMz1Zpc2l0b3IgcGFya2luZyBpcyBhdmFpbGFibGUgYXQgb3BlbiBhcmVhcyBsaWtlIHRoZSBmcm9udCBvZiBXaWxsaWFtIE0uVy4gTW9uZyBFbmdpbmVlcmluZyBCdWlsZGluZyBhbmQgbmVhciBVbml2ZXJzaXR5IFN0YXRpb24gRXhpdCBELiBQYXJraW5nIGZlZXMgYW5kIHJlZ3VsYXRpb25zIGFyZSBwb3N0ZWQgb24gdGhlIFNlY3VyaXR5IE9mZmljZSB3ZWJzaXRlLpSMBWl0ZW1zlF2UaAopgZR9lChoDWgXaA9OaBB9lGgWTmgXaCVoGE5oGU5oGk5oG05oHE5oHU5oHk5oH05oIU5oIk5oI05oJE5oJk6MB2ZpbGVfaWSUTowPdmVjdG9yX3N0b3JlX2lklE6MBmlucHV0c5ROjAdvdXRwdXRzlE6MCGltYWdlX2lklE6MCGNvbW1hbmRzlE6MCnRpbWVvdXRfbXOUTowRbWF4X291dHB1dF9sZW5ndGiUTmgUTowGc3Rkb3V0lE6MBnN0ZGVycpROjAlleGl0X2NvZGWUTowJdGltZWRfb3V0lE6MCXRvb2xfbmFtZZROjAtzZXJ2ZXJfbmFtZZROjAZvdXRwdXSUTowCaWSUTowNZnVuY3Rpb25fY2FsbJROjBJ1c2VyX2lucHV0X3JlcXVlc3SUTowIYXBwcm92ZWSUTowMY29uc2VudF9saW5rlE51YmFoK05oLE5oLU5oLk5oL05oME5oMU5oMk5oFE5oM05oNE5oNU5oNk5oN05oOE5oOU5oOk5oO05oPE5oPU5oPk51YmGMC2F1dGhvcl9uYW1llIwQZnJvbnRfZGVza19hZ2VudJSMCm1lc3NhZ2VfaWSUTmgQfZRoFk51Yi4=",
+            "__type__": "agent_framework._types:Message"
+          },
+          {
+            "__pickled__": "gAWVaAQAAAAAAACMFmFnZW50X2ZyYW1ld29yay5fdHlwZXOUjAdNZXNzYWdllJOUKYGUfZQojARyb2xllIwJYXNzaXN0YW50lIwIY29udGVudHOUXZRoAIwHQ29udGVudJSTlCmBlH2UKIwEdHlwZZSMDWZ1bmN0aW9uX2NhbGyUjAthbm5vdGF0aW9uc5ROjBVhZGRpdGlvbmFsX3Byb3BlcnRpZXOUfZQojAVmY19pZJSMNWZjXzA2Y2YyNzEzNGJkZjVhN2QwMTZhMzAxYjU3ZGIxYzgxOTZhZTMyZTAwZmYwYWM5NTQ1lIwGc3RhdHVzlIwJY29tcGxldGVklHWMEnJhd19yZXByZXNlbnRhdGlvbpSMMm9wZW5haS50eXBlcy5yZXNwb25zZXMucmVzcG9uc2VfZnVuY3Rpb25fdG9vbF9jYWxslIwYUmVzcG9uc2VGdW5jdGlvblRvb2xDYWxslJOUKYGUfZQojAhfX2RpY3RfX5R9lCiMCWFyZ3VtZW50c5SME3sidG9waWMiOiJzaHV0dGxlIn2UjAdjYWxsX2lklIwdY2FsbF9tWnBOWXpmczhhemZCWklXTlB0Uk1JMmSUjARuYW1llIwPZ2V0X2dlbmVyYWxfZmFxlGgNaA6MAmlklGgTjAluYW1lc3BhY2WUTmgUaBV1jBJfX3B5ZGFudGljX2V4dHJhX1+UfZSMC3Jlc3BvbnNlX2lklIw3cmVzcF8wNmNmMjcxMzRiZGY1YTdkMDE2YTMwMWI1MzE1MWM4MTk2YjQxMDUxNjlkZDUwOGM4ZZRzjBdfX3B5ZGFudGljX2ZpZWxkc19zZXRfX5SPlChoKGgiaB5oIGgkaBRoDZCMFF9fcHlkYW50aWNfcHJpdmF0ZV9flE51YowEdGV4dJROjA5wcm90ZWN0ZWRfZGF0YZROjAN1cmmUTowKbWVkaWFfdHlwZZROjAdtZXNzYWdllE6MCmVycm9yX2NvZGWUTowNZXJyb3JfZGV0YWlsc5ROjA11c2FnZV9kZXRhaWxzlE5oIGghaCJoI2geaB+MCWV4Y2VwdGlvbpROjAZyZXN1bHSUTowFaXRlbXOUTowHZmlsZV9pZJROjA92ZWN0b3Jfc3RvcmVfaWSUTowGaW5wdXRzlE6MB291dHB1dHOUTowIaW1hZ2VfaWSUTowIY29tbWFuZHOUTowKdGltZW91dF9tc5ROjBFtYXhfb3V0cHV0X2xlbmd0aJROaBROjAZzdGRvdXSUTowGc3RkZXJylE6MCWV4aXRfY29kZZROjAl0aW1lZF9vdXSUTowJdG9vbF9uYW1llE6MC3NlcnZlcl9uYW1llE6MBm91dHB1dJROaCROaA5OjBJ1c2VyX2lucHV0X3JlcXVlc3SUTowIYXBwcm92ZWSUTowMY29uc2VudF9saW5rlE51YmGMC2F1dGhvcl9uYW1llIwQZnJvbnRfZGVza19hZ2VudJSMCm1lc3NhZ2VfaWSUTmgQfZRoFk51Yi4=",
+            "__type__": "agent_framework._types:Message"
+          },
+          {
+            "__pickled__": "gAWVSAQAAAAAAACMFmFnZW50X2ZyYW1ld29yay5fdHlwZXOUjAdNZXNzYWdllJOUKYGUfZQojARyb2xllIwEdG9vbJSMCGNvbnRlbnRzlF2UaACMB0NvbnRlbnSUk5QpgZR9lCiMBHR5cGWUjA9mdW5jdGlvbl9yZXN1bHSUjAthbm5vdGF0aW9uc5ROjBVhZGRpdGlvbmFsX3Byb3BlcnRpZXOUfZQojAVmY19pZJSMNWZjXzA2Y2YyNzEzNGJkZjVhN2QwMTZhMzAxYjU3ZGIxYzgxOTZhZTMyZTAwZmYwYWM5NTQ1lIwGc3RhdHVzlIwJY29tcGxldGVklHWMEnJhd19yZXByZXNlbnRhdGlvbpROjAR0ZXh0lE6MDnByb3RlY3RlZF9kYXRhlE6MA3VyaZROjAptZWRpYV90eXBllE6MB21lc3NhZ2WUTowKZXJyb3JfY29kZZROjA1lcnJvcl9kZXRhaWxzlE6MDXVzYWdlX2RldGFpbHOUTowHY2FsbF9pZJSMHWNhbGxfbVpwTll6ZnM4YXpmQlpJV05QdFJNSTJklIwEbmFtZZROjAlhcmd1bWVudHOUTowJZXhjZXB0aW9ulE6MBnJlc3VsdJSMpkNhbXB1cyBzaHV0dGxlIGJ1c2VzIChOby4gMUEsIDFCLCAyLCAzKSBkZXBhcnQgZnJvbSB0aGUgVW5pdmVyc2l0eSBidXMgc3RhdGlvbiBuZWFyIE1UUiBVbml2ZXJzaXR5IFN0YXRpb24gRXhpdHMgQS9DLiBOaWdodCBzZXJ2aWNlIChOIE5pZ2h0KSBydW5zIGZyb20gNyBQTSB0byAxMSBQTS6UjAVpdGVtc5RdlGgKKYGUfZQoaA1oF2gPTmgQfZRoFk5oF2glaBhOaBlOaBpOaBtOaBxOaB1OaB5OaB9OaCFOaCJOaCNOaCROaCZOjAdmaWxlX2lklE6MD3ZlY3Rvcl9zdG9yZV9pZJROjAZpbnB1dHOUTowHb3V0cHV0c5ROjAhpbWFnZV9pZJROjAhjb21tYW5kc5ROjAp0aW1lb3V0X21zlE6MEW1heF9vdXRwdXRfbGVuZ3RolE5oFE6MBnN0ZG91dJROjAZzdGRlcnKUTowJZXhpdF9jb2RllE6MCXRpbWVkX291dJROjAl0b29sX25hbWWUTowLc2VydmVyX25hbWWUTowGb3V0cHV0lE6MAmlklE6MDWZ1bmN0aW9uX2NhbGyUTowSdXNlcl9pbnB1dF9yZXF1ZXN0lE6MCGFwcHJvdmVklE6MDGNvbnNlbnRfbGlua5ROdWJhaCtOaCxOaC1OaC5OaC9OaDBOaDFOaDJOaBROaDNOaDROaDVOaDZOaDdOaDhOaDlOaDpOaDtOaDxOaD1OaD5OdWJhjAthdXRob3JfbmFtZZSMEGZyb250X2Rlc2tfYWdlbnSUjAptZXNzYWdlX2lklE5oEH2UaBZOdWIu",
+            "__type__": "agent_framework._types:Message"
+          },
+          {
+            "__pickled__": "gAWVTAUAAAAAAACMFmFnZW50X2ZyYW1ld29yay5fdHlwZXOUjAdNZXNzYWdllJOUKYGUfZQojARyb2xllIwJYXNzaXN0YW50lIwIY29udGVudHOUXZRoAIwHQ29udGVudJSTlCmBlH2UKIwEdHlwZZSMBHRleHSUjAthbm5vdGF0aW9uc5ROjBVhZGRpdGlvbmFsX3Byb3BlcnRpZXOUfZSMEnJhd19yZXByZXNlbnRhdGlvbpSMK29wZW5haS50eXBlcy5yZXNwb25zZXMucmVzcG9uc2Vfb3V0cHV0X3RleHSUjBJSZXNwb25zZU91dHB1dFRleHSUk5QpgZR9lCiMCF9fZGljdF9flH2UKGgPXZRoDljQAQAASGVyZSdzIGhvdyB0byBoZWxwIHdpdGggeW91ciBxdWVzdGlvbnM6CgoxLiAqKldpRmkqKjogQ29ubmVjdCB0byAnQ1VISzF4JyB1c2luZyB5b3VyIE9uZVBhc3MgY3JlZGVudGlhbHMuIENvdmVyYWdlIGluY2x1ZGVzIG1vc3QgYnVpbGRpbmdzIGFuZCBob3N0ZWxzLgoyLiAqKlBhcmtpbmcqKjogVmlzaXRvciBwYXJraW5nIGlzIG5lYXIgV2lsbGlhbSBNLlcuIE1vbmcgRW5naW5lZXJpbmcgQnVpbGRpbmcgYW5kIFVuaXZlcnNpdHkgU3RhdGlvbiBFeGl0IEQuIENoZWNrIGZlZXMgb24gdGhlIFNlY3VyaXR5IE9mZmljZSB3ZWJzaXRlLgozLiAqKlNodXR0bGVzIHRvIFNoYXcgQ29sbGVnZSoqOiBVc2UgY2FtcHVzIHNodXR0bGUgYnVzZXMgbGlrZSBOby4gMUEsIDFCLCAyLCBvciAzIGZyb20gdGhlIFVuaXZlcnNpdHkgU3RhdGlvbiBuZWFyIE1UUi4KCkxldCBtZSBrbm93IGlmIHlvdSBuZWVkIG1vcmUgY2xhcml0eSGUaA2MC291dHB1dF90ZXh0lIwIbG9ncHJvYnOUXZR1jBJfX3B5ZGFudGljX2V4dHJhX1+UfZSMF19fcHlkYW50aWNfZmllbGRzX3NldF9flI+UKGgOaB1oDWgPkIwUX19weWRhbnRpY19wcml2YXRlX1+UTnViaA5oG4wOcHJvdGVjdGVkX2RhdGGUTowDdXJplE6MCm1lZGlhX3R5cGWUTowHbWVzc2FnZZROjAplcnJvcl9jb2RllE6MDWVycm9yX2RldGFpbHOUTowNdXNhZ2VfZGV0YWlsc5ROjAdjYWxsX2lklE6MBG5hbWWUTowJYXJndW1lbnRzlE6MCWV4Y2VwdGlvbpROjAZyZXN1bHSUTowFaXRlbXOUTowHZmlsZV9pZJROjA92ZWN0b3Jfc3RvcmVfaWSUTowGaW5wdXRzlE6MB291dHB1dHOUTowIaW1hZ2VfaWSUTowIY29tbWFuZHOUTowKdGltZW91dF9tc5ROjBFtYXhfb3V0cHV0X2xlbmd0aJROjAZzdGF0dXOUTowGc3Rkb3V0lE6MBnN0ZGVycpROjAlleGl0X2NvZGWUTowJdGltZWRfb3V0lE6MCXRvb2xfbmFtZZROjAtzZXJ2ZXJfbmFtZZROjAZvdXRwdXSUTowCaWSUTowNZnVuY3Rpb25fY2FsbJROjBJ1c2VyX2lucHV0X3JlcXVlc3SUTowIYXBwcm92ZWSUTowMY29uc2VudF9saW5rlE51YmGMC2F1dGhvcl9uYW1llIwQZnJvbnRfZGVza19hZ2VudJSMCm1lc3NhZ2VfaWSUTmgQfZRoEk51Yi4=",
+            "__type__": "agent_framework._types:Message"
+          }
+        ],
+        "agent_session": {
+          "type": "session",
+          "session_id": "516a1593-9786-4229-a4bc-0c6ebe5a0364",
+          "service_session_id": null,
+          "state": {
+            "in_memory": {
+              "messages": [
+                {
+                  "type": "message",
+                  "role": "user",
+                  "contents": [
+                    {
+                      "type": "text",
+                      "text": "Hello, what is the time now? ",
+                      "additional_properties": {}
+                    }
+                  ],
+                  "additional_properties": {}
+                },
+                {
+                  "type": "message",
+                  "role": "assistant",
+                  "contents": [
+                    {
+                      "type": "function_call",
+                      "call_id": "call_AEIMaE1Izr2TfJIR0aPootkO",
+                      "name": "get_current_time",
+                      "arguments": "{}",
+                      "additional_properties": {
+                        "fc_id": "fc_0a7e8ab5ecc6b761016a301b1fa9c0819694b5588d4ee4d7bb",
+                        "status": "completed"
+                      }
+                    }
+                  ],
+                  "author_name": "front_desk_agent",
+                  "additional_properties": {}
+                },
+                {
+                  "type": "message",
+                  "role": "tool",
+                  "contents": [
+                    {
+                      "type": "function_result",
+                      "call_id": "call_AEIMaE1Izr2TfJIR0aPootkO",
+                      "result": "11:32 PM on Monday, June 15, 2026",
+                      "items": [
+                        {
+                          "type": "text",
+                          "text": "11:32 PM on Monday, June 15, 2026",
+                          "additional_properties": {}
+                        }
+                      ],
+                      "additional_properties": {
+                        "fc_id": "fc_0a7e8ab5ecc6b761016a301b1fa9c0819694b5588d4ee4d7bb",
+                        "status": "completed"
+                      }
+                    }
+                  ],
+                  "author_name": "front_desk_agent",
+                  "additional_properties": {}
+                },
+                {
+                  "type": "message",
+                  "role": "assistant",
+                  "contents": [
+                    {
+                      "type": "text",
+                      "text": "Hello! The current time is **11:32 PM** on Monday, June 15, 2026. How may I assist you further?",
+                      "additional_properties": {}
+                    }
+                  ],
+                  "author_name": "front_desk_agent",
+                  "additional_properties": {}
+                },
+                {
+                  "type": "message",
+                  "role": "user",
+                  "contents": [
+                    {
+                      "type": "text",
+                      "text": "Hello, how to connect to the wifi in campus? Where to park my Tesla? What shuttles can I take to Shaw College? ",
+                      "additional_properties": {}
+                    }
+                  ],
+                  "additional_properties": {}
+                },
+                {
+                  "type": "message",
+                  "role": "assistant",
+                  "contents": [
+                    {
+                      "type": "function_call",
+                      "call_id": "call_8x1nSdkEf9kRKiHISKchlRMi",
+                      "name": "get_general_faq",
+                      "arguments": "{\"topic\":\"wifi\"}",
+                      "additional_properties": {
+                        "fc_id": "fc_06cf27134bdf5a7d016a301b4f95508196ab193f54456e1ce2",
+                        "status": "completed"
+                      }
+                    }
+                  ],
+                  "author_name": "front_desk_agent",
+                  "additional_properties": {}
+                },
+                {
+                  "type": "message",
+                  "role": "tool",
+                  "contents": [
+                    {
+                      "type": "function_result",
+                      "call_id": "call_8x1nSdkEf9kRKiHISKchlRMi",
+                      "result": "To connect to the campus WiFi, select 'CUHK1x' (or 'WiFi CUHK1x'). Students, staff, and registered guests can log in with their OnePass credentials. Coverage includes most academic buildings, libraries, and hostels.",
+                      "items": [
+                        {
+                          "type": "text",
+                          "text": "To connect to the campus WiFi, select 'CUHK1x' (or 'WiFi CUHK1x'). Students, staff, and registered guests can log in with their OnePass credentials. Coverage includes most academic buildings, libraries, and hostels.",
+                          "additional_properties": {}
+                        }
+                      ],
+                      "additional_properties": {
+                        "fc_id": "fc_06cf27134bdf5a7d016a301b4f95508196ab193f54456e1ce2",
+                        "status": "completed"
+                      }
+                    }
+                  ],
+                  "author_name": "front_desk_agent",
+                  "additional_properties": {}
+                },
+                {
+                  "type": "message",
+                  "role": "assistant",
+                  "contents": [
+                    {
+                      "type": "function_call",
+                      "call_id": "call_GJexXCOPPXLhEpcRPjKTg2hY",
+                      "name": "get_general_faq",
+                      "arguments": "{\"topic\":\"parking\"}",
+                      "additional_properties": {
+                        "fc_id": "fc_06cf27134bdf5a7d016a301b5240088196a0dafe83edad008f",
+                        "status": "completed"
+                      }
+                    }
+                  ],
+                  "author_name": "front_desk_agent",
+                  "additional_properties": {}
+                },
+                {
+                  "type": "message",
+                  "role": "tool",
+                  "contents": [
+                    {
+                      "type": "function_result",
+                      "call_id": "call_GJexXCOPPXLhEpcRPjKTg2hY",
+                      "result": "Visitor parking is available at open areas like the front of William M.W. Mong Engineering Building and near University Station Exit D. Parking fees and regulations are posted on the Security Office website.",
+                      "items": [
+                        {
+                          "type": "text",
+                          "text": "Visitor parking is available at open areas like the front of William M.W. Mong Engineering Building and near University Station Exit D. Parking fees and regulations are posted on the Security Office website.",
+                          "additional_properties": {}
+                        }
+                      ],
+                      "additional_properties": {
+                        "fc_id": "fc_06cf27134bdf5a7d016a301b5240088196a0dafe83edad008f",
+                        "status": "completed"
+                      }
+                    }
+                  ],
+                  "author_name": "front_desk_agent",
+                  "additional_properties": {}
+                },
+                {
+                  "type": "message",
+                  "role": "assistant",
+                  "contents": [
+                    {
+                      "type": "function_call",
+                      "call_id": "call_mZpNYzfs8azfBZIWNPtRMI2d",
+                      "name": "get_general_faq",
+                      "arguments": "{\"topic\":\"shuttle\"}",
+                      "additional_properties": {
+                        "fc_id": "fc_06cf27134bdf5a7d016a301b57db1c8196ae32e00ff0ac9545",
+                        "status": "completed"
+                      }
+                    }
+                  ],
+                  "author_name": "front_desk_agent",
+                  "additional_properties": {}
+                },
+                {
+                  "type": "message",
+                  "role": "tool",
+                  "contents": [
+                    {
+                      "type": "function_result",
+                      "call_id": "call_mZpNYzfs8azfBZIWNPtRMI2d",
+                      "result": "Campus shuttle buses (No. 1A, 1B, 2, 3) depart from the University bus station near MTR University Station Exits A/C. Night service (N Night) runs from 7 PM to 11 PM.",
+                      "items": [
+                        {
+                          "type": "text",
+                          "text": "Campus shuttle buses (No. 1A, 1B, 2, 3) depart from the University bus station near MTR University Station Exits A/C. Night service (N Night) runs from 7 PM to 11 PM.",
+                          "additional_properties": {}
+                        }
+                      ],
+                      "additional_properties": {
+                        "fc_id": "fc_06cf27134bdf5a7d016a301b57db1c8196ae32e00ff0ac9545",
+                        "status": "completed"
+                      }
+                    }
+                  ],
+                  "author_name": "front_desk_agent",
+                  "additional_properties": {}
+                },
+                {
+                  "type": "message",
+                  "role": "assistant",
+                  "contents": [
+                    {
+                      "type": "text",
+                      "text": "Here's how to help with your questions:\n\n1. **WiFi**: Connect to 'CUHK1x' using your OnePass credentials. Coverage includes most buildings and hostels.\n2. **Parking**: Visitor parking is near William M.W. Mong Engineering Building and University Station Exit D. Check fees on the Security Office website.\n3. **Shuttles to Shaw College**: Use campus shuttle buses like No. 1A, 1B, 2, or 3 from the University Station near MTR.\n\nLet me know if you need more clarity!",
+                      "additional_properties": {}
+                    }
+                  ],
+                  "author_name": "front_desk_agent",
+                  "additional_properties": {}
+                }
+              ]
+            }
+          }
+        },
+        "pending_agent_requests": {},
+        "pending_responses_to_agent": []
+      }
+    }
+  },
+  "pending_request_info_events": {},
+  "iteration_count": 2,
+  "metadata": {},
+  "version": "1.0"
+}

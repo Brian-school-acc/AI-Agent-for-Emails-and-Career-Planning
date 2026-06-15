@@ -3,40 +3,10 @@ import random
 import re
 
 from agent_framework import tool
-from datetime import datetime, timedelta
+from datetime import datetime, timezone
 from typing import Annotated
 from pydantic import Field
 from zoneinfo import ZoneInfo
-
-# IMPORTANT
-# Note that modifying tools need to update prompt as well
-# IMPORTANT
-
-# @tool(approval_mode="never_require")
-# def get_weather(location: Annotated[str,Field(description="The city name or location string (e.g., 'Seattle', 'Hong Kong')."),],) -> str:
-#     """Get the current weather conditions and temperature for a given location."""
-#     conditions = ["sunny", "cloudy", "rainy", "overcast", "clear"]
-#     chosen_condition = random.choice(conditions)
-#     high_temp = random.randint(15, 32)
-#     low_temp = high_temp - random.randint(5, 10)
-
-#     return f"The weather in {location} is currently {chosen_condition} with a high of {high_temp}°C and a low of {low_temp}°C."
-
-
-# @tool(approval_mode="never_require")
-# def get_weather(location: str) -> str:
-#     """
-#     Get the current weather conditions and temperature for a given location.
-
-#     Args:
-#         location: The city name or location string (e.g., 'Seattle', 'Hong Kong').
-#     """
-#     conditions = ["sunny", "cloudy", "rainy", "overcast", "clear"]
-#     chosen_condition = random.choice(conditions)
-#     high_temp = random.randint(15, 32)
-#     low_temp = high_temp - random.randint(5, 10)
-
-#     return f"The weather in {location} is currently {chosen_condition} with a high of {high_temp}°C and a low of {low_temp}°C."
 
 
 @tool
@@ -58,7 +28,9 @@ def get_weather(location: Annotated[str, "The city name or location string (e.g.
 def get_current_time() -> str:
     """Get the current local time to help answer relative time and date questions."""
     # M365 Copilot often benefits from highly specific time formatting
-    return datetime.now().strftime("%I:%M %p on %A, %B %d, %Y")
+    tz_utc8 = ZoneInfo("Asia/Shanghai")   # or "Asia/Singapore", "Australia/Perth", "Etc/GMT-8"
+    now_utc8 = datetime.now(tz_utc8)
+    return now_utc8.strftime("%I:%M %p on %A, %B %d, %Y in Hong Kong (UTC+8)")
 
 
 @tool(approval_mode="never_require")

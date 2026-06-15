@@ -1,0 +1,49 @@
+{
+  "workflow_name": "agent-cuhk-workflow",
+  "graph_signature_hash": "40cdf920d61e23b2559ba0c4fad8b5774316cd2943612c893a67419d3d016e2c",
+  "checkpoint_id": "720db721-d25e-4d69-9239-ce0790c26ddf",
+  "previous_checkpoint_id": null,
+  "timestamp": "2026-06-15T16:46:35.648821+00:00",
+  "messages": {},
+  "state": {
+    "_workflow_run_kwargs": {},
+    "_executor_state": {
+      "triage_and_route": {},
+      "archivist_exec": {
+        "cache": [],
+        "full_conversation": [
+          {
+            "__pickled__": "gAWV4wIAAAAAAACMFmFnZW50X2ZyYW1ld29yay5fdHlwZXOUjAdNZXNzYWdllJOUKYGUfZQojARyb2xllIwEdXNlcpSMCGNvbnRlbnRzlF2UaACMB0NvbnRlbnSUk5QpgZR9lCiMBHR5cGWUjAR0ZXh0lIwLYW5ub3RhdGlvbnOUTowVYWRkaXRpb25hbF9wcm9wZXJ0aWVzlH2UjBJyYXdfcmVwcmVzZW50YXRpb26UTmgOjFZEcmFmdCBtZSBhbiBlbWFpbCB0byBtci4gbGVlIHRoYXQgZXhwcmVzcyBteSBncmF0aXR1ZGUgZm9yIGhpcyBsZWN0dXJlcyB0aGlzIHNlbWVzdGVyIJSMDnByb3RlY3RlZF9kYXRhlE6MA3VyaZROjAptZWRpYV90eXBllE6MB21lc3NhZ2WUTowKZXJyb3JfY29kZZROjA1lcnJvcl9kZXRhaWxzlE6MDXVzYWdlX2RldGFpbHOUTowHY2FsbF9pZJROjARuYW1llE6MCWFyZ3VtZW50c5ROjAlleGNlcHRpb26UTowGcmVzdWx0lE6MBWl0ZW1zlE6MB2ZpbGVfaWSUTowPdmVjdG9yX3N0b3JlX2lklE6MBmlucHV0c5ROjAdvdXRwdXRzlE6MCGltYWdlX2lklE6MCGNvbW1hbmRzlE6MCnRpbWVvdXRfbXOUTowRbWF4X291dHB1dF9sZW5ndGiUTowGc3RhdHVzlE6MBnN0ZG91dJROjAZzdGRlcnKUTowJZXhpdF9jb2RllE6MCXRpbWVkX291dJROjAl0b29sX25hbWWUTowLc2VydmVyX25hbWWUTowGb3V0cHV0lE6MAmlklE6MDWZ1bmN0aW9uX2NhbGyUTowSdXNlcl9pbnB1dF9yZXF1ZXN0lE6MCGFwcHJvdmVklE6MDGNvbnNlbnRfbGlua5ROdWJhjAthdXRob3JfbmFtZZROjAptZXNzYWdlX2lklE5oEH2UaBJOdWIu",
+            "__type__": "agent_framework._types:Message"
+          },
+          {
+            "__pickled__": "gAWVtAcAAAAAAACMFmFnZW50X2ZyYW1ld29yay5fdHlwZXOUjAdNZXNzYWdllJOUKYGUfZQojARyb2xllIwJYXNzaXN0YW50lIwIY29udGVudHOUXZRoAIwHQ29udGVudJSTlCmBlH2UKIwEdHlwZZSMBHRleHSUjAthbm5vdGF0aW9uc5ROjBVhZGRpdGlvbmFsX3Byb3BlcnRpZXOUfZSMEnJhd19yZXByZXNlbnRhdGlvbpSMK29wZW5haS50eXBlcy5yZXNwb25zZXMucmVzcG9uc2Vfb3V0cHV0X3RleHSUjBJSZXNwb25zZU91dHB1dFRleHSUk5QpgZR9lCiMCF9fZGljdF9flH2UKGgPXZRoDlg5BAAASGVyZeKAmXMgYSBwb2xpc2hlZCBlbWFpbCBkcmFmdCBmb3IgeW91OgoKLS0tCgoqKlN1YmplY3Q6KiogVGhhbmsgWW91IGZvciBhbiBJbnNwaXJpbmcgU2VtZXN0ZXIKCkRlYXIgTXIuIExlZSwgIAoKSSBob3BlIHRoaXMgZW1haWwgZmluZHMgeW91IHdlbGwuIEkgd2FudGVkIHRvIHRha2UgYSBtb21lbnQgdG8gZXhwcmVzcyBteSBoZWFydGZlbHQgZ3JhdGl0dWRlIGZvciB5b3VyIGRlZGljYXRpb24gYW5kIHBhc3Npb24gdGhyb3VnaG91dCB0aGlzIHNlbWVzdGVyLiBZb3VyIGxlY3R1cmVzIGhhdmUgbm90IG9ubHkgYmVlbiBkZWVwbHkgaW5zaWdodGZ1bCBidXQgYWxzbyBpbmNyZWRpYmx5IGVuZ2FnaW5nLiAgCgpZb3VyIGFiaWxpdHkgdG8gYnJlYWsgZG93biBjb21wbGV4IHRvcGljcyBpbnRvIHVuZGVyc3RhbmRhYmxlIGNvbmNlcHRzIGhhcyB0cnVseSBpbnNwaXJlZCBtZSB0byBleHBsb3JlIHRoZSBzdWJqZWN0IG1hdHRlciBtb3JlIGRlZXBseS4gSSBhcHByZWNpYXRlIHRoZSB0aW1lIGFuZCBlZmZvcnQgeW91IHB1dCBpbnRvIGZvc3RlcmluZyBhIGxlYXJuaW5nIGVudmlyb25tZW50IHRoYXQgaXMgYm90aCBlbmNvdXJhZ2luZyBhbmQgaW50ZWxsZWN0dWFsbHkgc3RpbXVsYXRpbmcuICAKClRoYW5rIHlvdSBmb3Igc2hhcmluZyB5b3VyIGtub3dsZWRnZSBhbmQgZm9yIGJlaW5nIHN1Y2ggYSBtb3RpdmF0aW5nIHByZXNlbmNlIGluIHRoZSBjbGFzc3Jvb20uIEkgZmVlbCBmb3J0dW5hdGUgdG8gaGF2ZSBoYWQgdGhlIG9wcG9ydHVuaXR5IHRvIGxlYXJuIGZyb20geW91IGFuZCBsb29rIGZvcndhcmQgdG8gYXBwbHlpbmcgeW91ciB0ZWFjaGluZ3MgaW4gbXkgZnV0dXJlIGVuZGVhdm9ycy4gIAoKV2lzaGluZyB5b3UgYSB3b25kZXJmdWwgcmVzdCBvZiB0aGUgeWVhciEgIAoKV2FybSByZWdhcmRzLCAgCltZb3VyIEZ1bGwgTmFtZV0gIApbQ291cnNlIE5hbWUvQ29kZSwgaWYgYXBwbGljYWJsZV0gIAoKLS0tCgpXb3VsZCB5b3UgbGlrZSBtZSB0byBpbmNsdWRlIGFueSBzcGVjaWZpYyBleGFtcGxlcyBvciBtb21lbnRzIHRoYXQgc3Rvb2Qgb3V0IHRvIHlvdSB0aGlzIHNlbWVzdGVyPyDwn5iKIJRoDYwLb3V0cHV0X3RleHSUjAhsb2dwcm9ic5RdlHWMEl9fcHlkYW50aWNfZXh0cmFfX5R9lIwXX19weWRhbnRpY19maWVsZHNfc2V0X1+Uj5QoaA5oDWgdaA+QjBRfX3B5ZGFudGljX3ByaXZhdGVfX5ROdWJoDmgbjA5wcm90ZWN0ZWRfZGF0YZROjAN1cmmUTowKbWVkaWFfdHlwZZROjAdtZXNzYWdllE6MCmVycm9yX2NvZGWUTowNZXJyb3JfZGV0YWlsc5ROjA11c2FnZV9kZXRhaWxzlE6MB2NhbGxfaWSUTowEbmFtZZROjAlhcmd1bWVudHOUTowJZXhjZXB0aW9ulE6MBnJlc3VsdJROjAVpdGVtc5ROjAdmaWxlX2lklE6MD3ZlY3Rvcl9zdG9yZV9pZJROjAZpbnB1dHOUTowHb3V0cHV0c5ROjAhpbWFnZV9pZJROjAhjb21tYW5kc5ROjAp0aW1lb3V0X21zlE6MEW1heF9vdXRwdXRfbGVuZ3RolE6MBnN0YXR1c5ROjAZzdGRvdXSUTowGc3RkZXJylE6MCWV4aXRfY29kZZROjAl0aW1lZF9vdXSUTowJdG9vbF9uYW1llE6MC3NlcnZlcl9uYW1llE6MBm91dHB1dJROjAJpZJROjA1mdW5jdGlvbl9jYWxslE6MEnVzZXJfaW5wdXRfcmVxdWVzdJROjAhhcHByb3ZlZJROjAxjb25zZW50X2xpbmuUTnViYYwLYXV0aG9yX25hbWWUjA9hcmNoaXZpc3RfYWdlbnSUjAptZXNzYWdlX2lklE5oEH2UaBJOdWIu",
+            "__type__": "agent_framework._types:Message"
+          }
+        ],
+        "agent_session": {
+          "type": "session",
+          "session_id": "281aefb9-4bc4-4b81-b63b-4fa164deeffd",
+          "service_session_id": null,
+          "state": {
+            "in_memory": {
+              "messages": [
+                {
+                  "type": "message",
+                  "role": "user",
+                  "contents": [
+                    {
+                      "type": "text",
+                      "text": "Draft me an email to mr. lee that express my gratitude for his lectures this semester ",
+                      "additional_properties": {}
+                    }
+                  ],
+                  "additional_properties": {}
+                },
+                {
+                  "type": "message",
+                  "role": "assistant",
+                  "contents": [
+                    {
+                      "type": "text",
+                      "text": 
