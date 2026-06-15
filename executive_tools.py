@@ -1,6 +1,8 @@
 from agent_framework import tool
 from random import randint
 
+import httpx
+
 
 @tool(
     name="schedule_calendar_event",
@@ -33,3 +35,49 @@ def create_planner_task(task_name: str, due_date: str, priority: str = "normal")
     """
     task_id = f"task_{randint(1000, 9999)}"
     return f"Task '{task_name}' created successfully (ID: {task_id}) with priority '{priority}', due on {due_date}."
+
+
+@tool(description="Check the active logged-in user's recent unread Outlook emails.")
+async def check_my_emails(ctx) -> str:
+    """Queries the Microsoft Graph API using the user's active identity token."""
+
+    # 1. Dynamically pull the active user's passed-through M365 token
+    # The framework automatically fetches this from the active M365 Copilot session
+    try:
+        user_token = ctx.get_user_token(
+            scopes=["https://graph.microsoft.com/Mail.Read"]
+        )
+    except Exception:
+        return "Authentication error: Could not verify your M365 user token."
+
+    headers = {
+        "Authorization": f"Bearer {user_token}",
+        "Content-Type": "application/json",
+    }
+
+    # 2. Target the official Microsoft Graph endpoint for the active user ('/me')
+    graph_url = "https://graph.microsoft.com/v1.0/me/mailFolders/inbox/messages?$top=3&$filter=isRead eq false"
+
+    async with httpx.AsyncClient() as client:
+        response = await client.get(graph_url, headers=headers)
+
+        if response.status_code == 200:
+            messages = response.json().get("value", [])
+            if not messages:
+                return "Your inbox is clear! You have no unread emails right now."
+
+            output = "Here are your 3 most recent unread emails:\n"
+            for msg in messages:
+                sender = (
+                    msg.get("from", {})
+                    .get("emailAddress", {})
+                    .get("name", "Unknown Sender")
+                )
+                subject = msg.get("subject", "(No Subject)")
+                output += f"- **From:** {sender} \n  **Subject:** {subject}\n"
+            return output
+
+        elif response.status_code == 403:
+            return "Access Denied: Your university's IT policy has restricted Mail.Read access for this application."
+
+        return f"Could not access Outlook. (Graph API Error: {response.status_code})"

@@ -1,0 +1,130 @@
+{
+  "workflow_name": "agent-cuhk-workflow",
+  "graph_signature_hash": "40cdf920d61e23b2559ba0c4fad8b5774316cd2943612c893a67419d3d016e2c",
+  "checkpoint_id": "0e663760-adde-4892-84d9-50b2cbc656e1",
+  "previous_checkpoint_id": "f974fbf7-2b7a-4094-bb9e-f7bea914913c",
+  "timestamp": "2026-06-15T14:31:17.809625+00:00",
+  "messages": {},
+  "state": {
+    "_workflow_run_kwargs": {},
+    "_executor_state": {
+      "triage_and_route": {},
+      "archivist_exec": {
+        "cache": [],
+        "full_conversation": [],
+        "agent_session": {
+          "type": "session",
+          "session_id": "94dd29b6-e54a-40f0-9eae-d09359b5ae4b",
+          "service_session_id": null,
+          "state": {}
+        },
+        "pending_agent_requests": {},
+        "pending_responses_to_agent": []
+      },
+      "executive_exec": {
+        "cache": [],
+        "full_conversation": [],
+        "agent_session": {
+          "type": "session",
+          "session_id": "66e51d94-99e6-485b-8286-dc351e97cff8",
+          "service_session_id": null,
+          "state": {}
+        },
+        "pending_agent_requests": {},
+        "pending_responses_to_agent": []
+      },
+      "career_coach_exec": {
+        "cache": [],
+        "full_conversation": [],
+        "agent_session": {
+          "type": "session",
+          "session_id": "c0a0dd46-c928-4754-9a56-90f79993461d",
+          "service_session_id": null,
+          "state": {}
+        },
+        "pending_agent_requests": {},
+        "pending_responses_to_agent": []
+      },
+      "front_desk_exec": {
+        "cache": [],
+        "full_conversation": [
+          {
+            "__pickled__": "gAWVqAIAAAAAAACMFmFnZW50X2ZyYW1ld29yay5fdHlwZXOUjAdNZXNzYWdllJOUKYGUfZQojARyb2xllIwEdXNlcpSMCGNvbnRlbnRzlF2UaACMB0NvbnRlbnSUk5QpgZR9lCiMBHR5cGWUjAR0ZXh0lIwLYW5ub3RhdGlvbnOUTowVYWRkaXRpb25hbF9wcm9wZXJ0aWVzlH2UjBJyYXdfcmVwcmVzZW50YXRpb26UTmgOjBtXaGF0IGlzIHRoZSB3ZWF0aGVyIHRvZGF5PyCUjA5wcm90ZWN0ZWRfZGF0YZROjAN1cmmUTowKbWVkaWFfdHlwZZROjAdtZXNzYWdllE6MCmVycm9yX2NvZGWUTowNZXJyb3JfZGV0YWlsc5ROjA11c2FnZV9kZXRhaWxzlE6MB2NhbGxfaWSUTowEbmFtZZROjAlhcmd1bWVudHOUTowJZXhjZXB0aW9ulE6MBnJlc3VsdJROjAVpdGVtc5ROjAdmaWxlX2lklE6MD3ZlY3Rvcl9zdG9yZV9pZJROjAZpbnB1dHOUTowHb3V0cHV0c5ROjAhpbWFnZV9pZJROjAhjb21tYW5kc5ROjAp0aW1lb3V0X21zlE6MEW1heF9vdXRwdXRfbGVuZ3RolE6MBnN0YXR1c5ROjAZzdGRvdXSUTowGc3RkZXJylE6MCWV4aXRfY29kZZROjAl0aW1lZF9vdXSUTowJdG9vbF9uYW1llE6MC3NlcnZlcl9uYW1llE6MBm91dHB1dJROjAJpZJROjA1mdW5jdGlvbl9jYWxslE6MEnVzZXJfaW5wdXRfcmVxdWVzdJROjAhhcHByb3ZlZJROjAxjb25zZW50X2xpbmuUTnViYYwLYXV0aG9yX25hbWWUTowKbWVzc2FnZV9pZJROaBB9lGgSTnViLg==",
+            "__type__": "agent_framework._types:Message"
+          },
+          {
+            "__pickled__": "gAWV0QMAAAAAAACMFmFnZW50X2ZyYW1ld29yay5fdHlwZXOUjAdNZXNzYWdllJOUKYGUfZQojARyb2xllIwJYXNzaXN0YW50lIwIY29udGVudHOUXZRoAIwHQ29udGVudJSTlCmBlH2UKIwEdHlwZZSMBHRleHSUjAthbm5vdGF0aW9uc5ROjBVhZGRpdGlvbmFsX3Byb3BlcnRpZXOUfZSMEnJhd19yZXByZXNlbnRhdGlvbpSMK29wZW5haS50eXBlcy5yZXNwb25zZXMucmVzcG9uc2Vfb3V0cHV0X3RleHSUjBJSZXNwb25zZU91dHB1dFRleHSUk5QpgZR9lCiMCF9fZGljdF9flH2UKGgPXZRoDoxYQ291bGQgeW91IGxldCBtZSBrbm93IHRoZSBsb2NhdGlvbiB5b3UnZCBsaWtlIHRoZSB3ZWF0aGVyIGZvcj8gSSdsbCBjaGVjayBpdCByaWdodCBhd2F5IZRoDYwLb3V0cHV0X3RleHSUjAhsb2dwcm9ic5RdlHWMEl9fcHlkYW50aWNfZXh0cmFfX5R9lIwXX19weWRhbnRpY19maWVsZHNfc2V0X1+Uj5QoaA1oHWgOaA+QjBRfX3B5ZGFudGljX3ByaXZhdGVfX5ROdWJoDmgbjA5wcm90ZWN0ZWRfZGF0YZROjAN1cmmUTowKbWVkaWFfdHlwZZROjAdtZXNzYWdllE6MCmVycm9yX2NvZGWUTowNZXJyb3JfZGV0YWlsc5ROjA11c2FnZV9kZXRhaWxzlE6MB2NhbGxfaWSUTowEbmFtZZROjAlhcmd1bWVudHOUTowJZXhjZXB0aW9ulE6MBnJlc3VsdJROjAVpdGVtc5ROjAdmaWxlX2lklE6MD3ZlY3Rvcl9zdG9yZV9pZJROjAZpbnB1dHOUTowHb3V0cHV0c5ROjAhpbWFnZV9pZJROjAhjb21tYW5kc5ROjAp0aW1lb3V0X21zlE6MEW1heF9vdXRwdXRfbGVuZ3RolE6MBnN0YXR1c5ROjAZzdGRvdXSUTowGc3RkZXJylE6MCWV4aXRfY29kZZROjAl0aW1lZF9vdXSUTowJdG9vbF9uYW1llE6MC3NlcnZlcl9uYW1llE6MBm91dHB1dJROjAJpZJROjA1mdW5jdGlvbl9jYWxslE6MEnVzZXJfaW5wdXRfcmVxdWVzdJROjAhhcHByb3ZlZJROjAxjb25zZW50X2xpbmuUTnViYYwLYXV0aG9yX25hbWWUjBBmcm9udF9kZXNrX2FnZW50lIwKbWVzc2FnZV9pZJROaBB9lGgSTnViLg==",
+            "__type__": "agent_framework._types:Message"
+          }
+        ],
+        "agent_session": {
+          "type": "session",
+          "session_id": "40124958-6524-4802-91df-56614e1251bf",
+          "service_session_id": null,
+          "state": {
+            "in_memory": {
+              "messages": [
+                {
+                  "type": "message",
+                  "role": "user",
+                  "contents": [
+                    {
+                      "type": "text",
+                      "text": "Hello, how are you? What tools i can call for your assistance other than the specialized agents? Can you name all the tools specified for you for convenience?",
+                      "additional_properties": {}
+                    }
+                  ],
+                  "additional_properties": {}
+                },
+                {
+                  "type": "message",
+                  "role": "assistant",
+                  "contents": [
+                    {
+                      "type": "text",
+                      "text": "Hello! Thank you for asking—I'm here to assist wherever possible. You can call on me for real-time assistance using these tools:\n\n- **Current Time**: To check the local time for any queries.\n- **Weather Info**: To get the current weather and temperature for a location.\n- **General FAQ Lookup**: For quick answers about WiFi, office hours, parking, and similar topics.\n\nWould you like to use any of these tools today?",
+                      "additional_properties": {}
+                    }
+                  ],
+                  "author_name": "front_desk_agent",
+                  "additional_properties": {}
+                },
+                {
+                  "type": "message",
+                  "role": "user",
+                  "contents": [
+                    {
+                      "type": "text",
+                      "text": "What is the weather today? ",
+                      "additional_properties": {}
+                    }
+                  ],
+                  "additional_properties": {}
+                },
+                {
+                  "type": "message",
+                  "role": "assistant",
+                  "contents": [
+                    {
+                      "type": "text",
+                      "text": "Could you let me know the location you'd like the weather for? I'll check it right away!",
+                      "additional_properties": {}
+                    }
+                  ],
+                  "author_name": "front_desk_agent",
+                  "additional_properties": {}
+                }
+              ]
+            }
+          }
+        },
+        "pending_agent_requests": {},
+        "pending_responses_to_agent": []
+      }
+    }
+  },
+  "pending_request_info_events": {},
+  "iteration_count": 2,
+  "metadata": {},
+  "version": "1.0"
+}

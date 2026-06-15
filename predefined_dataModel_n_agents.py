@@ -19,13 +19,12 @@ from refined_prompt import (
     CAREER_COACH_PROMPT,
     FRONTDESK_PROMPT
 )
-# from tools import file_search, summarize_document, search_the_web
-from temp_tool import get_current_time
-
-# from document_tools import (
-#     generate_word_document,
-#     generate_powerpoint_presentation
-# )
+from tools import file_search, summarize_document
+from front_desk_tools import get_weather, get_current_time, get_general_faq
+from document_tools import (
+    generate_word_document,
+    generate_powerpoint_presentation
+)
 
 load_dotenv()
 
@@ -129,9 +128,17 @@ async def triage_and_route(messages: list[Message], ctx: WorkflowContext[list[Me
 def create_archivist_agent(credential=DefaultAzureCredential()) -> Agent:
     """Helper to create a document analyst agent."""
     client: FoundryChatClient = _get_foundry_client(credential)
+    web_search_tool = client.get_web_search_tool(
+        user_location={
+            "city": "Hong Kong",
+            "region": "New Territories",
+            "country": "Hong Kong",
+        },
+        search_context_size="high",
+    )
+
     tool_list: list[Any] = [
-        # get_weather
-        # file_search, summarize_document,
+        file_search, summarize_document,
     ]
 
     # 1. Pull the hosted M365 MCP tool.
@@ -146,34 +153,38 @@ def create_archivist_agent(credential=DefaultAzureCredential()) -> Agent:
         instructions=ARCHIVIST_PROMPT,
         name="archivist_agent",
         tools=tool_list,
-        # default_options={"store": False, "reasoning": None, "allow_multiple_tool_calls": False},
+        default_options={"store": False, "reasoning": None, "allow_multiple_tool_calls": False}, # type: ignore
     )
 
 def create_executive_agent(credential=DefaultAzureCredential()) -> Agent:
     client = _get_foundry_client(credential)
 
-    # image_gen_tool = client.get_image_generation_tool(
-    #     model="gpt-image-1",
-    #     quality="high",
-    # )
+    image_gen_tool = client.get_image_generation_tool(
+        model="gpt-image-1",
+        quality="high",
+    )
     tool_list: list[Any] = [
-        # get_weather
-        # image_gen_tool
+        image_gen_tool,
+        generate_word_document,
+        generate_powerpoint_presentation,
     ]
-    # tool_list: list[Any] = [generate_word_document, generate_powerpoint_presentation]
 
     return Agent(
         client=client,
         instructions=EXECUTIVE_PROMPT,
         name="executive_agent",
         tools=tool_list,
-        # default_options={"store": False, "reasoning": None, "allow_multiple_tool_calls": False},
+        default_options={"store": False, "reasoning": None, "allow_multiple_tool_calls": False}, # type: ignore
     )
 
 def create_career_coach_agent(credential=DefaultAzureCredential()) -> Agent:
     client = _get_foundry_client(credential)
+    web_search_tool = client.get_web_search_tool(
+        search_context_size="high",
+    )
+
     tool_list: list[Any] = [
-        # get_weather
+        web_search_tool,
     ]
 
     return Agent(
@@ -181,17 +192,24 @@ def create_career_coach_agent(credential=DefaultAzureCredential()) -> Agent:
         instructions=CAREER_COACH_PROMPT,
         name="career_coach_agent",
         tools=tool_list,
-        # default_options={"store": False, "reasoning": None, "allow_multiple_tool_calls": False},
+        default_options={"store": False, "reasoning": None, "allow_multiple_tool_calls": False}, # type: ignore
     )
 
 def create_front_desk_agent(credential=DefaultAzureCredential()) -> Agent:
     """Handles general chit-chat, greetings, and unsupported requests."""
     client = _get_foundry_client(credential)
+    # Configure the web search tool with explicit CUHK location properties
+    web_search_tool = client.get_web_search_tool(
+        user_location={
+            "region": "Hong Kong",
+        }
+    )
+
     tool_list: list[Any] = [
-        # get_weather,
+        get_weather,
         get_current_time,
-        # get_general_faq,
-        # search_the_web
+        get_general_faq,
+        web_search_tool,
     ]
 
     return Agent(
@@ -199,5 +217,5 @@ def create_front_desk_agent(credential=DefaultAzureCredential()) -> Agent:
         instructions=FRONTDESK_PROMPT,
         name="front_desk_agent",
         tools=tool_list,
-        # default_options={"store": False, "reasoning": None, "allow_multiple_tool_calls": False},
+        default_options={"store": False, "reasoning": None, "allow_multiple_tool_calls": False}, # type: ignore
     )

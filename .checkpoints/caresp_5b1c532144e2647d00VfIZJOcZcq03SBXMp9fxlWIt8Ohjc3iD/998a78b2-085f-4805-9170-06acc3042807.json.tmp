@@ -1,0 +1,85 @@
+{
+  "workflow_name": "agent-cuhk-workflow",
+  "graph_signature_hash": "40cdf920d61e23b2559ba0c4fad8b5774316cd2943612c893a67419d3d016e2c",
+  "checkpoint_id": "998a78b2-085f-4805-9170-06acc3042807",
+  "previous_checkpoint_id": null,
+  "timestamp": "2026-06-15T13:32:15.634066+00:00",
+  "messages": {},
+  "state": {
+    "_workflow_run_kwargs": {},
+    "_executor_state": {
+      "triage_and_route": {},
+      "archivist_exec": {
+        "cache": [],
+        "full_conversation": [],
+        "agent_session": {
+          "type": "session",
+          "session_id": "73400abd-fe0b-4eb8-af66-f6d971a0d5e5",
+          "service_session_id": null,
+          "state": {}
+        },
+        "pending_agent_requests": {},
+        "pending_responses_to_agent": []
+      },
+      "executive_exec": {
+        "cache": [],
+        "full_conversation": [],
+        "agent_session": {
+          "type": "session",
+          "session_id": "1e1288f6-3776-4ed4-a77e-d01d31304a29",
+          "service_session_id": null,
+          "state": {}
+        },
+        "pending_agent_requests": {},
+        "pending_responses_to_agent": []
+      },
+      "career_coach_exec": {
+        "cache": [],
+        "full_conversation": [],
+        "agent_session": {
+          "type": "session",
+          "session_id": "6fb1f0cc-d1d5-4254-bfbf-ca1a1b9729b6",
+          "service_session_id": null,
+          "state": {}
+        },
+        "pending_agent_requests": {},
+        "pending_responses_to_agent": []
+      },
+      "front_desk_exec": {
+        "cache": [],
+        "full_conversation": [
+          {
+            "__pickled__": "gAWVKwMAAAAAAACMFmFnZW50X2ZyYW1ld29yay5fdHlwZXOUjAdNZXNzYWdllJOUKYGUfZQojARyb2xllIwEdXNlcpSMCGNvbnRlbnRzlF2UaACMB0NvbnRlbnSUk5QpgZR9lCiMBHR5cGWUjAR0ZXh0lIwLYW5ub3RhdGlvbnOUTowVYWRkaXRpb25hbF9wcm9wZXJ0aWVzlH2UjBJyYXdfcmVwcmVzZW50YXRpb26UTmgOjJ5IZWxsbywgaG93IGFyZSB5b3U/IFdoYXQgdG9vbHMgaSBjYW4gY2FsbCBmb3IgeW91ciBhc3Npc3RhbmNlIG90aGVyIHRoYW4gdGhlIHNwZWNpYWxpemVkIGFnZW50cz8gQ2FuIHlvdSBuYW1lIGFsbCB0aGUgdG9vbHMgc3BlY2lmaWVkIGZvciB5b3UgZm9yIGNvbnZlbmllbmNlP5SMDnByb3RlY3RlZF9kYXRhlE6MA3VyaZROjAptZWRpYV90eXBllE6MB21lc3NhZ2WUTowKZXJyb3JfY29kZZROjA1lcnJvcl9kZXRhaWxzlE6MDXVzYWdlX2RldGFpbHOUTowHY2FsbF9pZJROjARuYW1llE6MCWFyZ3VtZW50c5ROjAlleGNlcHRpb26UTowGcmVzdWx0lE6MBWl0ZW1zlE6MB2ZpbGVfaWSUTowPdmVjdG9yX3N0b3JlX2lklE6MBmlucHV0c5ROjAdvdXRwdXRzlE6MCGltYWdlX2lklE6MCGNvbW1hbmRzlE6MCnRpbWVvdXRfbXOUTowRbWF4X291dHB1dF9sZW5ndGiUTowGc3RhdHVzlE6MBnN0ZG91dJROjAZzdGRlcnKUTowJZXhpdF9jb2RllE6MCXRpbWVkX291dJROjAl0b29sX25hbWWUTowLc2VydmVyX25hbWWUTowGb3V0cHV0lE6MAmlklE6MDWZ1bmN0aW9uX2NhbGyUTowSdXNlcl9pbnB1dF9yZXF1ZXN0lE6MCGFwcHJvdmVklE6MDGNvbnNlbnRfbGlua5ROdWJhjAthdXRob3JfbmFtZZROjAptZXNzYWdlX2lklE5oEH2UaBJOdWIu",
+            "__type__": "agent_framework._types:Message"
+          },
+          {
+            "__pickled__": "gAWVKAUAAAAAAACMFmFnZW50X2ZyYW1ld29yay5fdHlwZXOUjAdNZXNzYWdllJOUKYGUfZQojARyb2xllIwJYXNzaXN0YW50lIwIY29udGVudHOUXZRoAIwHQ29udGVudJSTlCmBlH2UKIwEdHlwZZSMBHRleHSUjAthbm5vdGF0aW9uc5ROjBVhZGRpdGlvbmFsX3Byb3BlcnRpZXOUfZSMEnJhd19yZXByZXNlbnRhdGlvbpSMK29wZW5haS50eXBlcy5yZXNwb25zZXMucmVzcG9uc2Vfb3V0cHV0X3RleHSUjBJSZXNwb25zZU91dHB1dFRleHSUk5QpgZR9lCiMCF9fZGljdF9flH2UKGgPXZRoDlisAQAASGVsbG8hIEknbSBkb2luZyB3ZWxsLCB0aGFuayB5b3UhIEZvciB5b3VyIGNvbnZlbmllbmNlLCBoZXJl4oCZcyB3aGF0IEkgY2FuIGFzc2lzdCB3aXRoOgoKLSAqKlJlYWwtdGltZSBpbmZvcm1hdGlvbioqOiBJIGNhbiBwcm92aWRlIHRoZSBjdXJyZW50IGxvY2FsIHRpbWUuCi0gKipTcGVjaWFsaXplZCBhZ2VudHMgZm9yIHRhc2tzKio6CiAgLSDwn5OaICoqQXJjaGl2aXN0Kiog4oaSIGVtYWlsL2RvY3VtZW50IHNlYXJjaCAmIGRlYWRsaW5lIGV4dHJhY3Rpb24gIAogIC0g8J+ThSAqKkV4ZWN1dGl2ZSoqIOKGkiBzY2hlZHVsaW5nLCB0YXNrcywgYXBwcm92YWxzICAKICAtIPCfkrwgKipDYXJlZXIgQ29hY2gqKiDihpIgcmVzdW1lcywgaW50ZXJ2aWV3cywgc2tpbGwgYW5hbHlzaXMgIAoKTGV0IG1lIGtub3cgaG93IEkgY2FuIGFzc2lzdCB0b2RheSGUaA2MC291dHB1dF90ZXh0lIwIbG9ncHJvYnOUXZR1jBJfX3B5ZGFudGljX2V4dHJhX1+UfZSMF19fcHlkYW50aWNfZmllbGRzX3NldF9flI+UKGgdaA1oD2gOkIwUX19weWRhbnRpY19wcml2YXRlX1+UTnViaA5oG4wOcHJvdGVjdGVkX2RhdGGUTowDdXJplE6MCm1lZGlhX3R5cGWUTowHbWVzc2FnZZROjAplcnJvcl9jb2RllE6MDWVycm9yX2RldGFpbHOUTowNdXNhZ2VfZGV0YWlsc5ROjAdjYWxsX2lklE6MBG5hbWWUTowJYXJndW1lbnRzlE6MCWV4Y2VwdGlvbpROjAZyZXN1bHSUTowFaXRlbXOUTowHZmlsZV9pZJROjA92ZWN0b3Jfc3RvcmVfaWSUTowGaW5wdXRzlE6MB291dHB1dHOUTowIaW1hZ2VfaWSUTowIY29tbWFuZHOUTowKdGltZW91dF9tc5ROjBFtYXhfb3V0cHV0X2xlbmd0aJROjAZzdGF0dXOUTowGc3Rkb3V0lE6MBnN0ZGVycpROjAlleGl0X2NvZGWUTowJdGltZWRfb3V0lE6MCXRvb2xfbmFtZZROjAtzZXJ2ZXJfbmFtZZROjAZvdXRwdXSUTowCaWSUTowNZnVuY3Rpb25fY2FsbJROjBJ1c2VyX2lucHV0X3JlcXVlc3SUTowIYXBwcm92ZWSUTowMY29uc2VudF9saW5rlE51YmGMC2F1dGhvcl9uYW1llIwQZnJvbnRfZGVza19hZ2VudJSMCm1lc3NhZ2VfaWSUTmgQfZRoEk51Yi4=",
+            "__type__": "agent_framework._types:Message"
+          }
+        ],
+        "agent_session": {
+          "type": "session",
+          "session_id": "7538c022-6fc0-4cb5-9a1f-c3d3ab4ee539",
+          "service_session_id": null,
+          "state": {
+            "in_memory": {
+              "messages": [
+                {
+                  "type": "message",
+                  "role": "user",
+                  "contents": [
+                    {
+                      "type": "text",
+                      "text": "Hello, how are you? What tools i can call for your assistance other than the specialized agents? ",
+                      "additional_properties": {}
+                    }
+                  ],
+                  "additional_properties": {}
+                },
+                {
+                  "type": "message",
+                  "role": "assistant",
+                  "contents": [
+                    {
+                      "type": "text",
+                      "text": 

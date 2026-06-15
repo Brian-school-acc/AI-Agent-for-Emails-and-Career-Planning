@@ -3,6 +3,7 @@ import json
 from agent_framework import tool
 from random import choice
 
+
 @tool(
     name="analyze_resume_skill_gaps",
     description="Compares a student's resume against a target job description or industry standard to identify missing skills.",

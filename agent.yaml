@@ -1,6 +1,6 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/microsoft/AgentSchema/refs/heads/main/schemas/v1.0/ContainerAgent.yaml
 
-name: agent-cuhk-tool-testing
+name: agent-cuhk-gpt-4o-tool
 kind: hosted
 protocols:
   - protocol: responses
