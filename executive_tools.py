@@ -8,6 +8,10 @@ from typing import Annotated, List, Dict, Optional
 from random import randint
 
 
+# ==========================================
+# TOOL 1: SCHEDULE CALENDAR EVENT
+# ==========================================
+
 @tool(
     name="schedule_calendar_event",
     description="Creates a time-blocked event on the student's Outlook calendar for tasks, studying, or meetings.",
@@ -23,6 +27,10 @@ def schedule_calendar_event(title: str, start_time: str, duration_minutes: int) 
     """
     return f"Successfully scheduled '{title}' for {duration_minutes} minutes starting at {start_time}. Calendar invite sent."
 
+
+# ==========================================
+# TOOL 1: CREATE PLANNER TASKS
+# ==========================================
 
 @tool(
     name="create_planner_task",
@@ -40,6 +48,10 @@ def create_planner_task(task_name: str, due_date: str, priority: str = "normal")
     task_id = f"task_{randint(1000, 9999)}"
     return f"Task '{task_name}' created successfully (ID: {task_id}) with priority '{priority}', due on {due_date}."
 
+
+# ==========================================
+# TOOL 3: DRAFT EMAILS TO LECTURERS
+# ==========================================
 
 @tool(approval_mode="never_require")
 def draft_lecturer_email(
@@ -101,6 +113,10 @@ def draft_lecturer_email(
     # Fallback to a standard polite template if the exact tone isn't pre-configured
     selected_template = templates.get(tone.lower(), templates["respectful"])
     return selected_template.format(main_idea=main_idea) + f" Length of email: {length}"
+
+# ==========================================
+# TOOL 4: GENERATE WORD DOCUMENTS
+# ==========================================
 
 import os
 from typing import Annotated, List, Dict, Optional
@@ -229,6 +245,9 @@ def generate_word_document(
 
     return f"Word document '{title}' successfully generated and saved to {safe_path}. Academic style applied: {academic_style}."
 
+# ==========================================
+# TOOL 5: GENERATE POEWRPOINT SLIDES
+# ==========================================
 
 import os
 from typing import Annotated, List, Dict, Any, Optional
