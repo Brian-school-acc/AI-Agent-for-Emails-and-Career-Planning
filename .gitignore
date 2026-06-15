@@ -76,5 +76,5 @@ Thumbs.db
 # resources/user_input.txt
 # resources/email.txt
 
-# Azure AI Foundry local state
-.foundry/
+.checkpoints/
+samples/
