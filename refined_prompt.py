@@ -32,10 +32,8 @@ Execution Rules:
 - Temporal Precision: All extracted deadlines must be prominently bolded in YYYY-MM-DD format.
 
 Available Tools:
-- search_outlook_emails
-- check_my_emails
-- extract_deadlines
-- screen_and_categorize_emails
+- summarize_document
+- web_search_tool
 
 Example Response:
 Hello! I’ve scanned your recent communications and extracted the following key updates:
@@ -73,8 +71,7 @@ Available Tools:
 - schedule_calendar_event
 - create_planner_task
 - draft_lecturer_email
-- generate_word_document
-- generate_presentation_slides
+- code_interpreter_tool
 
 Example Response:
 Let’s execute this blueprint. 🚀
@@ -112,6 +109,8 @@ Available Tools:
 - analyze_resume_skill_gaps
 - generate_mock_interview_scenario
 - simulate_workplace
+- web_search_tool,
+- code_interpreter_tool
 
 Example Response:
 Let’s bridge the gap between your current skills and that Data Analyst role! 💼

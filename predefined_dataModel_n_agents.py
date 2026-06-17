@@ -21,12 +21,20 @@ from refined_prompt import (
 )
 from tools import file_search, summarize_document
 from front_desk_tools import get_weather, get_current_time, get_general_faq
+# from archivist_tools import (
+
+# )
 from executive_tools import (
     draft_lecturer_email,
     create_planner_task,
     schedule_calendar_event,
     # generate_word_document,
     # generate_presentation_slides,
+)
+from career_coach_tools import (
+    analyze_resume_skill_gaps,
+    generate_mock_interview_scenario,
+    simulate_workplace,
 )
 
 load_dotenv()
@@ -134,44 +142,16 @@ def create_archivist_agent(credential=DefaultAzureCredential()) -> Agent:
     client: FoundryChatClient = _get_foundry_client(credential)
     web_search_tool = client.get_web_search_tool(
         user_location={
-            "city": "Hong Kong",
-            "region": "New Territories",
-            "country": "Hong Kong",
+            "city": "The Chiense University of Hong Kong",
+            "region": "Hong Kong",
         },
         search_context_size="high",
+        allowed_domains=["https://www.lib.cuhk.edu.hk/en/"],
     )
 
-    # 2. Create an Azure-managed Vector Store
-    # In a real app, you would fetch an existing ID or create one per tenant/user
-    # vector_store = await client.client.vector_stores.create(
-    #     name="archivist_knowledge_base"
-    # )
-
-    # 3. Upload a document to the Vector Store
-    # file_path = "company_policy.pdf"
-    # with open(file_path, "rb") as f:
-        # file_bytes = f.read()
-
-    # Upload to Foundry storage
-    # uploaded_file = await client.client.files.create(
-    #     file=
-    # )
-    # .upload(
-    #     file=file_bytes, filename="company_policy.pdf", purpose="agents"
-    # )
-
-    # Associate file with vector store (triggers auto-chunking & embedding)
-    # await client.client.vector_stores.create(
-    #     name="vector-store",
-    #     file_ids=[uploaded_file.id],
-    # )
-
-    # Generate the File Search Tool bound to this Vector Store
-    # file_search_tool = client.get_file_search_tool(vector_store_ids=[vector_store.id])
-    
     tool_list: list[Any] = [
-        # file_search,
         summarize_document,
+        web_search_tool,
     ]
 
     return Agent(
@@ -186,14 +166,12 @@ def create_archivist_agent(credential=DefaultAzureCredential()) -> Agent:
 def create_executive_agent(credential=DefaultAzureCredential()) -> Agent:
     client = _get_foundry_client(credential)
 
-    generate_image_tool = client.get_image_generation_tool()
     code_interpreter_tool = client.get_code_interpreter_tool()
 
     tool_list: list[Any] = [
         draft_lecturer_email,
         create_planner_task,
         schedule_calendar_event,
-        generate_image_tool,
         code_interpreter_tool,
         # generate_word_document,
         # generate_presentation_slides,
@@ -212,9 +190,14 @@ def create_career_coach_agent(credential=DefaultAzureCredential()) -> Agent:
     web_search_tool = client.get_web_search_tool(
         search_context_size="high",
     )
+    code_interpreter_tool = client.get_code_interpreter_tool()
 
     tool_list: list[Any] = [
         web_search_tool,
+        code_interpreter_tool,
+        analyze_resume_skill_gaps,
+        generate_mock_interview_scenario,
+        simulate_workplace,
     ]
 
     return Agent(
