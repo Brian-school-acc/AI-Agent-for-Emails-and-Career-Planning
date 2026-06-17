@@ -39,7 +39,7 @@ from executive_tools import (
     draft_lecturer_email,
     create_planner_task,
     schedule_calendar_event,
-    generate_and_archive_document,
+    generate_and_link_docx,
     # generate_word_document,
     # generate_presentation_slides,
 )
@@ -150,7 +150,7 @@ async def triage_and_route(messages: list[Message], ctx: WorkflowContext[list[Me
         client=_get_foundry_client(credential),
         instructions=TRIAGE_PROMPT,
         name="triage_agent",
-        default_options={"store": False, "reasoning": None, "allow_multiple_tool_calls": False},  # type: ignore
+        default_options={"store": False, "reasoning": None, "allow_multiple_tool_calls": True},  # type: ignore
     )
 
     print("🔍 Executing silent triage classification...")
@@ -217,7 +217,7 @@ def create_archivist_agent(credential=DefaultAzureCredential()) -> Agent:
             instructions=ARCHIVIST_PROMPT,
             name="archivist_agent",
             tools=tool_list,
-            default_options={"store": False, "reasoning": None, "allow_multiple_tool_calls": False}, # type: ignore
+            default_options={"store": False, "reasoning": None, "allow_multiple_tool_calls": True}, # type: ignore
         )
 
 
@@ -232,7 +232,7 @@ def create_executive_agent(credential=DefaultAzureCredential()) -> Agent:
         create_planner_task,
         schedule_calendar_event,
         code_interpreter_tool,
-        generate_and_archive_document,
+        generate_and_link_docx,
         # generate_word_document,
         # generate_presentation_slides,
     ]
@@ -242,7 +242,7 @@ def create_executive_agent(credential=DefaultAzureCredential()) -> Agent:
         instructions=EXECUTIVE_PROMPT,
         name="executive_agent",
         tools=tool_list,
-        default_options={"store": False, "reasoning": None, "allow_multiple_tool_calls": False}, # type: ignore
+        default_options={"store": False, "reasoning": None, "allow_multiple_tool_calls": True}, # type: ignore
     )
 
 def create_career_coach_agent(credential=DefaultAzureCredential()) -> Agent:
@@ -267,7 +267,7 @@ def create_career_coach_agent(credential=DefaultAzureCredential()) -> Agent:
         instructions=CAREER_COACH_PROMPT,
         name="career_coach_agent",
         tools=tool_list,
-        default_options={"store": False, "reasoning": None, "allow_multiple_tool_calls": False}, # type: ignore
+        default_options={"store": False, "reasoning": None, "allow_multiple_tool_calls": True}, # type: ignore
     )
 
 def create_front_desk_agent(credential=DefaultAzureCredential()) -> Agent:
@@ -294,5 +294,5 @@ def create_front_desk_agent(credential=DefaultAzureCredential()) -> Agent:
         instructions=FRONTDESK_PROMPT,
         name="front_desk_agent",
         tools=tool_list,
-        default_options={"store": False, "reasoning": None, "allow_multiple_tool_calls": False}, # type: ignore
+        default_options={"store": False, "reasoning": None, "allow_multiple_tool_calls": True}, # type: ignore
     )

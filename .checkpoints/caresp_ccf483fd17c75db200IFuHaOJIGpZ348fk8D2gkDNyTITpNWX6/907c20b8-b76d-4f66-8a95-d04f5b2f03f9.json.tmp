@@ -1,0 +1,277 @@
+{
+  "workflow_name": "agent-cuhk-workflow",
+  "graph_signature_hash": "40cdf920d61e23b2559ba0c4fad8b5774316cd2943612c893a67419d3d016e2c",
+  "checkpoint_id": "907c20b8-b76d-4f66-8a95-d04f5b2f03f9",
+  "previous_checkpoint_id": null,
+  "timestamp": "2026-06-17T18:59:59.500031+00:00",
+  "messages": {
+    "executive_exec": [
+      {
+        "__pickled__": "gAWVLioAAAAAAACMKmFnZW50X2ZyYW1ld29yay5fd29ya2Zsb3dzLl9ydW5uZXJfY29udGV4dJSMD1dvcmtmbG93TWVzc2FnZZSTlCmBlH2UKIwEZGF0YZSMKmFnZW50X2ZyYW1ld29yay5fd29ya2Zsb3dzLl9hZ2VudF9leGVjdXRvcpSMFUFnZW50RXhlY3V0b3JSZXNwb25zZZSTlCmBlH2UKIwLZXhlY3V0b3JfaWSUjA5leGVjdXRpdmVfZXhlY5SMDmFnZW50X3Jlc3BvbnNllIwWYWdlbnRfZnJhbWV3b3JrLl90eXBlc5SMDUFnZW50UmVzcG9uc2WUk5QpgZR9lCiMCG1lc3NhZ2VzlF2UaA6MB01lc3NhZ2WUk5QpgZR9lCiMBHJvbGWUjAlhc3Npc3RhbnSUjAhjb250ZW50c5RdlChoDowHQ29udGVudJSTlCmBlH2UKIwEdHlwZZSMGmNvZGVfaW50ZXJwcmV0ZXJfdG9vbF9jYWxslIwLYW5ub3RhdGlvbnOUTowVYWRkaXRpb25hbF9wcm9wZXJ0aWVzlH2UjBJyYXdfcmVwcmVzZW50YXRpb26UjDpvcGVuYWkudHlwZXMucmVzcG9uc2VzLnJlc3BvbnNlX2NvZGVfaW50ZXJwcmV0ZXJfdG9vbF9jYWxslIwfUmVzcG9uc2VDb2RlSW50ZXJwcmV0ZXJUb29sQ2FsbJSTlCmBlH2UKIwIX19kaWN0X1+UfZQojAJpZJSMNWNpXzA4M2I1ZjNhNDkxMTAwZDkwMTZhMzJlZWE4NzU3YzgxOTdhNWY2MmFhMzRiYjVlZGFllIwEY29kZZRYkgcAAGZyb20gZG9jeCBpbXBvcnQgRG9jdW1lbnQNCg0KIyBDcmVhdGUgYSBuZXcgV29yZCBkb2N1bWVudA0KZG9jID0gRG9jdW1lbnQoKQ0KDQojIEFzc2lnbm1lbnQgR3JvdXAgUmVwb3J0IFRlbXBsYXRlIFN0cnVjdHVyZQ0KIyBUaXRsZSBQYWdlDQpkb2MuYWRkX2hlYWRpbmcoJ0Fzc2lnbm1lbnQgR3JvdXAgUmVwb3J0JywgbGV2ZWw9MSkNCmRvYy5hZGRfcGFyYWdyYXBoKCdDb3Vyc2UgTmFtZTogX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18nKQ0KZG9jLmFkZF9wYXJhZ3JhcGgoJ0luc3RydWN0b3I6IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18nKQ0KZG9jLmFkZF9wYXJhZ3JhcGgoJ1N1Ym1pc3Npb24gRGF0ZTogX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXycpDQpkb2MuYWRkX3BhcmFncmFwaCgnR3JvdXAgTWVtYmVyczonKQ0KZG9jLmFkZF9wYXJhZ3JhcGgoJy0gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18nKQ0KZG9jLmFkZF9wYXJhZ3JhcGgoJy0gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18nKQ0KZG9jLmFkZF9wYXJhZ3JhcGgoJy0gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18nKQ0KZG9jLmFkZF9wYXJhZ3JhcGgoJycpDQoNCmRvYy5hZGRfcGFnZV9icmVhaygpDQoNCiMgVGFibGUgb2YgQ29udGVudHMgUGxhY2Vob2xkZXINCmRvYy5hZGRfaGVhZGluZygnVGFibGUgb2YgQ29udGVudHMnLCBsZXZlbD0xKQ0KZG9jLmFkZF9wYXJhZ3JhcGgoJzEuIEV4ZWN1dGl2ZSBTdW1tYXJ5IC4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLiBQYWdlIFgnKQ0KZG9jLmFkZF9wYXJhZ3JhcGgoJzIuIEludHJvZHVjdGlvbiAuLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLiBQYWdlIFgnKQ0KZG9jLmFkZF9wYXJhZ3JhcGgoJzMuIE1ldGhvZG9sb2d5IC4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4gUGFnZSBYJykNCmRvYy5hZGRfcGFyYWdyYXBoKCc0LiBBbmFseXNpcyBhbmQgUmVzdWx0cyAuLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLiBQYWdlIFgnKQ0KZG9jLmFkZF9wYXJhZ3JhcGgoJzUuIENvbmNsdXNpb24gYW5kIFJlY29tbWVuZGF0aW9ucyAuLi4uLi4uLi4uLi4uLi4gUGFnZSBYJykNCmRvYy5hZGRfcGFyYWdyYXBoKCc2LiBSZWZlcmVuY2VzIC4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uIFBhZ2UgWCcpDQpkb2MuYWRkX3BhcmFncmFwaCgnQXBwZW5kaWNlcyAoaWYgYXBwbGljYWJsZSkgLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLiBQYWdlIFgnKQ0KDQpkb2MuYWRkX3BhZ2VfYnJlYWsoKQ0KDQojIFNlY3Rpb24gVGVtcGxhdGVzDQpzZWN0aW9ucyA9IFsNCiAgICAnRXhlY3V0aXZlIFN1bW1hcnknLA0KICAgICdJbnRyb2R1Y3Rpb24nLA0KICAgICdNZXRob2RvbG9neScsDQogICAgJ0FuYWx5c2lzIGFuZCBSZXN1bHRzJywNCiAgICAnQ29uY2x1c2lvbiBhbmQgUmVjb21tZW5kYXRpb25zJywNCiAgICAnUmVmZXJlbmNlcycsDQogICAgJ0FwcGVuZGljZXMnDQpdDQoNCmZvciBzZWN0aW9uIGluIHNlY3Rpb25zOg0KICAgIGRvYy5hZGRfaGVhZGluZyhzZWN0aW9uLCBsZXZlbD0xKQ0KICAgIGRvYy5hZGRfcGFyYWdyYXBoKCdbV3JpdGUgeW91ciBjb250ZW50IGhlcmUuLi5dJykNCiAgICBkb2MuYWRkX3BhZ2VfYnJlYWsoKQ0KDQojIFNhdmUgdGhlIGRvY3VtZW50DQpvdXRwdXRfcGF0aCA9ICcvbW50L2RhdGEvQXNzaWdubWVudF9Hcm91cF9SZXBvcnRfVGVtcGxhdGUuZG9jeCcNCmRvYy5zYXZlKG91dHB1dF9wYXRoKQ0KDQpvdXRwdXRfcGF0aJSMDGNvbnRhaW5lcl9pZJSMNWNudHJfNmEzMmVlYTYzY2EwODE5MDlkZWZlZTk4M2ZhMTAzYTAwYWU1YmUzYjI0MmExNTVmlIwHb3V0cHV0c5ROjAZzdGF0dXOUjAljb21wbGV0ZWSUaCGMFWNvZGVfaW50ZXJwcmV0ZXJfY2FsbJR1jBJfX3B5ZGFudGljX2V4dHJhX1+UfZSMC3Jlc3BvbnNlX2lklIw3cmVzcF8wODNiNWYzYTQ5MTEwMGQ5MDE2YTMyZWVhNWYyY2M4MTk3OWI5NjU4NDBlOWE1Nzk1OJRzjBdfX3B5ZGFudGljX2ZpZWxkc19zZXRfX5SPlChoIWgwaDpoNGg1aC5oMpCMFF9fcHlkYW50aWNfcHJpdmF0ZV9flE51YowEdGV4dJROjA5wcm90ZWN0ZWRfZGF0YZROjAN1cmmUTowKbWVkaWFfdHlwZZROjAdtZXNzYWdllE6MCmVycm9yX2NvZGWUTowNZXJyb3JfZGV0YWlsc5ROjA11c2FnZV9kZXRhaWxzlE6MB2NhbGxfaWSUaC+MBG5hbWWUTowJYXJndW1lbnRzlE6MCWV4Y2VwdGlvbpROjAZyZXN1bHSUTowFaXRlbXOUTowHZmlsZV9pZJROjA92ZWN0b3Jfc3RvcmVfaWSUTowGaW5wdXRzlF2UaB4pgZR9lChoIWg/aCNOaCR9lGgmaCpoP2gxaEBOaEFOaEJOaENOaEROaEVOaEZOaEdOaEhOaElOaEpOaEtOaExOaE1OaE5OaE9OaDROjAhpbWFnZV9pZJROjAhjb21tYW5kc5ROjAp0aW1lb3V0X21zlE6MEW1heF9vdXRwdXRfbGVuZ3RolE5oNU6MBnN0ZG91dJROjAZzdGRlcnKUTowJZXhpdF9jb2RllE6MCXRpbWVkX291dJROjAl0b29sX25hbWWUTowLc2VydmVyX25hbWWUTowGb3V0cHV0lE5oLk6MDWZ1bmN0aW9uX2NhbGyUTowSdXNlcl9pbnB1dF9yZXF1ZXN0lE6MCGFwcHJvdmVklE6MDGNvbnNlbnRfbGlua5ROdWJhaDROaFROaFVOaFZOaFdOaDVOaFhOaFlOaFpOaFtOaFxOaF1OaF5OaC5OaF9OaGBOaGFOaGJOdWJoHimBlH2UKGghjBxjb2RlX2ludGVycHJldGVyX3Rvb2xfcmVzdWx0lGgjTmgkfZRoJmgqaD9OaEBOaEFOaEJOaENOaEROaEVOaEZOaEdoL2hITmhJTmhKTmhLTmhMTmhNTmhOTmhPTmg0XZRoVE5oVU5oVk5oV05oNU5oWE5oWU5oWk5oW05oXE5oXU5oXk5oLk5oX05oYE5oYU5oYk51YmgeKYGUfZQoaCFoP2gjXZR9lChoIYwIY2l0YXRpb26UaE2MJmNmaWxlXzZhMzJlZWFlNDUzNDgxOTA5NmEzMWQ2N2U2Mjg3MjhhlIwDdXJslIwlQXNzaWdubWVudF9Hcm91cF9SZXBvcnRfVGVtcGxhdGUuZG9jeJRoJH2UaDKMNWNudHJfNmEzMmVlYTYzY2EwODE5MDlkZWZlZTk4M2ZhMTAzYTAwYWU1YmUzYjI0MmExNTVmlHOMEWFubm90YXRlZF9yZWdpb25zlF2UfZQoaCGMCXRleHRfc3BhbpSMC3N0YXJ0X2luZGV4lEtRjAllbmRfaW5kZXiUS4h1YWgmjCtvcGVuYWkudHlwZXMucmVzcG9uc2VzLnJlc3BvbnNlX291dHB1dF90ZXh0lIwfQW5ub3RhdGlvbkNvbnRhaW5lckZpbGVDaXRhdGlvbpSTlCmBlH2UKGgsfZQoaDJocWh3S4hoTWhtjAhmaWxlbmFtZZRob2h2S1FoIYwXY29udGFpbmVyX2ZpbGVfY2l0YXRpb26UdWg4fZRoPI+UKGghaHZod2h+aE1oMpBoPk51YnVhaCR9lGgmaHiMElJlc3BvbnNlT3V0cHV0VGV4dJSTlCmBlH2UKGgsfZQoaCNdlGh7YWg/jIpUaGUgYXNzaWdubWVudCBncm91cCByZXBvcnQgdGVtcGxhdGUgaXMgcmVhZHkuIFtEb3dubG9hZCB0aGUgV29yZCBkb2N1bWVudCBoZXJlXShzYW5kYm94Oi9tbnQvZGF0YS9Bc3NpZ25tZW50X0dyb3VwX1JlcG9ydF9UZW1wbGF0ZS5kb2N4KS6UaCGMC291dHB1dF90ZXh0lIwIbG9ncHJvYnOUXZR1aDh9lGg8j5QoaCFoi2g/aCOQaD5OdWJoP2iJaEBOaEFOaEJOaENOaEROaEVOaEZOaEdOaEhOaElOaEpOaEtOaExOaE1OaE5OaE9OaDROaFROaFVOaFZOaFdOaDVOaFhOaFlOaFpOaFtOaFxOaF1OaF5OaC5OaF9OaGBOaGFOaGJOdWJljAthdXRob3JfbmFtZZSMD2V4ZWN1dGl2ZV9hZ2VudJSMCm1lc3NhZ2VfaWSUTmgkfZRoJk51YmGMC3Jlc3BvbnNlX2lklIw3cmVzcF8wODNiNWYzYTQ5MTEwMGQ5MDE2YTMyZWVhNWYyY2M4MTk3OWI5NjU4NDBlOWE1Nzk1OJSMCGFnZW50X2lklE6MCmNyZWF0ZWRfYXSUjBsyMDI2LTA2LTE3VDE4OjU5OjQ5LjAwMDAwMFqUjA1maW5pc2hfcmVhc29ulE5oRn2UKIwRaW5wdXRfdG9rZW5fY291bnSUTcEFjBJvdXRwdXRfdG9rZW5fY291bnSUTX8BjBF0b3RhbF90b2tlbl9jb3VudJRNQAeMGm9wZW5haS5jYWNoZWRfaW5wdXRfdG9rZW5zlE0ABHWMBl92YWx1ZZROjBBfcmVzcG9uc2VfZm9ybWF0lE6MDV92YWx1ZV9wYXJzZWSUiWgkfZSMEmNvbnRpbnVhdGlvbl90b2tlbpROaCZoDowMQ2hhdFJlc3BvbnNllJOUKYGUfZQoaBNdlGgXYWiTaJSMD2NvbnZlcnNhdGlvbl9pZJROjAVtb2RlbJSMEWdwdC00by0yMDI0LTExLTIwlGiWaJdomE5oRmiZaJ5OaJ9OaKCJaCR9lGiiTmgmjB9vcGVuYWkudHlwZXMucmVzcG9uc2VzLnJlc3BvbnNllIwIUmVzcG9uc2WUk5QpgZR9lChoLH2UKGguaJRolkdB2oy7qUAAAIwFZXJyb3KUTowSaW5jb21wbGV0ZV9kZXRhaWxzlE6MDGluc3RydWN0aW9uc5ROjAhtZXRhZGF0YZR9lGipjBFncHQtNG8tYWdlbnQtY3Voa5SMBm9iamVjdJSMCHJlc3BvbnNllGheXZQoaCqMLm9wZW5haS50eXBlcy5yZXNwb25zZXMucmVzcG9uc2Vfb3V0cHV0X21lc3NhZ2WUjBVSZXNwb25zZU91dHB1dE1lc3NhZ2WUk5QpgZR9lChoLH2UKGgujDZtc2dfMDgzYjVmM2E0OTExMDBkOTAxNmEzMmVlYWRkNjMwODE5NzhiMzEzZjZiYmM2NmM1M2SUjAdjb250ZW50lF2UaIVhaBloGmg1aDZoIWhDjAVwaGFzZZROdWg4fZRoOow3cmVzcF8wODNiNWYzYTQ5MTEwMGQ5MDE2YTMyZWVhNWYyY2M4MTk3OWI5NjU4NDBlOWE1Nzk1OJRzaDyPlChoIWg6aBloNWjCaC6QaD5OdWJljBNwYXJhbGxlbF90b29sX2NhbGxzlImMC3RlbXBlcmF0dXJllEc/8AAAAAAAAIwLdG9vbF9jaG9pY2WUjARhdXRvlIwFdG9vbHOUXZQojCRvcGVuYWkudHlwZXMucmVzcG9uc2VzLmZ1bmN0aW9uX3Rvb2yUjAxGdW5jdGlvblRvb2yUk5QpgZR9lChoLH2UKGhIjBVpbnF1aXJlX2FiYnJldmlhdGlvbnOUjApwYXJhbWV0ZXJzlH2UKIwKcHJvcGVydGllc5R9lIwMYWJicmV2aWF0aW9ulH2UKIwFdGl0bGWUjAxBYmJyZXZpYXRpb26UjAR0eXBllIwGc3RyaW5nlHVzjAhyZXF1aXJlZJRdlIwMYWJicmV2aWF0aW9ulGFo24wbaW5xdWlyZV9hYmJyZXZpYXRpb25zX2lucHV0lGjdjAZvYmplY3SUjBRhZGRpdGlvbmFsUHJvcGVydGllc5SJdYwGc3RyaWN0lIloIYwIZnVuY3Rpb26UjA1kZWZlcl9sb2FkaW5nlE6MC2Rlc2NyaXB0aW9ulIxJQ2FsbCB0aGlzIGZ1bmN0aW9uIHdoZW5ldmVyIHRoZXJlIGlzIGFuIGFiYnJpZXZpYXRpb24gZm9yIGNsZWFyZXIgY29udGV4dJR1aDh9lGg8j5QoaEhoIWjlaNVo6JBoPk51YmjQKYGUfZQoaCx9lChoSIwUZHJhZnRfbGVjdHVyZXJfZW1haWyUaNV9lCho132UKIwJbWFpbl9pZGVhlH2UKIwLZGVzY3JpcHRpb26UjINUaGUgY29yZSByZXF1ZXN0IG9yIGlzc3VlIHRoZSBzdHVkZW50IG5lZWRzIHRvIGV4cHJlc3MgKGUuZy4sICdSZXF1ZXN0aW5nIGEgMi1kYXkgZXh0ZW5zaW9uIG9uIHRoZSBQeXRob24gcHJvamVjdCBkdWUgdG8gaWxsbmVzcycpLpRo24wJTWFpbiBJZGVhlGjdjAZzdHJpbmeUdYwEdG9uZZR9lCho9Ix1VGhlIGRlc2lyZWQgcHN5Y2hvbG9naWNhbC9wcm9mZXNzaW9uYWwgdG9uZSBvZiB0aGUgZW1haWwgKGUuZy4sICdyZXNwZWN0ZnVsJywgJ2Fwb2xvZ2V0aWMnLCAndXJnZW50JywgJ2lucXVpc2l0aXZlJykulGjbjARUb25llGjdjAZzdHJpbmeUdYwGbGVuZ3RolH2UKGj0jEVUaGUgcHJlZmVycmVkIGxlbmd0aCBvZiB0aGUgZW1haWwgKGUuZy4gJ3Nob3J0JywgJ21vZGVyYXRlJywgJ2xvbmcnKS6UaNuMBkxlbmd0aJRo3YwGc3RyaW5nlHV1aN9dlCiMCW1haW5faWRlYZSMBHRvbmWUjAZsZW5ndGiUZWjbjBpkcmFmdF9sZWN0dXJlcl9lbWFpbF9pbnB1dJRo3YwGb2JqZWN0lGjkiXVo5YloIWjmaOdOaOhYSgEAAApHZW5lcmF0ZXMgYSBwcm9mZXNzaW9uYWxseSBzdHJ1Y3R1cmVkLCBwb2xpc2hlZCBlbWFpbCBkcmFmdCBzcGVjaWZpY2FsbHkgdGFpbG9yZWQgZm9yIGFjYWRlbWljIHN0YWZmIGFuZCBsZWN0dXJlcnMuCgpUaGlzIHRvb2wgY29udmVydHMgYSBzdHVkZW50J3MgcmF3IHRob3VnaHRzIGFuZCBlbW90aW9uYWwgdG9uZSBpbnRvIGEgaGlnaC1xdWFsaXR5IGFjYWRlbWljIHBhc3NhZ2UsCmVuc3VyaW5nIGNvcnJlY3Qgc3RydWN0dXJhbCBsYXlvdXQgKFN1YmplY3QgbGluZSwgZm9ybWFsIGdyZWV0aW5nLCBjb250ZXh0LCBhY3Rpb24gaXRlbSwgYW5kIHBvbGl0ZSBzaWduLW9mZikuCpR1aDh9lGg8j5QoaEhoIWjlaNVo6JBoPk51YmjQKYGUfZQoaCx9lChoSIwTY3JlYXRlX3BsYW5uZXJfdGFza5Ro1X2UKGjXfZQojAl0YXNrX25hbWWUfZQoaNuMCVRhc2sgTmFtZZRo3YwGc3RyaW5nlHWMCGR1ZV9kYXRllH2UKGjbjAhEdWUgRGF0ZZRo3YwGc3RyaW5nlHWMCHByaW9yaXR5lH2UKIwHZGVmYXVsdJSMBm5vcm1hbJRo24wIUHJpb3JpdHmUaN2MBnN0cmluZ5R1dWjfXZQojAl0YXNrX25hbWWUjAhkdWVfZGF0ZZRlaNuMGWNyZWF0ZV9wbGFubmVyX3Rhc2tfaW5wdXSUaN2MBm9iamVjdJRo5Il1aOWJaCFo5mjnTmjojGdBZGRzIGFuIGFjdGlvbmFibGUgdGFzayB0byBNaWNyb3NvZnQgVG8gRG8gb3IgUGxhbm5lciwgY29tcGxldGUgd2l0aCBkdWUgZGF0ZXMgYW5kIGNhdGVnb3JpemVkIGJ1Y2tldHMulHVoOH2UaDyPlChoSGghaOVo1WjokGg+TnViaNApgZR9lChoLH2UKGhIjBdzY2hlZHVsZV9jYWxlbmRhcl9ldmVudJRo1X2UKGjXfZQoaNt9lCho24wFVGl0bGWUaN2MBnN0cmluZ5R1jApzdGFydF90aW1llH2UKGjbjApTdGFydCBUaW1llGjdjAZzdHJpbmeUdYwQZHVyYXRpb25fbWludXRlc5R9lCho24wQRHVyYXRpb24gTWludXRlc5Ro3YwHaW50ZWdlcpR1dWjfXZQojAV0aXRsZZSMCnN0YXJ0X3RpbWWUjBBkdXJhdGlvbl9taW51dGVzlGVo24wdc2NoZWR1bGVfY2FsZW5kYXJfZXZlbnRfaW5wdXSUaN2MBm9iamVjdJRo5Il1aOWJaCFo5mjnTmjojGBDcmVhdGVzIGEgdGltZS1ibG9ja2VkIGV2ZW50IG9uIHRoZSBzdHVkZW50J3MgT3V0bG9vayBjYWxlbmRhciBmb3IgdGFza3MsIHN0dWR5aW5nLCBvciBtZWV0aW5ncy6UdWg4fZRoPI+UKGhIaCFo5WjVaOiQaD5OdWKMG29wZW5haS50eXBlcy5yZXNwb25zZXMudG9vbJSMD0NvZGVJbnRlcnByZXRlcpSTlCmBlH2UKGgsfZQojAljb250YWluZXKUakEBAACML0NvZGVJbnRlcnByZXRlckNvbnRhaW5lckNvZGVJbnRlcnByZXRlclRvb2xBdXRvlJOUKYGUfZQoaCx9lChoIWjLjAhmaWxlX2lkc5ROjAxtZW1vcnlfbGltaXSUTowObmV0d29ya19wb2xpY3mUTnVoOH2UaDyPlChoIZBoPk51YmghjBBjb2RlX2ludGVycHJldGVylHVoOH2UaDyPlChqRwEAAGghkGg+TnViaNApgZR9lChoLH2UKGhIjB1nZW5lcmF0ZV9hbmRfYXJjaGl2ZV9kb2N1bWVudJRo1X2UKGjXfZQojApzdHVkZW50X2lklH2UKGjbjApTdHVkZW50IElklGjdjAZzdHJpbmeUdYwMc3R1ZGVudF9uYW1llH2UKGjbjAxTdHVkZW50IE5hbWWUaN2MBnN0cmluZ5R1jAdzdW1tYXJ5lH2UKGjbjAdTdW1tYXJ5lGjdjAZzdHJpbmeUdXVo312UKIwKc3R1ZGVudF9pZJSMDHN0dWRlbnRfbmFtZZSMB3N1bW1hcnmUZWjbjCNnZW5lcmF0ZV9hbmRfYXJjaGl2ZV9kb2N1bWVudF9pbnB1dJRo3YwGb2JqZWN0lGjkiXVo5YloIWjmaOdOaOiMQApHZW5lcmF0ZSBhIHN0dWRlbnQgc3VjY2VzcyByZXBvcnQgYW5kIHNhdmUgaXQgdG8gYmxvYiBzdG9yYWdlLgqUdWg4fZRoPI+UKGhIaCFo5WjVaOiQaD5OdWJljAV0b3BfcJRHP/AAAAAAAACMCmJhY2tncm91bmSUiYwMY29tcGxldGVkX2F0lEdB2oy7q4AAAIwMY29udmVyc2F0aW9ulE6MEW1heF9vdXRwdXRfdG9rZW5zlE6MDm1heF90b29sX2NhbGxzlE6MCm1vZGVyYXRpb26UTowUcHJldmlvdXNfcmVzcG9uc2VfaWSUTowGcHJvbXB0lE6MEHByb21wdF9jYWNoZV9rZXmUTowWcHJvbXB0X2NhY2hlX3JldGVudGlvbpSMCWluX21lbW9yeZSMCXJlYXNvbmluZ5SMHW9wZW5haS50eXBlcy5zaGFyZWQucmVhc29uaW5nlIwJUmVhc29uaW5nlJOUKYGUfZQoaCx9lCiMBmVmZm9ydJROjBBnZW5lcmF0ZV9zdW1tYXJ5lE6MB3N1bW1hcnmUTnVoOH2UjAdjb250ZXh0lE5zaDyPlChqhwEAAJBoPk51YowRc2FmZXR5X2lkZW50aWZpZXKUTowMc2VydmljZV90aWVylIwHZGVmYXVsdJRoNWg2aD+MK29wZW5haS50eXBlcy5yZXNwb25zZXMucmVzcG9uc2VfdGV4dF9jb25maWeUjBJSZXNwb25zZVRleHRDb25maWeUk5QpgZR9lChoLH2UKIwGZm9ybWF0lIwob3BlbmFpLnR5cGVzLnNoYXJlZC5yZXNwb25zZV9mb3JtYXRfdGV4dJSMElJlc3BvbnNlRm9ybWF0VGV4dJSTlCmBlH2UKGgsfZRoIWg/c2g4fZRoPI+UKGghkGg+TnVijAl2ZXJib3NpdHmUjAZtZWRpdW2UdWg4fZRoPI+UKGqSAQAAapsBAACQaD5OdWKMDHRvcF9sb2dwcm9ic5RLAIwKdHJ1bmNhdGlvbpSMCGRpc2FibGVklIwFdXNhZ2WUjCVvcGVuYWkudHlwZXMucmVzcG9uc2VzLnJlc3BvbnNlX3VzYWdllIwNUmVzcG9uc2VVc2FnZZSTlCmBlH2UKGgsfZQojAxpbnB1dF90b2tlbnOUTcEFjBRpbnB1dF90b2tlbnNfZGV0YWlsc5RqowEAAIwSSW5wdXRUb2tlbnNEZXRhaWxzlJOUKYGUfZQoaCx9lIwNY2FjaGVkX3Rva2Vuc5RNAARzaDh9lGg8j5QoarABAACQaD5OdWKMDW91dHB1dF90b2tlbnOUTX8BjBVvdXRwdXRfdG9rZW5zX2RldGFpbHOUaqMBAACME091dHB1dFRva2Vuc0RldGFpbHOUk5QpgZR9lChoLH2UjBByZWFzb25pbmdfdG9rZW5zlEsAc2g4fZRoPI+UKGq6AQAAkGg+TnVijAx0b3RhbF90b2tlbnOUTUAHdWg4fZRoPI+UKGq0AQAAar0BAABqqgEAAGqzAQAAaqkBAACQaD5OdWKMBHVzZXKUTowLX3JlcXVlc3RfaWSUjCQ5OGE2MDRhMy0yMGU0LTRmNTktYTA1Ny0zOWRjZWE0YTVjNzmUdWg4fZQojA9hZ2VudF9yZWZlcmVuY2WUTowPY29udGVudF9maWx0ZXJzlF2UKH2UKIwHYmxvY2tlZJSJjAtzb3VyY2VfdHlwZZSMBnByb21wdJSMFmNvbnRlbnRfZmlsdGVyX3Jlc3VsdHOUfZQojAZzZXh1YWyUfZQojAhmaWx0ZXJlZJSJjAhzZXZlcml0eZSMBHNhZmWUdYwEaGF0ZZR9lChqzwEAAIlq0AEAAIwEc2FmZZR1jAh2aW9sZW5jZZR9lChqzwEAAIlq0AEAAIwEc2FmZZR1jAlzZWxmX2hhcm2UfZQoas8BAACJatABAACMBHNhZmWUdYwJamFpbGJyZWFrlH2UKGrPAQAAiYwIZGV0ZWN0ZWSUiXV1jBJjb250ZW50X2ZpbHRlcl9yYXeUXZSMFmNvbnRlbnRfZmlsdGVyX29mZnNldHOUfZQojAxzdGFydF9vZmZzZXSUSwCMCmVuZF9vZmZzZXSUTX8KjAxjaGVja19vZmZzZXSUSwB1dX2UKGrIAQAAiWrJAQAAjApjb21wbGV0aW9ulGrLAQAAfZQoas0BAAB9lChqzwEAAIlq0AEAAIwEc2FmZZR1atIBAAB9lChqzwEAAIlq0AEAAIwEc2FmZZR1atUBAAB9lChqzwEAAIlq0AEAAIwEc2FmZZR1atgBAAB9lChqzwEAAIlq0AEAAIwEc2FmZZR1jBdwcm90ZWN0ZWRfbWF0ZXJpYWxfdGV4dJR9lChqzwEAAIlq3QEAAIl1jBdwcm90ZWN0ZWRfbWF0ZXJpYWxfY29kZZR9lChqzwEAAIlq3QEAAIl1dWreAQAAXZRq4AEAAH2UKGriAQAASwBq4wEAAE1NCGrkAQAASwB1dWV1aDyPlChqcQEAAGg/aMpoXmqgAQAAaLJqfAEAAGjJaMxos2qKAQAAaqIBAABqegEAAGi1anABAABoLmi4aJZotGqfAQAAaMhoNWpyAQAAaKmQaD5OdWJ1YnVijBFmdWxsX2NvbnZlcnNhdGlvbpRdlChoFimBlH2UKGgZasABAABoG12UaB4pgZR9lChoIWg/aCNOaCR9lGgmTmg/jEdAZXhlY3V0aXZlLCBnZW5lcmF0ZSBhIHdvcmQgZG9jIHRlbXBsYXRlIGZvciBhIGFzc2lnbm1lbnQgZ3JvdXAgcmVwb3J0IJRoQE5oQU5oQk5oQ05oRE5oRU5oRk5oR05oSE5oSU5oSk5oS05oTE5oTU5oTk5oT05oNE5oVE5oVU5oVk5oV05oNU5oWE5oWU5oWk5oW05oXE5oXU5oXk5oLk5oX05oYE5oYU5oYk51YmFoj05okU5oJH2UaCZOdWJoF2V1YowJc291cmNlX2lklGgMjAl0YXJnZXRfaWSUTmghaACMC01lc3NhZ2VUeXBllJOUjAhzdGFuZGFyZJSFlFKUjA50cmFjZV9jb250ZXh0c5RdlH2UKIwLdHJhY2VwYXJlbnSUjDcwMC1iNzY0MDkyODI3NDk1ZjgxZGFjMzYzNDk4Njg3OGMzMi0yY2U0YjZiZDBhZWFjY2Q5LTAxlIwHYmFnZ2FnZZSMpWF6dXJlLmFpLmFnZW50c2VydmVyLnJlc3BvbnNlX2lkPWNhcmVzcF9jY2Y0ODNmZDE3Yzc1ZGIyMDBJRnVIYU9KSUdwWjM0OGZrOEQyZ2tETnlUSVRwTldYNixhenVyZS5haS5hZ2VudHNlcnZlci5jb252ZXJzYXRpb25faWQ9LGF6dXJlLmFpLmFnZW50c2VydmVyLnN0cmVhbWluZz1GYWxzZZR1YYwPc291cmNlX3NwYW5faWRzlF2UjBAyY2U0YjZiZDBhZWFjY2Q5lGGMG29yaWdpbmFsX3JlcXVlc3RfaW5mb19ldmVudJROdWIu",
+        "__type__": "agent_framework._workflows._runner_context:WorkflowMessage"
+      }
+    ]
+  },
+  "state": {
+    "_workflow_run_kwargs": {},
+    "_executor_state": {
+      "triage_and_route": {},
+      "archivist_exec": {
+        "cache": [],
+        "full_conversation": [],
+        "agent_session": {
+          "type": "session",
+          "session_id": "6818f0ce-7be6-4126-938d-4932ca662cfc",
+          "service_session_id": null,
+          "state": {}
+        },
+        "pending_agent_requests": {},
+        "pending_responses_to_agent": []
+      },
+      "executive_exec": {
+        "cache": [],
+        "full_conversation": [
+          {
+            "__pickled__": "gAWV1AIAAAAAAACMFmFnZW50X2ZyYW1ld29yay5fdHlwZXOUjAdNZXNzYWdllJOUKYGUfZQojARyb2xllIwEdXNlcpSMCGNvbnRlbnRzlF2UaACMB0NvbnRlbnSUk5QpgZR9lCiMBHR5cGWUjAR0ZXh0lIwLYW5ub3RhdGlvbnOUTowVYWRkaXRpb25hbF9wcm9wZXJ0aWVzlH2UjBJyYXdfcmVwcmVzZW50YXRpb26UTmgOjEdAZXhlY3V0aXZlLCBnZW5lcmF0ZSBhIHdvcmQgZG9jIHRlbXBsYXRlIGZvciBhIGFzc2lnbm1lbnQgZ3JvdXAgcmVwb3J0IJSMDnByb3RlY3RlZF9kYXRhlE6MA3VyaZROjAptZWRpYV90eXBllE6MB21lc3NhZ2WUTowKZXJyb3JfY29kZZROjA1lcnJvcl9kZXRhaWxzlE6MDXVzYWdlX2RldGFpbHOUTowHY2FsbF9pZJROjARuYW1llE6MCWFyZ3VtZW50c5ROjAlleGNlcHRpb26UTowGcmVzdWx0lE6MBWl0ZW1zlE6MB2ZpbGVfaWSUTowPdmVjdG9yX3N0b3JlX2lklE6MBmlucHV0c5ROjAdvdXRwdXRzlE6MCGltYWdlX2lklE6MCGNvbW1hbmRzlE6MCnRpbWVvdXRfbXOUTowRbWF4X291dHB1dF9sZW5ndGiUTowGc3RhdHVzlE6MBnN0ZG91dJROjAZzdGRlcnKUTowJZXhpdF9jb2RllE6MCXRpbWVkX291dJROjAl0b29sX25hbWWUTowLc2VydmVyX25hbWWUTowGb3V0cHV0lE6MAmlklE6MDWZ1bmN0aW9uX2NhbGyUTowSdXNlcl9pbnB1dF9yZXF1ZXN0lE6MCGFwcHJvdmVklE6MDGNvbnNlbnRfbGlua5ROdWJhjAthdXRob3JfbmFtZZROjAptZXNzYWdlX2lklE5oEH2UaBJOdWIu",
+            "__type__": "agent_framework._types:Message"
+          },
+          {
+            "__pickled__": "gAWVYBAAAAAAAACMFmFnZW50X2ZyYW1ld29yay5fdHlwZXOUjAdNZXNzYWdllJOUKYGUfZQojARyb2xllIwJYXNzaXN0YW50lIwIY29udGVudHOUXZQoaACMB0NvbnRlbnSUk5QpgZR9lCiMBHR5cGWUjBpjb2RlX2ludGVycHJldGVyX3Rvb2xfY2FsbJSMC2Fubm90YXRpb25zlE6MFWFkZGl0aW9uYWxfcHJvcGVydGllc5R9lIwScmF3X3JlcHJlc2VudGF0aW9ulIw6b3BlbmFpLnR5cGVzLnJlc3BvbnNlcy5yZXNwb25zZV9jb2RlX2ludGVycHJldGVyX3Rvb2xfY2FsbJSMH1Jlc3BvbnNlQ29kZUludGVycHJldGVyVG9vbENhbGyUk5QpgZR9lCiMCF9fZGljdF9flH2UKIwCaWSUjDVjaV8wODNiNWYzYTQ5MTEwMGQ5MDE2YTMyZWVhODc1N2M4MTk3YTVmNjJhYTM0YmI1ZWRhZZSMBGNvZGWUWJIHAABmcm9tIGRvY3ggaW1wb3J0IERvY3VtZW50DQoNCiMgQ3JlYXRlIGEgbmV3IFdvcmQgZG9jdW1lbnQNCmRvYyA9IERvY3VtZW50KCkNCg0KIyBBc3NpZ25tZW50IEdyb3VwIFJlcG9ydCBUZW1wbGF0ZSBTdHJ1Y3R1cmUNCiMgVGl0bGUgUGFnZQ0KZG9jLmFkZF9oZWFkaW5nKCdBc3NpZ25tZW50IEdyb3VwIFJlcG9ydCcsIGxldmVsPTEpDQpkb2MuYWRkX3BhcmFncmFwaCgnQ291cnNlIE5hbWU6IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fJykNCmRvYy5hZGRfcGFyYWdyYXBoKCdJbnN0cnVjdG9yOiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fJykNCmRvYy5hZGRfcGFyYWdyYXBoKCdTdWJtaXNzaW9uIERhdGU6IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18nKQ0KZG9jLmFkZF9wYXJhZ3JhcGgoJ0dyb3VwIE1lbWJlcnM6JykNCmRvYy5hZGRfcGFyYWdyYXBoKCctIF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fJykNCmRvYy5hZGRfcGFyYWdyYXBoKCctIF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fJykNCmRvYy5hZGRfcGFyYWdyYXBoKCctIF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fJykNCmRvYy5hZGRfcGFyYWdyYXBoKCcnKQ0KDQpkb2MuYWRkX3BhZ2VfYnJlYWsoKQ0KDQojIFRhYmxlIG9mIENvbnRlbnRzIFBsYWNlaG9sZGVyDQpkb2MuYWRkX2hlYWRpbmcoJ1RhYmxlIG9mIENvbnRlbnRzJywgbGV2ZWw9MSkNCmRvYy5hZGRfcGFyYWdyYXBoKCcxLiBFeGVjdXRpdmUgU3VtbWFyeSAuLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4gUGFnZSBYJykNCmRvYy5hZGRfcGFyYWdyYXBoKCcyLiBJbnRyb2R1Y3Rpb24gLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4gUGFnZSBYJykNCmRvYy5hZGRfcGFyYWdyYXBoKCczLiBNZXRob2RvbG9neSAuLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uIFBhZ2UgWCcpDQpkb2MuYWRkX3BhcmFncmFwaCgnNC4gQW5hbHlzaXMgYW5kIFJlc3VsdHMgLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4gUGFnZSBYJykNCmRvYy5hZGRfcGFyYWdyYXBoKCc1LiBDb25jbHVzaW9uIGFuZCBSZWNvbW1lbmRhdGlvbnMgLi4uLi4uLi4uLi4uLi4uIFBhZ2UgWCcpDQpkb2MuYWRkX3BhcmFncmFwaCgnNi4gUmVmZXJlbmNlcyAuLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLiBQYWdlIFgnKQ0KZG9jLmFkZF9wYXJhZ3JhcGgoJ0FwcGVuZGljZXMgKGlmIGFwcGxpY2FibGUpIC4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4gUGFnZSBYJykNCg0KZG9jLmFkZF9wYWdlX2JyZWFrKCkNCg0KIyBTZWN0aW9uIFRlbXBsYXRlcw0Kc2VjdGlvbnMgPSBbDQogICAgJ0V4ZWN1dGl2ZSBTdW1tYXJ5JywNCiAgICAnSW50cm9kdWN0aW9uJywNCiAgICAnTWV0aG9kb2xvZ3knLA0KICAgICdBbmFseXNpcyBhbmQgUmVzdWx0cycsDQogICAgJ0NvbmNsdXNpb24gYW5kIFJlY29tbWVuZGF0aW9ucycsDQogICAgJ1JlZmVyZW5jZXMnLA0KICAgICdBcHBlbmRpY2VzJw0KXQ0KDQpmb3Igc2VjdGlvbiBpbiBzZWN0aW9uczoNCiAgICBkb2MuYWRkX2hlYWRpbmcoc2VjdGlvbiwgbGV2ZWw9MSkNCiAgICBkb2MuYWRkX3BhcmFncmFwaCgnW1dyaXRlIHlvdXIgY29udGVudCBoZXJlLi4uXScpDQogICAgZG9jLmFkZF9wYWdlX2JyZWFrKCkNCg0KIyBTYXZlIHRoZSBkb2N1bWVudA0Kb3V0cHV0X3BhdGggPSAnL21udC9kYXRhL0Fzc2lnbm1lbnRfR3JvdXBfUmVwb3J0X1RlbXBsYXRlLmRvY3gnDQpkb2Muc2F2ZShvdXRwdXRfcGF0aCkNCg0Kb3V0cHV0X3BhdGiUjAxjb250YWluZXJfaWSUjDVjbnRyXzZhMzJlZWE2M2NhMDgxOTA5ZGVmZWU5ODNmYTEwM2EwMGFlNWJlM2IyNDJhMTU1ZpSMB291dHB1dHOUTowGc3RhdHVzlIwJY29tcGxldGVklGgNjBVjb2RlX2ludGVycHJldGVyX2NhbGyUdYwSX19weWRhbnRpY19leHRyYV9flH2UjAtyZXNwb25zZV9pZJSMN3Jlc3BfMDgzYjVmM2E0OTExMDBkOTAxNmEzMmVlYTVmMmNjODE5NzliOTY1ODQwZTlhNTc5NTiUc4wXX19weWRhbnRpY19maWVsZHNfc2V0X1+Uj5QoaA1oHGgmaCBoIWgaaB6QjBRfX3B5ZGFudGljX3ByaXZhdGVfX5ROdWKMBHRleHSUTowOcHJvdGVjdGVkX2RhdGGUTowDdXJplE6MCm1lZGlhX3R5cGWUTowHbWVzc2FnZZROjAplcnJvcl9jb2RllE6MDWVycm9yX2RldGFpbHOUTowNdXNhZ2VfZGV0YWlsc5ROjAdjYWxsX2lklGgbjARuYW1llE6MCWFyZ3VtZW50c5ROjAlleGNlcHRpb26UTowGcmVzdWx0lE6MBWl0ZW1zlE6MB2ZpbGVfaWSUTowPdmVjdG9yX3N0b3JlX2lklE6MBmlucHV0c5RdlGgKKYGUfZQoaA1oK2gPTmgQfZRoEmgWaCtoHWgsTmgtTmguTmgvTmgwTmgxTmgyTmgzTmg0Tmg1Tmg2Tmg3Tmg4Tmg5Tmg6Tmg7TmggTowIaW1hZ2VfaWSUTowIY29tbWFuZHOUTowKdGltZW91dF9tc5ROjBFtYXhfb3V0cHV0X2xlbmd0aJROaCFOjAZzdGRvdXSUTowGc3RkZXJylE6MCWV4aXRfY29kZZROjAl0aW1lZF9vdXSUTowJdG9vbF9uYW1llE6MC3NlcnZlcl9uYW1llE6MBm91dHB1dJROaBpOjA1mdW5jdGlvbl9jYWxslE6MEnVzZXJfaW5wdXRfcmVxdWVzdJROjAhhcHByb3ZlZJROjAxjb25zZW50X2xpbmuUTnViYWggTmhATmhBTmhCTmhDTmghTmhETmhFTmhGTmhHTmhITmhJTmhKTmgaTmhLTmhMTmhNTmhOTnViaAopgZR9lChoDYwcY29kZV9pbnRlcnByZXRlcl90b29sX3Jlc3VsdJRoD05oEH2UaBJoFmgrTmgsTmgtTmguTmgvTmgwTmgxTmgyTmgzaBtoNE5oNU5oNk5oN05oOE5oOU5oOk5oO05oIF2UaEBOaEFOaEJOaENOaCFOaEROaEVOaEZOaEdOaEhOaElOaEpOaBpOaEtOaExOaE1OaE5OdWJoCimBlH2UKGgNaCtoD12UfZQoaA2MCGNpdGF0aW9ulGg5jCZjZmlsZV82YTMyZWVhZTQ1MzQ4MTkwOTZhMzFkNjdlNjI4NzI4YZSMA3VybJSMJUFzc2lnbm1lbnRfR3JvdXBfUmVwb3J0X1RlbXBsYXRlLmRvY3iUaBB9lGgejDVjbnRyXzZhMzJlZWE2M2NhMDgxOTA5ZGVmZWU5ODNmYTEwM2EwMGFlNWJlM2IyNDJhMTU1ZpRzjBFhbm5vdGF0ZWRfcmVnaW9uc5RdlH2UKGgNjAl0ZXh0X3NwYW6UjAtzdGFydF9pbmRleJRLUYwJZW5kX2luZGV4lEuIdWFoEowrb3BlbmFpLnR5cGVzLnJlc3BvbnNlcy5yZXNwb25zZV9vdXRwdXRfdGV4dJSMH0Fubm90YXRpb25Db250YWluZXJGaWxlQ2l0YXRpb26Uk5QpgZR9lChoGH2UKGgeaF1oY0uIaDloWYwIZmlsZW5hbWWUaFtoYktRaA2MF2NvbnRhaW5lcl9maWxlX2NpdGF0aW9ulHVoJH2UaCiPlChoDWhiaGNoamg5aB6QaCpOdWJ1YWgQfZRoEmhkjBJSZXNwb25zZU91dHB1dFRleHSUk5QpgZR9lChoGH2UKGgPXZRoZ2FoK4yKVGhlIGFzc2lnbm1lbnQgZ3JvdXAgcmVwb3J0IHRlbXBsYXRlIGlzIHJlYWR5LiBbRG93bmxvYWQgdGhlIFdvcmQgZG9jdW1lbnQgaGVyZV0oc2FuZGJveDovbW50L2RhdGEvQXNzaWdubWVudF9Hcm91cF9SZXBvcnRfVGVtcGxhdGUuZG9jeCkulGgNjAtvdXRwdXRfdGV4dJSMCGxvZ3Byb2JzlF2UdWgkfZRoKI+UKGgNaHdoK2gPkGgqTnViaCtodWgsTmgtTmguTmgvTmgwTmgxTmgyTmgzTmg0Tmg1Tmg2Tmg3Tmg4Tmg5Tmg6Tmg7TmggTmhATmhBTmhCTmhDTmghTmhETmhFTmhGTmhHTmhITmhJTmhKTmgaTmhLTmhMTmhNTmhOTnViZYwLYXV0aG9yX25hbWWUjA9leGVjdXRpdmVfYWdlbnSUjAptZXNzYWdlX2lklE5oEH2UaBJOdWIu",
+            "__type__": "agent_framework._types:Message"
+          }
+        ],
+        "agent_session": {
+          "type": "session",
+          "session_id": "21f5cb64-134c-4163-90f2-36f14846c099",
+          "service_session_id": null,
+          "state": {
+            "in_memory": {
+              "messages": [
+                {
+                  "type": "message",
+                  "role": "user",
+                  "contents": [
+                    {
+                      "type": "text",
+                      "text": "@executive, generate a word doc template for a assignment group report ",
+                      "additional_properties": {}
+                    }
+                  ],
+                  "additional_properties": {}
+                },
+                {
+                  "type": "message",
+                  "role": "assistant",
+                  "contents": [
+                    {
+                      "type": "code_interpreter_tool_call",
+                      "call_id": "ci_05bcee997dfe42e9016a32ee0b96b08193a2e2433034e9a26f",
+                      "inputs": [
+                        {
+                          "type": "text",
+                          "text": "from docx import Document\r\n\r\n# Create a Word Document for Assignment Group Report Template\r\ndoc = Document()\r\n\r\n# Title Page\r\ndoc.add_heading('Assignment Group Report', level=1)\r\ndoc.add_paragraph('\\n')\r\ndoc.add_paragraph('**Course Name**: ______________________')\r\ndoc.add_paragraph('**Instructor**: ______________________')\r\ndoc.add_paragraph('**Group Members**:\\n'\r\n                  '1. ______________________\\n'\r\n                  '2. ______________________\\n'\r\n                  '3. ______________________\\n'\r\n                  '4. ______________________\\n')\r\ndoc.add_paragraph('**Submission Date**: ______________________')\r\n\r\n# Section 1: Executive Summary\r\ndoc.add_heading('1. Executive Summary', level=2)\r\ndoc.add_paragraph('Provide a brief overview of the report, the aim of the assignment, and the outcomes achieved.')\r\n\r\n# Section 2: Introduction\r\ndoc.add_heading('2. Introduction', level=2)\r\ndoc.add_paragraph('Describe the background, purpose, and objectives of the assignment. Explain the scope of work covered by the group.')\r\n\r\n# Section 3: Methodology\r\ndoc.add_heading('3. Methodology', level=2)\r\ndoc.add_paragraph('Outline the approach, strategies, tools, or techniques used by the group to complete the assignment.')\r\n\r\n# Section 4: Findings and Analysis\r\ndoc.add_heading('4. Findings and Analysis', level=2)\r\ndoc.add_paragraph('Detail the key findings from your group’s work. Support with data, graphs, and charts where applicable.')\r\n\r\n# Section 5: Conclusion and Recommendations\r\ndoc.add_heading('5. Conclusion and Recommendations', level=2)\r\ndoc.add_paragraph('Summarize your group’s findings and provide recommendations based on the results achieved.')\r\n\r\n# Section 6: References\r\ndoc.add_heading('6. References', level=2)\r\ndoc.add_paragraph('List all sources and references used in APA or MLA format.')\r\n\r\n# Section 7: Appendix\r\ndoc.add_heading('7. Appendix', level=2)\r\ndoc.add_paragraph('Include supporting materials, calculations, or any additional content deemed relevant.')\r\n\r\n# Save the Document\r\nfile_path = '/mnt/data/Assignment_Group_Report_Template.docx'\r\ndoc.save(file_path)\r\n\r\nfile_path",
+                          "additional_properties": {}
+                        }
+                      ],
+                      "additional_properties": {}
+                    },
+                    {
+                      "type": "code_interpreter_tool_result",
+                      "call_id": "ci_05bcee997dfe42e9016a32ee0b96b08193a2e2433034e9a26f",
+                      "outputs": [],
+                      "additional_properties": {}
+                    },
+                    {
+                      "type": "text",
+                      "text": "The assignment group report template has been created. [Download the Word document here](sandbox:/mnt/data/Assignment_Group_Report_Template.docx).",
+                      "additional_properties": {},
+                      "annotations": [
+                        {
+                          "type": "citation",
+                          "file_id": "cfile_6a32ee12f0908190a4f6f12f7b4d15d8",
+                          "url": "Assignment_Group_Report_Template.docx",
+                          "additional_properties": {
+                            "container_id": "cntr_6a32ee0971608190a2ba61da26bf626e089f68c0dbc61d23"
+                          },
+                          "annotated_regions": [
+                            {
+                              "type": "text_span",
+                              "start_index": 89,
+                              "end_index": 144
+                            }
+                          ],
+                          "raw_representation": {
+                            "__pickled__": "gAWVrwEAAAAAAACMK29wZW5haS50eXBlcy5yZXNwb25zZXMucmVzcG9uc2Vfb3V0cHV0X3RleHSUjB9Bbm5vdGF0aW9uQ29udGFpbmVyRmlsZUNpdGF0aW9ulJOUKYGUfZQojAhfX2RpY3RfX5R9lCiMDGNvbnRhaW5lcl9pZJSMNWNudHJfNmEzMmVlMDk3MTYwODE5MGEyYmE2MWRhMjZiZjYyNmUwODlmNjhjMGRiYzYxZDIzlIwJZW5kX2luZGV4lEuQjAdmaWxlX2lklIwmY2ZpbGVfNmEzMmVlMTJmMDkwODE5MGE0ZjZmMTJmN2I0ZDE1ZDiUjAhmaWxlbmFtZZSMJUFzc2lnbm1lbnRfR3JvdXBfUmVwb3J0X1RlbXBsYXRlLmRvY3iUjAtzdGFydF9pbmRleJRLWYwEdHlwZZSMF2NvbnRhaW5lcl9maWxlX2NpdGF0aW9ulHWMEl9fcHlkYW50aWNfZXh0cmFfX5R9lIwXX19weWRhbnRpY19maWVsZHNfc2V0X1+Uj5QoaA9oDmgJaAxoCmgHkIwUX19weWRhbnRpY19wcml2YXRlX1+UTnViLg==",
+                            "__type__": "openai.types.responses.response_output_text:AnnotationContainerFileCitation"
+                          }
+                        }
+                      ]
+                    }
+                  ],
+                  "author_name": "executive_agent",
+                  "additional_properties": {}
+                },
+                {
+                  "type": "message",
+                  "role": "user",
+                  "contents": [
+                    {
+                      "type": "text",
+                      "text": "@executive, generate a word doc template for a assignment group report ",
+                      "additional_properties": {}
+                    }
+                  ],
+                  "additional_properties": {}
+                },
+                {
+                  "type": "message",
+                  "role": "assistant",
+                  "contents": [
+                    {
+                      "type": "code_interpreter_tool_call",
+                      "call_id": "ci_083b5f3a491100d9016a32eea8757c8197a5f62aa34bb5edae",
+                      "inputs": [
+                        {
+                          "type": "text",
+                          "text": "from docx import Document\r\n\r\n# Create a new Word document\r\ndoc = Document()\r\n\r\n# Assignment Group Report Template Structure\r\n# Title Page\r\ndoc.add_heading('Assignment Group Report', level=1)\r\ndoc.add_paragraph('Course Name: ___________________________________')\r\ndoc.add_paragraph('Instructor: _____________________________________')\r\ndoc.add_paragraph('Submission Date: _______________________________')\r\ndoc.add_paragraph('Group Members:')\r\ndoc.add_paragraph('- _______________________________________________')\r\ndoc.add_paragraph('- _______________________________________________')\r\ndoc.add_paragraph('- _______________________________________________')\r\ndoc.add_paragraph('')\r\n\r\ndoc.add_page_break()\r\n\r\n# Table of Contents Placeholder\r\ndoc.add_heading('Table of Contents', level=1)\r\ndoc.add_paragraph('1. Executive Summary ....................................... Page X')\r\ndoc.add_paragraph('2. Introduction ..................................................... Page X')\r\ndoc.add_paragraph('3. Methodology ................................................. Page X')\r\ndoc.add_paragraph('4. Analysis and Results ...................................... Page X')\r\ndoc.add_paragraph('5. Conclusion and Recommendations ............... Page X')\r\ndoc.add_paragraph('6. References ..................................................... Page X')\r\ndoc.add_paragraph('Appendices (if applicable) .................................. Page X')\r\n\r\ndoc.add_page_break()\r\n\r\n# Section Templates\r\nsections = [\r\n    'Executive Summary',\r\n    'Introduction',\r\n    'Methodology',\r\n    'Analysis and Results',\r\n    'Conclusion and Recommendations',\r\n    'References',\r\n    'Appendices'\r\n]\r\n\r\nfor section in sections:\r\n    doc.add_heading(section, level=1)\r\n    doc.add_paragraph('[Write your content here...]')\r\n    doc.add_page_break()\r\n\r\n# Save the document\r\noutput_path = '/mnt/data/Assignment_Group_Report_Template.docx'\r\ndoc.save(output_path)\r\n\r\noutput_path",
+                          "additional_properties": {}
+                        }
+                      ],
+                      "additional_properties": {}
+                    },
+                    {
+                      "type": "code_interpreter_tool_result",
+                      "call_id": "ci_083b5f3a491100d9016a32eea8757c8197a5f62aa34bb5edae",
+                      "outputs": [],
+                      "additional_properties": {}
+                    },
+                    {
+                      "type": "text",
+                      "text": "The assignment group report template is ready. [Download the Word document here](sandbox:/mnt/data/Assignment_Group_Report_Template.docx).",
+                      "additional_properties": {},
+                      "annotations": [
+                        {
+                          "type": "citation",
+                          "file_id": "cfile_6a32eeae4534819096a31d67e628728a",
+                          "url": "Assignment_Group_Report_Template.docx",
+                          "additional_properties": {
+                            "container_id": "cntr_6a32eea63ca081909defee983fa103a00ae5be3b242a155f"
+                          },
+                          "annotated_regions": [
+                            {
+                              "type": "text_span",
+                              "start_index": 81,
+                              "end_index": 136
+                            }
+                          ],
+                          "raw_representation": {
+                            "__pickled__": "gAWVrwEAAAAAAACMK29wZW5haS50eXBlcy5yZXNwb25zZXMucmVzcG9uc2Vfb3V0cHV0X3RleHSUjB9Bbm5vdGF0aW9uQ29udGFpbmVyRmlsZUNpdGF0aW9ulJOUKYGUfZQojAhfX2RpY3RfX5R9lCiMDGNvbnRhaW5lcl9pZJSMNWNudHJfNmEzMmVlYTYzY2EwODE5MDlkZWZlZTk4M2ZhMTAzYTAwYWU1YmUzYjI0MmExNTVmlIwJZW5kX2luZGV4lEuIjAdmaWxlX2lklIwmY2ZpbGVfNmEzMmVlYWU0NTM0ODE5MDk2YTMxZDY3ZTYyODcyOGGUjAhmaWxlbmFtZZSMJUFzc2lnbm1lbnRfR3JvdXBfUmVwb3J0X1RlbXBsYXRlLmRvY3iUjAtzdGFydF9pbmRleJRLUYwEdHlwZZSMF2NvbnRhaW5lcl9maWxlX2NpdGF0aW9ulHWMEl9fcHlkYW50aWNfZXh0cmFfX5R9lIwXX19weWRhbnRpY19maWVsZHNfc2V0X1+Uj5QoaA9oDmgJaAxoCmgHkIwUX19weWRhbnRpY19wcml2YXRlX1+UTnViLg==",
+                            "__type__": "openai.types.responses.response_output_text:AnnotationContainerFileCitation"
+                          }
+                        }
+                      ]
+                    }
+                  ],
+                  "author_name": "executive_agent",
+                  "additional_properties": {}
+                }
+              ]
+            }
+          }
+        },
+        "pending_agent_requests": {},
+        "pending_responses_to_agent": []
+      },
+      "career_coach_exec": {
+        "cache": [],
+        "full_conversation": [],
+        "agent_session": {
+          "type": "session",
+          "session_id": "5cd7df48-1811-4619-b7bd-875b272e0ee0",
+          "service_session_id": null,
+          "state": {}
+        },
+        "pending_agent_requests": {},
+        "pending_responses_to_agent": []
+      },
+      "front_desk_exec": {
+        "cache": [],
+        "full_conversation": [
+          {
+            "__pickled__": "gAWVrAIAAAAAAACMFmFnZW50X2ZyYW1ld29yay5fdHlwZXOUjAdNZXNzYWdllJOUKYGUfZQojARyb2xllIwEdXNlcpSMCGNvbnRlbnRzlF2UaACMB0NvbnRlbnSUk5QpgZR9lCiMBHR5cGWUjAR0ZXh0lIwLYW5ub3RhdGlvbnOUTowVYWRkaXRpb25hbF9wcm9wZXJ0aWVzlH2UjBJyYXdfcmVwcmVzZW50YXRpb26UTmgOjB9IZWxsbywgd2hhdCBhZ2VudHMgY2FuIGkgaGF2ZT8glIwOcHJvdGVjdGVkX2RhdGGUTowDdXJplE6MCm1lZGlhX3R5cGWUTowHbWVzc2FnZZROjAplcnJvcl9jb2RllE6MDWVycm9yX2RldGFpbHOUTowNdXNhZ2VfZGV0YWlsc5ROjAdjYWxsX2lklE6MBG5hbWWUTowJYXJndW1lbnRzlE6MCWV4Y2VwdGlvbpROjAZyZXN1bHSUTowFaXRlbXOUTowHZmlsZV9pZJROjA92ZWN0b3Jfc3RvcmVfaWSUTowGaW5wdXRzlE6MB291dHB1dHOUTowIaW1hZ2VfaWSUTowIY29tbWFuZHOUTowKdGltZW91dF9tc5ROjBFtYXhfb3V0cHV0X2xlbmd0aJROjAZzdGF0dXOUTowGc3Rkb3V0lE6MBnN0ZGVycpROjAlleGl0X2NvZGWUTowJdGltZWRfb3V0lE6MCXRvb2xfbmFtZZROjAtzZXJ2ZXJfbmFtZZROjAZvdXRwdXSUTowCaWSUTowNZnVuY3Rpb25fY2FsbJROjBJ1c2VyX2lucHV0X3JlcXVlc3SUTowIYXBwcm92ZWSUTowMY29uc2VudF9saW5rlE51YmGMC2F1dGhvcl9uYW1llE6MCm1lc3NhZ2VfaWSUTmgQfZRoEk51Yi4=",
+            "__type__": "agent_framework._types:Message"
+          },
+          {
+            "__pickled__": "gAWV2QQAAAAAAACMFmFnZW50X2ZyYW1ld29yay5fdHlwZXOUjAdNZXNzYWdllJOUKYGUfZQojARyb2xllIwJYXNzaXN0YW50lIwIY29udGVudHOUXZRoAIwHQ29udGVudJSTlCmBlH2UKIwEdHlwZZSMBHRleHSUjAthbm5vdGF0aW9uc5ROjBVhZGRpdGlvbmFsX3Byb3BlcnRpZXOUfZSMEnJhd19yZXByZXNlbnRhdGlvbpSMK29wZW5haS50eXBlcy5yZXNwb25zZXMucmVzcG9uc2Vfb3V0cHV0X3RleHSUjBJSZXNwb25zZU91dHB1dFRleHSUk5QpgZR9lCiMCF9fZGljdF9flH2UKGgPXZRoDlhdAQAASGVyZeKAmXMgaG93IHlvdSBjYW4gbmF2aWdhdGUgdGhlIHN5c3RlbSB3aXRoIHNwZWNpYWxpemVkIGFnZW50czogIAoKKiDwn5OaICoqQGFyY2hpdmlzdCoqIOKGkiBGb3IgZW1haWwvZG9jdW1lbnQgc2VhcmNoZXMgYW5kIGV4dHJhY3RpbmcgZGVhZGxpbmVzICAKKiDwn5OFICoqQGV4ZWN1dGl2ZSoqIOKGkiBGb3Igc2NoZWR1bGluZywgdGFzayBtYW5hZ2VtZW50LCBhbmQgYXBwcm92YWxzICAKKiDwn5K8ICoqQGNhcmVlcioqIOKGkiBGb3IgcmVzdW1lcywgaW50ZXJ2aWV3cywgYW5kIHNraWxsIGFuYWx5c2lzICAKCkxldCBtZSBrbm93IHdoaWNoIG9uZSB5b3UnZCBsaWtlIHRvIGNvbm5lY3Qgd2l0aCEg8J+YipRoDYwLb3V0cHV0X3RleHSUjAhsb2dwcm9ic5RdlHWMEl9fcHlkYW50aWNfZXh0cmFfX5R9lIwXX19weWRhbnRpY19maWVsZHNfc2V0X1+Uj5QoaA1oHWgOaA+QjBRfX3B5ZGFudGljX3ByaXZhdGVfX5ROdWJoDmgbjA5wcm90ZWN0ZWRfZGF0YZROjAN1cmmUTowKbWVkaWFfdHlwZZROjAdtZXNzYWdllE6MCmVycm9yX2NvZGWUTowNZXJyb3JfZGV0YWlsc5ROjA11c2FnZV9kZXRhaWxzlE6MB2NhbGxfaWSUTowEbmFtZZROjAlhcmd1bWVudHOUTowJZXhjZXB0aW9ulE6MBnJlc3VsdJROjAVpdGVtc5ROjAdmaWxlX2lklE6MD3ZlY3Rvcl9zdG9yZV9pZJROjAZpbnB1dHOUTowHb3V0cHV0c5ROjAhpbWFnZV9pZJROjAhjb21tYW5kc5ROjAp0aW1lb3V0X21zlE6MEW1heF9vdXRwdXRfbGVuZ3RolE6MBnN0YXR1c5ROjAZzdGRvdXSUTowGc3RkZXJylE6MCWV4aXRfY29kZZROjAl0aW1lZF9vdXSUTowJdG9vbF9uYW1llE6MC3NlcnZlcl9uYW1llE6MBm91dHB1dJROjAJpZJROjA1mdW5jdGlvbl9jYWxslE6MEnVzZXJfaW5wdXRfcmVxdWVzdJROjAhhcHByb3ZlZJROjAxjb25zZW50X2xpbmuUTnViYYwLYXV0aG9yX25hbWWUjBBmcm9udF9kZXNrX2FnZW50lIwKbWVzc2FnZV9pZJROaBB9lGgSTnViLg==",
+            "__type__": "agent_framework._types:Message"
+          }
+        ],
+        "agent_session": {
+          "type": "session",
+          "session_id": "ebd2409e-78e0-4f01-8781-21ff22776a51",
+          "service_session_id": null,
+          "state": {
+            "in_memory": {
+              "messages": [
+                {
+                  "type": "message",
+                  "role": "user",
+                  "contents": [
+                    {
+                      "type": "text",
+                      "text": "Hello, what is the time now? ",
+                      "additional_properties": {}
+                    }
+                  ],
+                  "additional_properties": {}
+                },
+                {
+                  "type": "message",
+                  "role": "assistant",
+                  "contents": [
+                    {
+                      "type": "function_call",
+                      "call_id": "call_MlhCwTplZLfdpahZkmSfIy53",
+                      "name": "get_current_time",
+                      "arguments": "{}",
+                      "additional_properties": {
+                        "fc_id": "fc_0f073e768768d239016a32ed7698088194bf5e40fdaf5619ad",
+                        "status": "completed"
+                      }
+                    }
+                  ],
+                  "author_name": "front_desk_agent",
+                  "additional_properties": {}
+                },
+                {
+                  "type": "message",
+                  "role": "tool",
+                  "contents": [
+                    {
+                      "type": "function_result",
+                      "call_id": "call_MlhCwTplZLfdpahZkmSfIy53",
+                      "exception": "'No time zone found with key Asia/Shanghai'",
+                      "result": "Error: Function failed.",
+                      "items": [
+                        {
+                          "type": "text",
+                          "text": "Error: Function failed.",
+                          "additional_properties": {}
+                        }
+                      ],
+                      "additional_properties": {
+                        "fc_id": "fc_0f073e768768d239016a32ed7698088194bf5e40fdaf5619ad",
+                        "status": "completed"
+                      }
+                    }
+                  ],
+                  "author_name": "front_desk_agent",
+                  "additional_properties": {}
+                },
+                {
+                  "type": "message",
+                  "role": "assistant",
+                  "contents": [
+                    {
+                      "type": "text",
+                      "text": 

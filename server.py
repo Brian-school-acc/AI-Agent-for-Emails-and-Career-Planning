@@ -64,10 +64,10 @@ def main() -> None:
     front_desk_agent = create_front_desk_agent(credential=credential)
 
     # Wrap only specialist agents inside target Executors
-    archivist_agent_executor = AgentExecutor(archivist_agent, id="archivist_exec", context_mode="last_agent") # type: ignore
-    executive_agent_executor = AgentExecutor(executive_agent, id="executive_exec", context_mode="last_agent") # type: ignore
-    career_coach_agent_executor = AgentExecutor(career_coach_agent, id="career_coach_exec", context_mode="last_agent") # type: ignore
-    front_desk_agent_executor = AgentExecutor(front_desk_agent, id="front_desk_exec", context_mode="last_agent") # type: ignore
+    archivist_agent_executor = AgentExecutor(archivist_agent, id="archivist_exec", context_mode="full") # type: ignore
+    executive_agent_executor = AgentExecutor(executive_agent, id="executive_exec", context_mode="full") # type: ignore
+    career_coach_agent_executor = AgentExecutor(career_coach_agent, id="career_coach_exec", context_mode="full") # type: ignore
+    front_desk_agent_executor = AgentExecutor(front_desk_agent, id="front_desk_exec", context_mode="full") # type: ignore
 
     # Establish clean structural layout using programmatic routing
     workflow = (
