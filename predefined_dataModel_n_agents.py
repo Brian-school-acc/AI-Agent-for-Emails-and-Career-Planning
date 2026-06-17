@@ -12,14 +12,14 @@ from agent_framework import (
 from agent_framework.foundry import FoundryChatClient
 from azure.identity import DefaultAzureCredential
 from pydantic import BaseModel, Field  # Structured outputs for safer parsing
-from refined_prompt import (
+from prompts import (
     TRIAGE_PROMPT,
     ARCHIVIST_PROMPT,
     EXECUTIVE_PROMPT,
     CAREER_COACH_PROMPT,
     FRONTDESK_PROMPT
 )
-from tools import file_search, summarize_document
+from tools import summarize_document, inquire_abbrieviations
 from front_desk_tools import get_weather, get_current_time, get_general_faq
 # from archivist_tools import (
 
@@ -150,6 +150,7 @@ def create_archivist_agent(credential=DefaultAzureCredential()) -> Agent:
     )
 
     tool_list: list[Any] = [
+        inquire_abbrieviations,
         summarize_document,
         web_search_tool,
     ]
@@ -169,6 +170,7 @@ def create_executive_agent(credential=DefaultAzureCredential()) -> Agent:
     code_interpreter_tool = client.get_code_interpreter_tool()
 
     tool_list: list[Any] = [
+        inquire_abbrieviations,
         draft_lecturer_email,
         create_planner_task,
         schedule_calendar_event,
@@ -193,6 +195,7 @@ def create_career_coach_agent(credential=DefaultAzureCredential()) -> Agent:
     code_interpreter_tool = client.get_code_interpreter_tool()
 
     tool_list: list[Any] = [
+        inquire_abbrieviations,
         web_search_tool,
         code_interpreter_tool,
         analyze_resume_skill_gaps,
@@ -219,6 +222,7 @@ def create_front_desk_agent(credential=DefaultAzureCredential()) -> Agent:
     )
 
     tool_list: list[Any] = [
+        inquire_abbrieviations,
         get_weather,
         get_current_time,
         get_general_faq,

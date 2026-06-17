@@ -1,20 +1,10 @@
 
 TODO !!!
 1. Agent
-    - fallback: FrontDeskAgent
-    - tool 
-        - web-search
-        - file-search
-    - proper response output format (ugly output on playground because there are a lot of json objects)
-    - make better prompts
-2. connection to microsoft services
-    - Outlook
-    - Word
-    - PowerPoint
-
-- testing
-    - quality of the analysis of doc content
-    - quality of data retrieved about cuhk
+    - tool
+    - refine prompts
+2. documents management
+3. connection to Outlook (local for demo?)
 
 
 DON'T DO
