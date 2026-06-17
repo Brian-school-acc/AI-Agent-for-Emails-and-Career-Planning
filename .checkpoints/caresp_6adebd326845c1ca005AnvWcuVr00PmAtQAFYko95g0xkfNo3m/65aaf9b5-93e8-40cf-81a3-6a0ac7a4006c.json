@@ -1,0 +1,156 @@
+{
+  "workflow_name": "agent-cuhk-workflow",
+  "graph_signature_hash": "40cdf920d61e23b2559ba0c4fad8b5774316cd2943612c893a67419d3d016e2c",
+  "checkpoint_id": "65aaf9b5-93e8-40cf-81a3-6a0ac7a4006c",
+  "previous_checkpoint_id": "1abf6b2c-ec47-4500-9795-562af44193c5",
+  "timestamp": "2026-06-17T03:09:54.637657+00:00",
+  "messages": {},
+  "state": {
+    "_workflow_run_kwargs": {},
+    "_executor_state": {
+      "triage_and_route": {},
+      "archivist_exec": {
+        "cache": [],
+        "full_conversation": [],
+        "agent_session": {
+          "type": "session",
+          "session_id": "d636b50b-9e1d-4957-aa21-fb06dbb954a9",
+          "service_session_id": null,
+          "state": {}
+        },
+        "pending_agent_requests": {},
+        "pending_responses_to_agent": []
+      },
+      "executive_exec": {
+        "cache": [],
+        "full_conversation": [],
+        "agent_session": {
+          "type": "session",
+          "session_id": "6e4efd22-dacf-4e06-b0d2-203799b2a865",
+          "service_session_id": null,
+          "state": {}
+        },
+        "pending_agent_requests": {},
+        "pending_responses_to_agent": []
+      },
+      "career_coach_exec": {
+        "cache": [],
+        "full_conversation": [],
+        "agent_session": {
+          "type": "session",
+          "session_id": "b8afcc36-a911-4be3-b3cb-995ecee72489",
+          "service_session_id": null,
+          "state": {}
+        },
+        "pending_agent_requests": {},
+        "pending_responses_to_agent": []
+      },
+      "front_desk_exec": {
+        "cache": [],
+        "full_conversation": [
+          {
+            "__pickled__": "gAWVqgIAAAAAAACMFmFnZW50X2ZyYW1ld29yay5fdHlwZXOUjAdNZXNzYWdllJOUKYGUfZQojARyb2xllIwEdXNlcpSMCGNvbnRlbnRzlF2UaACMB0NvbnRlbnSUk5QpgZR9lCiMBHR5cGWUjAR0ZXh0lIwLYW5ub3RhdGlvbnOUTowVYWRkaXRpb25hbF9wcm9wZXJ0aWVzlH2UjBJyYXdfcmVwcmVzZW50YXRpb26UTmgOjB1IZWxsbywgd2hhdCBpcyB0aGUgdGltZSBub3c/IJSMDnByb3RlY3RlZF9kYXRhlE6MA3VyaZROjAptZWRpYV90eXBllE6MB21lc3NhZ2WUTowKZXJyb3JfY29kZZROjA1lcnJvcl9kZXRhaWxzlE6MDXVzYWdlX2RldGFpbHOUTowHY2FsbF9pZJROjARuYW1llE6MCWFyZ3VtZW50c5ROjAlleGNlcHRpb26UTowGcmVzdWx0lE6MBWl0ZW1zlE6MB2ZpbGVfaWSUTowPdmVjdG9yX3N0b3JlX2lklE6MBmlucHV0c5ROjAdvdXRwdXRzlE6MCGltYWdlX2lklE6MCGNvbW1hbmRzlE6MCnRpbWVvdXRfbXOUTowRbWF4X291dHB1dF9sZW5ndGiUTowGc3RhdHVzlE6MBnN0ZG91dJROjAZzdGRlcnKUTowJZXhpdF9jb2RllE6MCXRpbWVkX291dJROjAl0b29sX25hbWWUTowLc2VydmVyX25hbWWUTowGb3V0cHV0lE6MAmlklE6MDWZ1bmN0aW9uX2NhbGyUTowSdXNlcl9pbnB1dF9yZXF1ZXN0lE6MCGFwcHJvdmVklE6MDGNvbnNlbnRfbGlua5ROdWJhjAthdXRob3JfbmFtZZROjAptZXNzYWdlX2lklE5oEH2UaBJOdWIu",
+            "__type__": "agent_framework._types:Message"
+          },
+          {
+            "__pickled__": "gAWVWAQAAAAAAACMFmFnZW50X2ZyYW1ld29yay5fdHlwZXOUjAdNZXNzYWdllJOUKYGUfZQojARyb2xllIwJYXNzaXN0YW50lIwIY29udGVudHOUXZRoAIwHQ29udGVudJSTlCmBlH2UKIwEdHlwZZSMDWZ1bmN0aW9uX2NhbGyUjAthbm5vdGF0aW9uc5ROjBVhZGRpdGlvbmFsX3Byb3BlcnRpZXOUfZQojAVmY19pZJSMNWZjXzAzMzllM2JmNDY0N2NiYzUwMTZhMzIwZmZlMGVhMDgxOTVhNGE5MmYxYTUxNjg2ZTUwlIwGc3RhdHVzlIwJY29tcGxldGVklHWMEnJhd19yZXByZXNlbnRhdGlvbpSMMm9wZW5haS50eXBlcy5yZXNwb25zZXMucmVzcG9uc2VfZnVuY3Rpb25fdG9vbF9jYWxslIwYUmVzcG9uc2VGdW5jdGlvblRvb2xDYWxslJOUKYGUfZQojAhfX2RpY3RfX5R9lCiMCWFyZ3VtZW50c5SMAnt9lIwHY2FsbF9pZJSMHWNhbGxfU2tjbzNCN1hrVjQ2MmhqeGpZbHNoMHJ0lIwEbmFtZZSMEGdldF9jdXJyZW50X3RpbWWUaA1oDowCaWSUaBOMCW5hbWVzcGFjZZROaBRoFXWMEl9fcHlkYW50aWNfZXh0cmFfX5R9lIwLcmVzcG9uc2VfaWSUjDdyZXNwXzAzMzllM2JmNDY0N2NiYzUwMTZhMzIwZmZiMDdiYzgxOTU5ZGM1OTJlOTEwM2U1M2RhlHOMF19fcHlkYW50aWNfZmllbGRzX3NldF9flI+UKGggaCJoKGgUaCRoDWgekIwUX19weWRhbnRpY19wcml2YXRlX1+UTnVijAR0ZXh0lE6MDnByb3RlY3RlZF9kYXRhlE6MA3VyaZROjAptZWRpYV90eXBllE6MB21lc3NhZ2WUTowKZXJyb3JfY29kZZROjA1lcnJvcl9kZXRhaWxzlE6MDXVzYWdlX2RldGFpbHOUTmggaCFoImgjaB5oH4wJZXhjZXB0aW9ulE6MBnJlc3VsdJROjAVpdGVtc5ROjAdmaWxlX2lklE6MD3ZlY3Rvcl9zdG9yZV9pZJROjAZpbnB1dHOUTowHb3V0cHV0c5ROjAhpbWFnZV9pZJROjAhjb21tYW5kc5ROjAp0aW1lb3V0X21zlE6MEW1heF9vdXRwdXRfbGVuZ3RolE5oFE6MBnN0ZG91dJROjAZzdGRlcnKUTowJZXhpdF9jb2RllE6MCXRpbWVkX291dJROjAl0b29sX25hbWWUTowLc2VydmVyX25hbWWUTowGb3V0cHV0lE5oJE5oDk6MEnVzZXJfaW5wdXRfcmVxdWVzdJROjAhhcHByb3ZlZJROjAxjb25zZW50X2xpbmuUTnViYYwLYXV0aG9yX25hbWWUjBBmcm9udF9kZXNrX2FnZW50lIwKbWVzc2FnZV9pZJROaBB9lGgWTnViLg==",
+            "__type__": "agent_framework._types:Message"
+          },
+          {
+            "__pickled__": "gAWV5gMAAAAAAACMFmFnZW50X2ZyYW1ld29yay5fdHlwZXOUjAdNZXNzYWdllJOUKYGUfZQojARyb2xllIwEdG9vbJSMCGNvbnRlbnRzlF2UaACMB0NvbnRlbnSUk5QpgZR9lCiMBHR5cGWUjA9mdW5jdGlvbl9yZXN1bHSUjAthbm5vdGF0aW9uc5ROjBVhZGRpdGlvbmFsX3Byb3BlcnRpZXOUfZQojAVmY19pZJSMNWZjXzAzMzllM2JmNDY0N2NiYzUwMTZhMzIwZmZlMGVhMDgxOTVhNGE5MmYxYTUxNjg2ZTUwlIwGc3RhdHVzlIwJY29tcGxldGVklHWMEnJhd19yZXByZXNlbnRhdGlvbpROjAR0ZXh0lE6MDnByb3RlY3RlZF9kYXRhlE6MA3VyaZROjAptZWRpYV90eXBllE6MB21lc3NhZ2WUTowKZXJyb3JfY29kZZROjA1lcnJvcl9kZXRhaWxzlE6MDXVzYWdlX2RldGFpbHOUTowHY2FsbF9pZJSMHWNhbGxfU2tjbzNCN1hrVjQ2MmhqeGpZbHNoMHJ0lIwEbmFtZZROjAlhcmd1bWVudHOUTowJZXhjZXB0aW9ulIwrJ05vIHRpbWUgem9uZSBmb3VuZCB3aXRoIGtleSBBc2lhL1NoYW5naGFpJ5SMBnJlc3VsdJSMF0Vycm9yOiBGdW5jdGlvbiBmYWlsZWQulIwFaXRlbXOUXZRoCimBlH2UKGgNaBdoD05oEH2UaBZOaBdoJmgYTmgZTmgaTmgbTmgcTmgdTmgeTmgfTmghTmgiTmgjTmglTmgnTowHZmlsZV9pZJROjA92ZWN0b3Jfc3RvcmVfaWSUTowGaW5wdXRzlE6MB291dHB1dHOUTowIaW1hZ2VfaWSUTowIY29tbWFuZHOUTowKdGltZW91dF9tc5ROjBFtYXhfb3V0cHV0X2xlbmd0aJROaBROjAZzdGRvdXSUTowGc3RkZXJylE6MCWV4aXRfY29kZZROjAl0aW1lZF9vdXSUTowJdG9vbF9uYW1llE6MC3NlcnZlcl9uYW1llE6MBm91dHB1dJROjAJpZJROjA1mdW5jdGlvbl9jYWxslE6MEnVzZXJfaW5wdXRfcmVxdWVzdJROjAhhcHByb3ZlZJROjAxjb25zZW50X2xpbmuUTnViYWgsTmgtTmguTmgvTmgwTmgxTmgyTmgzTmgUTmg0Tmg1Tmg2Tmg3Tmg4Tmg5Tmg6Tmg7Tmg8Tmg9Tmg+Tmg/TnViYYwLYXV0aG9yX25hbWWUjBBmcm9udF9kZXNrX2FnZW50lIwKbWVzc2FnZV9pZJROaBB9lGgWTnViLg==",
+            "__type__": "agent_framework._types:Message"
+          },
+          {
+            "__pickled__": "gAWV/gMAAAAAAACMFmFnZW50X2ZyYW1ld29yay5fdHlwZXOUjAdNZXNzYWdllJOUKYGUfZQojARyb2xllIwJYXNzaXN0YW50lIwIY29udGVudHOUXZRoAIwHQ29udGVudJSTlCmBlH2UKIwEdHlwZZSMBHRleHSUjAthbm5vdGF0aW9uc5ROjBVhZGRpdGlvbmFsX3Byb3BlcnRpZXOUfZSMEnJhd19yZXByZXNlbnRhdGlvbpSMK29wZW5haS50eXBlcy5yZXNwb25zZXMucmVzcG9uc2Vfb3V0cHV0X3RleHSUjBJSZXNwb25zZU91dHB1dFRleHSUk5QpgZR9lCiMCF9fZGljdF9flH2UKGgPXZRoDoyFSGVsbG8hIEkgY291bGRuJ3QgZmV0Y2ggdGhlIGV4YWN0IHRpbWUgcmlnaHQgbm93LiBDb3VsZCB5b3UgbGV0IG1lIGtub3cgeW91ciBsb2NhdGlvbiBzbyBJIGNhbiBoZWxwIGRldGVybWluZSB0aGUgbG9jYWwgdGltZSBmb3IgeW91P5RoDYwLb3V0cHV0X3RleHSUjAhsb2dwcm9ic5RdlHWMEl9fcHlkYW50aWNfZXh0cmFfX5R9lIwXX19weWRhbnRpY19maWVsZHNfc2V0X1+Uj5QoaA5oHWgNaA+QjBRfX3B5ZGFudGljX3ByaXZhdGVfX5ROdWJoDmgbjA5wcm90ZWN0ZWRfZGF0YZROjAN1cmmUTowKbWVkaWFfdHlwZZROjAdtZXNzYWdllE6MCmVycm9yX2NvZGWUTowNZXJyb3JfZGV0YWlsc5ROjA11c2FnZV9kZXRhaWxzlE6MB2NhbGxfaWSUTowEbmFtZZROjAlhcmd1bWVudHOUTowJZXhjZXB0aW9ulE6MBnJlc3VsdJROjAVpdGVtc5ROjAdmaWxlX2lklE6MD3ZlY3Rvcl9zdG9yZV9pZJROjAZpbnB1dHOUTowHb3V0cHV0c5ROjAhpbWFnZV9pZJROjAhjb21tYW5kc5ROjAp0aW1lb3V0X21zlE6MEW1heF9vdXRwdXRfbGVuZ3RolE6MBnN0YXR1c5ROjAZzdGRvdXSUTowGc3RkZXJylE6MCWV4aXRfY29kZZROjAl0aW1lZF9vdXSUTowJdG9vbF9uYW1llE6MC3NlcnZlcl9uYW1llE6MBm91dHB1dJROjAJpZJROjA1mdW5jdGlvbl9jYWxslE6MEnVzZXJfaW5wdXRfcmVxdWVzdJROjAhhcHByb3ZlZJROjAxjb25zZW50X2xpbmuUTnViYYwLYXV0aG9yX25hbWWUjBBmcm9udF9kZXNrX2FnZW50lIwKbWVzc2FnZV9pZJROaBB9lGgSTnViLg==",
+            "__type__": "agent_framework._types:Message"
+          }
+        ],
+        "agent_session": {
+          "type": "session",
+          "session_id": "a13bfcfb-9dd1-41d6-9e73-0ab752ce6bfe",
+          "service_session_id": null,
+          "state": {
+            "in_memory": {
+              "messages": [
+                {
+                  "type": "message",
+                  "role": "user",
+                  "contents": [
+                    {
+                      "type": "text",
+                      "text": "Hello, what is the time now? ",
+                      "additional_properties": {}
+                    }
+                  ],
+                  "additional_properties": {}
+                },
+                {
+                  "type": "message",
+                  "role": "assistant",
+                  "contents": [
+                    {
+                      "type": "function_call",
+                      "call_id": "call_Skco3B7XkV462hjxjYlsh0rt",
+                      "name": "get_current_time",
+                      "arguments": "{}",
+                      "additional_properties": {
+                        "fc_id": "fc_0339e3bf4647cbc5016a320ffe0ea08195a4a92f1a51686e50",
+                        "status": "completed"
+                      }
+                    }
+                  ],
+                  "author_name": "front_desk_agent",
+                  "additional_properties": {}
+                },
+                {
+                  "type": "message",
+                  "role": "tool",
+                  "contents": [
+                    {
+                      "type": "function_result",
+                      "call_id": "call_Skco3B7XkV462hjxjYlsh0rt",
+                      "exception": "'No time zone found with key Asia/Shanghai'",
+                      "result": "Error: Function failed.",
+                      "items": [
+                        {
+                          "type": "text",
+                          "text": "Error: Function failed.",
+                          "additional_properties": {}
+                        }
+                      ],
+                      "additional_properties": {
+                        "fc_id": "fc_0339e3bf4647cbc5016a320ffe0ea08195a4a92f1a51686e50",
+                        "status": "completed"
+                      }
+                    }
+                  ],
+                  "author_name": "front_desk_agent",
+                  "additional_properties": {}
+                },
+                {
+                  "type": "message",
+                  "role": "assistant",
+                  "contents": [
+                    {
+                      "type": "text",
+                      "text": "Hello! I couldn't fetch the exact time right now. Could you let me know your location so I can help determine the local time for you?",
+                      "additional_properties": {}
+                    }
+                  ],
+                  "author_name": "front_desk_agent",
+                  "additional_properties": {}
+                }
+              ]
+            }
+          }
+        },
+        "pending_agent_requests": {},
+        "pending_responses_to_agent": []
+      }
+    }
+  },
+  "pending_request_info_events": {},
+  "iteration_count": 2,
+  "metadata": {},
+  "version": "1.0"
+}

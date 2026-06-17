@@ -26,7 +26,12 @@ def get_weather(location: Annotated[str, "The city name or location string (e.g.
 
 @tool
 def get_current_time() -> str:
-    """Get the current local time to help answer relative time and date questions."""
+    """
+    Get the current local time for a given location to help answer relative time and date questions.
+    If the user does not specify the location, use "Hong Kong" as the default location,
+    and particularly specify it in your response.
+    """
+
     # M365 Copilot often benefits from highly specific time formatting
     tz_utc8 = ZoneInfo("Asia/Shanghai")   # or "Asia/Singapore", "Australia/Perth", "Etc/GMT-8"
     now_utc8 = datetime.now(tz_utc8)

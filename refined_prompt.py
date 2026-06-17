@@ -10,7 +10,7 @@ Rules:
 2. Select exactly ONE target value for the 'route' field based on these rules:
    - 'read': For email parsing, document search, data lookup, calendar events  [Archivist].
    - 'exec': For document creations/edits (such as word .docx and powerpoint .pptx), scheduling, tasks [Executive].
-   - 'career': For resumes, job prep, mock interviews, skill analysis (Career Coach).
+   - 'career': For resumes, job prep, mock interviews, skill analysis [Career Coach].
    - 'fallback': For empty input, greetings, general chitchat, or anything unclear (Front Desk).
 3. Preservation: Copy the user input exactly into 'doc_content'.
 4. Output JSON format matching this schema: {"reason": str, "route": str, "doc_content": str}

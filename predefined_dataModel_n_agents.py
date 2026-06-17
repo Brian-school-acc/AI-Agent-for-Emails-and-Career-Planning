@@ -25,8 +25,8 @@ from executive_tools import (
     draft_lecturer_email,
     create_planner_task,
     schedule_calendar_event,
-    generate_word_document,
-    generate_presentation_slides,
+    # generate_word_document,
+    # generate_presentation_slides,
 )
 
 load_dotenv()
@@ -128,6 +128,7 @@ async def triage_and_route(messages: list[Message], ctx: WorkflowContext[list[Me
 
 # --- AGENT CONSTRUCTORS ---
 
+
 def create_archivist_agent(credential=DefaultAzureCredential()) -> Agent:
     """Helper to create a document analyst agent."""
     client: FoundryChatClient = _get_foundry_client(credential)
@@ -140,38 +141,62 @@ def create_archivist_agent(credential=DefaultAzureCredential()) -> Agent:
         search_context_size="high",
     )
 
+    # 2. Create an Azure-managed Vector Store
+    # In a real app, you would fetch an existing ID or create one per tenant/user
+    # vector_store = await client.client.vector_stores.create(
+    #     name="archivist_knowledge_base"
+    # )
+
+    # 3. Upload a document to the Vector Store
+    # file_path = "company_policy.pdf"
+    # with open(file_path, "rb") as f:
+        # file_bytes = f.read()
+
+    # Upload to Foundry storage
+    # uploaded_file = await client.client.files.create(
+    #     file=
+    # )
+    # .upload(
+    #     file=file_bytes, filename="company_policy.pdf", purpose="agents"
+    # )
+
+    # Associate file with vector store (triggers auto-chunking & embedding)
+    # await client.client.vector_stores.create(
+    #     name="vector-store",
+    #     file_ids=[uploaded_file.id],
+    # )
+
+    # Generate the File Search Tool bound to this Vector Store
+    # file_search_tool = client.get_file_search_tool(vector_store_ids=[vector_store.id])
+    
     tool_list: list[Any] = [
-        file_search, summarize_document,
+        # file_search,
+        summarize_document,
     ]
 
-    # 1. Pull the hosted M365 MCP tool.
-    # This single tool automatically exposes capabilities like searching messages and files!
-    try:
-        ...
-    except Exception as e:
-        print(f"Error for getting M365 MCP TOOL: {e}")
-
     return Agent(
-        client=client,
-        instructions=ARCHIVIST_PROMPT,
-        name="archivist_agent",
-        tools=tool_list,
-        default_options={"store": False, "reasoning": None, "allow_multiple_tool_calls": False}, # type: ignore
-    )
+            client=client,
+            instructions=ARCHIVIST_PROMPT,
+            name="archivist_agent",
+            tools=tool_list,
+            default_options={"store": False, "reasoning": None, "allow_multiple_tool_calls": False}, # type: ignore
+        )
+
 
 def create_executive_agent(credential=DefaultAzureCredential()) -> Agent:
     client = _get_foundry_client(credential)
 
-    image_gen_tool = client.get_image_generation_tool(
-        model="gpt-image-2",
-        quality="high",
-    )
+    generate_image_tool = client.get_image_generation_tool()
+    code_interpreter_tool = client.get_code_interpreter_tool()
+
     tool_list: list[Any] = [
         draft_lecturer_email,
         create_planner_task,
         schedule_calendar_event,
-        generate_word_document,
-        generate_presentation_slides,
+        generate_image_tool,
+        code_interpreter_tool,
+        # generate_word_document,
+        # generate_presentation_slides,
     ]
 
     return Agent(
