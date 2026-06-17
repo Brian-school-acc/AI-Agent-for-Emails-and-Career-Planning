@@ -71,10 +71,3 @@ Thumbs.db
 .pytest_cache/
 .ruff_cache/
 
-# Local data or test resources (optional custom rule)
-# Uncomment below if you want to keep test inputs local
-# resources/user_input.txt
-# resources/email.txt
-
-.checkpoints/
-samples/

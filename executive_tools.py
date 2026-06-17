@@ -1,11 +1,18 @@
+import os
+
 from agent_framework import tool
-from pydantic import Field
+from agent_framework.foundry import FoundryChatClient
+from azure.identity import DefaultAzureCredential
+from azure.storage.blob import BlobServiceClient, BlobSasPermissions, generate_blob_sas
 
 import datetime
 import httpx
-
-from typing import Annotated, List, Dict, Optional
+from datetime import datetime, timedelta
+from docx import Document  # Example document generator library
+from dotenv import load_dotenv
+from pydantic import Field
 from random import randint
+from typing import Annotated, List, Dict, Optional, Any, Literal
 
 
 # ==========================================
@@ -114,291 +121,450 @@ def draft_lecturer_email(
     selected_template = templates.get(tone.lower(), templates["respectful"])
     return selected_template.format(main_idea=main_idea) + f" Length of email: {length}"
 
-# ==========================================
-# TOOL 4: GENERATE WORD DOCUMENTS
-# ==========================================
-
 import os
-from typing import Annotated, List, Dict, Optional
-from pydantic import Field
-from agent_framework import tool
-
-# Fallback imports for document generation (requires python-docx and python-pptx)
-try:
-    from docx import Document
-    from docx.shared import Pt, Inches
-    from docx.enum.text import WD_ALIGN_PARAGRAPH
-except ImportError:
-    Document = None
-
-try:
-    from pptx import Presentation
-    from pptx.util import Inches as PptxInches, Pt as PptxPt
-except ImportError:
-    Presentation = None
+from datetime import datetime
+from azure.identity import DefaultAzureCredential
+from azure.storage.blob import BlobServiceClient
+from docx import Document
 
 
-@tool(approval_mode="never_require")
-def generate_word_document(
-    title: Annotated[
-        str, Field(description="The primary title of the academic document.")
-    ],
-    author_details: Annotated[
-        str,
-        Field(
-            description="Student name, ID, Course code, and Date (e.g., 'Jane Doe | CS101 | Fall 2026')."
-        ),
-    ],
-    sections: Annotated[
-        List[Dict[str, str]],
-        Field(
-            description="A list of dictionaries representing the document structure. Each dictionary must have 'heading' (str) and 'content' (str) keys. Example: [{'heading': 'Abstract', 'content': '...'}]"
-        ),
-    ],
-    academic_style: Annotated[
-        str,
-        Field(
-            description="The formatting style required: 'APA', 'MLA', or 'Standard'. Dictates font, spacing, and title page logic."
-        ),
-    ] = "APA",
-    references: Annotated[
-        Optional[List[str]],
-        Field(
-            description="A list of formatted citation strings to be appended to the end of the document."
-        ),
-    ] = None,
+def generate_and_archive_document(
+    student_id: str, student_name: str, summary: str
 ) -> str:
     """
-    Generates a highly structured, academically formatted Microsoft Word (.docx) file.
-
-    The Executive Agent should use this tool when a student needs to compile research, essays,
-    or reports into a final, submission-ready format. It strictly enforces academic typography
-    and structural hierarchy.
-
-    Few-Shot Template for 'sections' payload:
-    [
-        {"heading": "Introduction", "content": "The advent of multi-agent systems..."},
-        {"heading": "Methodology", "content": "We deployed an architecture based on..."}
-    ]
+    Generate a student success report and save it to blob storage.
     """
-    if Document is None:
-        return "Error: 'python-docx' library is not installed. Please install it to generate Word documents."
+    account_url = os.environ.get("AZURE_STORAGE_ACCOUNT_URL")
+    container_name = os.environ.get("AZURE_BLOB_CONTAINER_NAME")
 
+    if account_url is None or container_name is None:
+        return "FAILED TO GET AZURE STORAGE ACCOUNT URL"
+
+    # 1. Authenticate using DefaultAzureCredential
+    credential = DefaultAzureCredential()
+    blob_service_client = BlobServiceClient(account_url, credential=credential)
+    blob_client = blob_service_client.get_blob_client(
+        container=container_name,
+        blob=f"{student_id}_success_report_{datetime.now().strftime('%Y%m%d')}.docx",
+    )
+
+    # 2. Generate the document locally
     doc = Document()
+    doc.add_heading(f"Student Success Report: {student_name}", 0)
+    doc.add_paragraph(summary)
 
-    # 1. Apply Academic Styling Preferences
-    style = doc.styles["Normal"]
-    font = style.font
-    if academic_style.upper() in ["APA", "MLA"]:
-        font.name = "Times New Roman"
-        font.size = Pt(12)
-        # In a full implementation, you would also set double spacing here.
-    else:
-        font.name = "Calibri"
-        font.size = Pt(11)
+    local_file_path = f"/tmp/{student_id}_temp.docx"
+    doc.save(local_file_path)
 
-    # 2. Title Page / Header Injection
-    if academic_style.upper() == "APA":
-        # APA Title Page Formatting
-        doc.add_paragraph()  # Spacing
-        doc.add_paragraph()
-        title_para = doc.add_paragraph(title)
-        title_para.alignment = WD_ALIGN_PARAGRAPH.CENTER
-        title_para.runs[0].bold = True
+    # 3. Upload to your secure container
+    with open(local_file_path, "rb") as data:
+        blob_client.upload_blob(data, overwrite=True)
 
-        author_para = doc.add_paragraph(author_details.replace(" | ", "\n"))
-        author_para.alignment = WD_ALIGN_PARAGRAPH.CENTER
-        doc.add_page_break()
-    else:
-        # Standard/MLA Header
-        header_para = doc.add_paragraph(author_details)
-        doc.add_heading(title, 0)
+    # Clean up local memory
+    os.remove(local_file_path)
 
-    # 3. Content Iteration
-    for section in sections:
-        heading_text = section.get("heading", "")
-        content_text = section.get("content", "")
-
-        if heading_text:
-            # Enforce H1 for main sections
-            doc.add_heading(heading_text, level=1)
-
-        if content_text:
-            doc.add_paragraph(content_text)
-
-    # 4. References Section
-    if references:
-        doc.add_page_break()
-        doc.add_heading(
-            "References" if academic_style.upper() == "APA" else "Works Cited", level=1
-        )
-        for ref in references:
-            ref_para = doc.add_paragraph(ref)
-            # Hanging indent for academic citations
-            ref_para.paragraph_format.left_indent = Inches(0.5)
-            ref_para.paragraph_format.first_line_indent = Inches(-0.5)
-
-    # 5. Save and Return Path
-    filename = f"{title.replace(' ', '_').lower()}_final.docx"
-    safe_path = os.path.join(os.getcwd(), filename)
-    doc.save(safe_path)
-
-    return f"Word document '{title}' successfully generated and saved to {safe_path}. Academic style applied: {academic_style}."
-
-# ==========================================
-# TOOL 5: GENERATE POEWRPOINT SLIDES
-# ==========================================
-
-import os
-from typing import Annotated, List, Dict, Any, Optional
-from pydantic import Field
-from agent_framework import tool
-
-# Fallback imports for document generation (requires python-pptx)
-try:
-    from pptx import Presentation
-    from pptx.util import Inches, Pt
-    from pptx.dml.color import RGBColor
-except ImportError:
-    Presentation = None
-    Inches = None
-    Pt = None
-    RGBColor = None
+    return f"Report successfully generated and archived in container '{container_name}' for {student_name}."
 
 
-@tool(approval_mode="never_require")
-def generate_presentation_slides(
-    presentation_title: Annotated[
-        str,
-        Field(
-            description="The primary headline or topic for the presentation title slide."
-        ),
-    ],
-    slides: Annotated[
-        List[Dict[str, Any]],
-        Field(
-            description="A list of dictionaries defining each slide. Each dictionary must contain 'title' (str) and 'body' (str or List[str]). Optional keys include 'layout' ('content' or 'two_column') and 'speaker_notes' (str)."
-        ),
-    ],
-    subtitle: Annotated[
-        Optional[str],
-        Field(
-            description="The secondary subtitle or corporate/academic presentation credit."
-        ),
-    ] = None,
-    color_theme: Annotated[
-        str,
-        Field(
-            description="The visual theme for slide headers: 'Corporate Blue', 'Academic Charcoal', or 'Crimson Accent'."
-        ),
-    ] = "Corporate Blue",
-) -> str:
+def generate_and_store_student_report(student_id: str, report_content: str) -> str:
     """
-    Generates a highly customized PowerPoint presentation (.pptx) slide deck with explicit layout control.
-
-    The Executive Agent should use this tool when compiling complex educational modules, project proposals,
-    or defense decks that require structural flexibility (e.g., shifting between standard lists and
-    side-by-side visual comparisons) while enforcing a uniform structural schema.
-
-    Few-Shot Template for 'slides' payload:
-    [
-        {
-            "title": "Core Architecture",
-            "body": "• Decentralized orchestrator execution\n• Dynamic tool-binding runtime\n• Stateful conversation history memory",
-            "layout": "content",
-            "speaker_notes": "Emphasize to the review board that the runtime handles state binding dynamically."
-        },
-        {
-            "title": "Monolithic vs. Multi-Agent Systems",
-            "body": ["Monolithic Architecture:\\n• Single point of failure\\n• High regression risk", "Multi-Agent System:\\n• Isolate operational scopes\\n• Fault-tolerant fallbacks"],
-            "layout": "two_column",
-            "speaker_notes": "This side-by-side comparison directly addresses the scalability constraints noted in our abstract."
-        }
-    ]
+    Generates a student success report, uploads it to secure storage,
+    and returns a temporary secure download link.
     """
-    if Presentation is None:
-        return "Error: 'python-pptx' library is not installed. Please install it to generate presentation slides."
+    # 1. Generate the document locally in the sandbox/runtime env
+    file_name = f"Report_{student_id}_{datetime.now().strftime('%Y%m%d')}.docx"
+    doc = Document()
+    doc.add_heading("Student Success Progress Report", 0)
+    doc.add_paragraph(report_content)
+    doc.save(file_name)
 
-    prs = Presentation()
+    # 2. Connect to your Azure Storage Account
+    connect_str = os.getenv("AZURE_STORAGE_CONNECTION_STRING")
+    blob_service_client = BlobServiceClient.from_connection_string(connect_str)
+    container_name = "student-downloads"
+    blob_client = blob_service_client.get_blob_client(
+        container=container_name, blob=file_name
+    )
 
-    # 1. Map Hex/RGB Visual Themes
-    themes = {
-        "Corporate Blue": RGBColor(10, 34, 64),
-        "Academic Charcoal": RGBColor(45, 45, 45),
-        "Crimson Accent": RGBColor(140, 15, 15),
-    }
-    primary_color = themes.get(color_theme, RGBColor(0, 0, 0))
+    # 3. Upload the file to Azure
+    with open(file_name, "rb") as data:
+        blob_client.upload_blob(data, overwrite=True)
 
-    # 2. Generate Title Slide (Layout Index 0)
-    title_layout = prs.slide_layouts[0]
-    title_slide = prs.slides.add_slide(title_layout)
-    title_slide.shapes.title.text = presentation_title
+    # Clean up the local sandbox storage
+    os.remove(file_name)
 
-    if subtitle and len(title_slide.placeholders) > 1:
-        title_slide.placeholders[1].text = subtitle
+    # 4. Create a 15-minute secure access token (SAS) for the student
+    sas_token = generate_blob_sas(
+        account_name=blob_service_client.account_name,
+        container_name=container_name,
+        blob_name=file_name,
+        account_key=blob_service_client.credential.account_key,
+        permission=BlobSasPermissions(read=True),
+        expiry=datetime.utcnow() + timedelta(minutes=15),
+    )
 
-    # Paint title with theme color
-    if title_slide.shapes.title.text_frame:
-        for paragraph in title_slide.shapes.title.text_frame.paragraphs:
-            for run in paragraph.runs:
-                run.font.color.rgb = primary_color
+    download_url = f"{blob_client.url}?{sas_token}"
+    return f"Document generated successfully. Provide this link to the student: {download_url}"
 
-    # Standard python-pptx presentation template layouts
-    LAYOUT_CONTENT = prs.slide_layouts[1]  # Title and Content
-    LAYOUT_TWO_COLUMN = prs.slide_layouts[4]  # Two Content (Side-by-side)
 
-    # 3. Content Iteration & Layout Logic
-    for slide_idx, slide_data in enumerate(slides):
-        layout_type = str(slide_data.get("layout", "content")).lower()
+# Helper function
+# def upload_to_foundry_agents(file_bytes: bytes, filename: str, client) -> str:
 
-        # Select appropriate layout variant
-        if layout_type == "two_column":
-            slide = prs.slides.add_slide(LAYOUT_TWO_COLUMN)
-        else:
-            slide = prs.slides.add_slide(LAYOUT_CONTENT)
+#     load_dotenv()
 
-        # Enforce header text formatting and color theme
-        slide.shapes.title.text = slide_data.get("title", f"Slide {slide_idx + 1}")
-        for paragraph in slide.shapes.title.text_frame.paragraphs:
-            for run in paragraph.runs:
-                run.font.color.rgb = primary_color
+#     PROJECT_ENDPOINT = os.environ.get("FOUNDRY_PROJECT_ENDPOINT", "")
+#     MODEL_NAME = os.environ.get("AZURE_AI_MODEL_DEPLOYMENT_NAME", "")
 
-        # Parse content body text
-        body_data = slide_data.get("body", "")
+#     if not PROJECT_ENDPOINT:
+#         raise ValueError("Missing environment variable: FOUNDRY_PROJECT_ENDPOINT")
 
-        if layout_type == "two_column":
-            # Safe unpacking of array content or single string split for side-by-side columns
-            column_contents = (
-                body_data if isinstance(body_data, list) else [body_data, ""]
-            )
+#     client = FoundryChatClient(
+#         project_endpoint=PROJECT_ENDPOINT,
+#         model=MODEL_NAME,
+#         credential=DefaultAzureCredential()
+#     )
 
-            if len(slide.placeholders) > 1:
-                slide.placeholders[1].text_frame.text = (
-                    str(column_contents[0]) if len(column_contents) > 0 else ""
-                )
-            if len(slide.placeholders) > 2:
-                slide.placeholders[2].text_frame.text = (
-                    str(column_contents[1]) if len(column_contents) > 1 else ""
-                )
-        else:
-            # Handle standard single column list layout
-            if len(slide.placeholders) > 1:
-                text_payload = (
-                    "\n".join(body_data)
-                    if isinstance(body_data, list)
-                    else str(body_data)
-                )
-                slide.placeholders[1].text_frame.text = text_payload
+#     """
+#     Uploads a file to the Azure AI Foundry / OpenAI file storage specifically for Agents/Assistants.
+#     """
+#     # The SDK expects a tuple of (filename, file_bytes)
+#     uploaded_file = client.client.files.create(file=(filename, file_bytes), purpose="assistants")
 
-        # 4. Inject Speaker Notes for Oral Defense Prep
-        speaker_notes = slide_data.get("speaker_notes", "")
-        if speaker_notes:
-            notes_slide = slide.notes_slide
-            notes_slide.notes_text_frame.text = str(speaker_notes)
+#     # Returns the Azure AI File ID (e.g., file-xxxxxxx)
+#     return uploaded_file.
 
-    # 5. Serialization and File Generation
-    filename = f"{presentation_title.replace(' ', '_').lower()}_slides.pptx"
-    safe_path = os.path.join(os.getcwd(), filename)
-    prs.save(safe_path)
 
-    return f"Presentation slides '{presentation_title}' successfully generated with {len(slides)} slides. Safe file path: {safe_path}. Design configuration theme: {color_theme}."
+# # ==========================================
+# # TOOL 4: GENERATE WORD DOCUMENTS
+# # ==========================================
+
+# import os
+# from typing import Annotated, List, Dict, Optional
+# from pydantic import Field
+# from agent_framework import tool
+
+# # Fallback imports for document generation (requires python-docx and python-pptx)
+# try:
+#     from docx import Document
+#     from docx.shared import Pt, Inches
+#     from docx.enum.text import WD_ALIGN_PARAGRAPH
+# except ImportError:
+#     Document = None
+
+# try:
+#     from pptx import Presentation
+#     from pptx.util import Inches as PptxInches, Pt as PptxPt
+# except ImportError:
+#     Presentation = None
+
+
+# import os
+# import io
+# from typing import Annotated, List, Dict, Optional
+# from pydantic import Field
+# from agent_framework import tool
+
+# # Fallback imports for document generation (requires python-docx)
+# try:
+#     from docx import Document
+#     from docx.shared import Pt, Inches
+#     from docx.enum.text import WD_ALIGN_PARAGRAPH
+# except ImportError:
+#     Document = None
+
+
+# @tool(approval_mode="never_require")
+# def generate_word_document(
+#     title: Annotated[
+#         str, Field(description="The primary title of the academic document.")
+#     ],
+#     author_details: Annotated[
+#         str,
+#         Field(
+#             description="Student name, ID, Course code, and Date (e.g., 'Jane Doe | CS101 | Fall 2026')."
+#         ),
+#     ],
+#     sections: Annotated[
+#         List[Dict[str, str]],
+#         Field(
+#             description="A list of dictionaries representing the document structure. Each dictionary must have 'heading' (str) and 'content' (str) keys. Example: [{'heading': 'Abstract', 'content': '...'}]"
+#         ),
+#     ],
+#     academic_style: Annotated[
+#         str,
+#         Field(
+#             description="The formatting style required: 'APA', 'MLA', or 'Standard'. Dictates font, spacing, and title page logic."
+#         ),
+#     ] = "APA",
+#     references: Annotated[
+#         Optional[List[str]],
+#         Field(
+#             description="A list of formatted citation strings to be appended to the end of the document."
+#         ),
+#     ] = None,
+# ) -> str:
+#     """
+#     Generates a highly structured, academically formatted Microsoft Word (.docx) file.
+
+#     The Executive Agent should use this tool when a student needs to compile research, essays,
+#     or reports into a final, submission-ready format. It strictly enforces academic typography
+#     and structural hierarchy.
+
+#     Few-Shot Template for 'sections' payload:
+#     [
+#         {"heading": "Introduction", "content": "The advent of multi-agent systems..."},
+#         {"heading": "Methodology", "content": "We deployed an architecture based on..."}
+#     ]
+#     """
+#     if Document is None:
+#         return "Error: 'python-docx' library is not installed. Please install it to generate Word documents."
+
+#     doc = Document()
+
+#     # 1. Apply Academic Styling Preferences
+#     style = doc.styles["Normal"]
+#     font = style.font
+#     if academic_style.upper() in ["APA", "MLA"]:
+#         font.name = "Times New Roman"
+#         font.size = Pt(12)
+#     else:
+#         font.name = "Calibri"
+#         font.size = Pt(11)
+
+#     # 2. Title Page / Header Injection
+#     if academic_style.upper() == "APA":
+#         doc.add_paragraph()  # Spacing
+#         doc.add_paragraph()
+#         title_para = doc.add_paragraph(title)
+#         title_para.alignment = WD_ALIGN_PARAGRAPH.CENTER
+#         title_para.runs[0].bold = True
+
+#         author_para = doc.add_paragraph(author_details.replace(" | ", "\n"))
+#         author_para.alignment = WD_ALIGN_PARAGRAPH.CENTER
+#         doc.add_page_break()
+#     else:
+#         doc.add_paragraph(author_details)
+#         doc.add_heading(title, 0)
+
+#     # 3. Content Iteration
+#     for section in sections:
+#         heading_text = section.get("heading", "")
+#         content_text = section.get("content", "")
+
+#         if heading_text:
+#             doc.add_heading(heading_text, level=1)
+
+#         if content_text:
+#             doc.add_paragraph(content_text)
+
+#     # 4. References Section
+#     if references:
+#         doc.add_page_break()
+#         doc.add_heading(
+#             "References" if academic_style.upper() == "APA" else "Works Cited", level=1
+#         )
+#         for ref in references:
+#             ref_para = doc.add_paragraph(ref)
+#             ref_para.paragraph_format.left_indent = Inches(0.5)
+#             ref_para.paragraph_format.first_line_indent = Inches(-0.5)
+
+#     # ==========================================
+#     # 5. CLOUD SERIALIZATION & UPLOAD
+#     # ==========================================
+#     # Fix 1: Properly define the file name string
+#     filename = f"{title.replace(' ', '_').lower()}_final.docx"
+
+#     # Fix 2: Instantiate memory buffer and save doc bytes into it
+#     file_stream = io.BytesIO()
+#     doc.save(file_stream)
+
+#     # Rewind stream pointer before reading bytes out
+#     file_stream.seek(0)
+#     file_bytes = file_stream.read()
+
+#     # Fix 3: Handle the Client setup internally for framework isolation
+#     from azure.identity import DefaultAzureCredential
+#     from azure.ai.projects import AIProjectClient
+
+#     # Target connection string injected automatically by the platform environment
+#     PROJECT_ENDPOINT = os.environ.get("FOUNDRY_PROJECT_ENDPOINT", "")
+
+#     if not PROJECT_ENDPOINT:
+#         return f"Error: Document successfully compiled in memory ({len(file_bytes)} bytes) but PROJECT_CONNECTION_STRING environment variable is missing."
+
+#     try:
+#         # Context-managed client ensures connection pool is safely dismantled after use
+#         with AIProjectClient(
+#             endpoint=PROJECT_ENDPOINT,
+#             credential=DefaultAzureCredential(),
+#         ) as client:
+
+#             # File parameters map to a tuple containing metadata and raw bytes
+#             uploaded_file = client.agents.create_file(
+#                 file=(filename, file_bytes), purpose="agents"
+#             )
+#             file_id = uploaded_file.id
+
+#         return f"Word document '{title}' successfully generated and uploaded. File ID: {file_id}"
+
+#     except Exception as e:
+#         return f"Word document generated successfully in memory, but cloud deployment failed: {str(e)}"
+
+
+# # ==========================================
+# # TOOL 5: GENERATE POEWRPOINT SLIDES
+# # ==========================================
+
+# import os
+# from typing import Annotated, List, Dict, Any, Optional
+# from pydantic import Field
+# from agent_framework import tool
+
+# # Fallback imports for document generation (requires python-pptx)
+# try:
+#     from pptx import Presentation
+#     from pptx.util import Inches, Pt
+#     from pptx.dml.color import RGBColor
+# except ImportError:
+#     Presentation = None
+#     Inches = None
+#     Pt = None
+#     RGBColor = None
+
+
+# @tool(approval_mode="never_require")
+# def generate_presentation_slides(
+#     presentation_title: Annotated[
+#         str,
+#         Field(
+#             description="The primary headline or topic for the presentation title slide."
+#         ),
+#     ],
+#     slides: Annotated[
+#         List[Dict[str, Any]],
+#         Field(
+#             description="A list of dictionaries defining each slide. Each dictionary must contain 'title' (str) and 'body' (str or List[str]). Optional keys include 'layout' ('content' or 'two_column') and 'speaker_notes' (str)."
+#         ),
+#     ],
+#     subtitle: Annotated[
+#         Optional[str],
+#         Field(
+#             description="The secondary subtitle or corporate/academic presentation credit."
+#         ),
+#     ] = None,
+#     color_theme: Annotated[
+#         str,
+#         Field(
+#             description="The visual theme for slide headers: 'Corporate Blue', 'Academic Charcoal', or 'Crimson Accent'."
+#         ),
+#     ] = "Corporate Blue",
+# ) -> str:
+#     """
+#     Generates a highly customized PowerPoint presentation (.pptx) slide deck with explicit layout control.
+
+#     The Executive Agent should use this tool when compiling complex educational modules, project proposals,
+#     or defense decks that require structural flexibility (e.g., shifting between standard lists and
+#     side-by-side visual comparisons) while enforcing a uniform structural schema.
+
+#     Few-Shot Template for 'slides' payload:
+#     [
+#         {
+#             "title": "Core Architecture",
+#             "body": "• Decentralized orchestrator execution\n• Dynamic tool-binding runtime\n• Stateful conversation history memory",
+#             "layout": "content",
+#             "speaker_notes": "Emphasize to the review board that the runtime handles state binding dynamically."
+#         },
+#         {
+#             "title": "Monolithic vs. Multi-Agent Systems",
+#             "body": ["Monolithic Architecture:\\n• Single point of failure\\n• High regression risk", "Multi-Agent System:\\n• Isolate operational scopes\\n• Fault-tolerant fallbacks"],
+#             "layout": "two_column",
+#             "speaker_notes": "This side-by-side comparison directly addresses the scalability constraints noted in our abstract."
+#         }
+#     ]
+#     """
+#     if Presentation is None:
+#         return "Error: 'python-pptx' library is not installed. Please install it to generate presentation slides."
+
+#     prs = Presentation()
+
+#     # 1. Map Hex/RGB Visual Themes
+#     themes = {
+#         "Corporate Blue": RGBColor(10, 34, 64),
+#         "Academic Charcoal": RGBColor(45, 45, 45),
+#         "Crimson Accent": RGBColor(140, 15, 15),
+#     }
+#     primary_color = themes.get(color_theme, RGBColor(0, 0, 0))
+
+#     # 2. Generate Title Slide (Layout Index 0)
+#     title_layout = prs.slide_layouts[0]
+#     title_slide = prs.slides.add_slide(title_layout)
+#     title_slide.shapes.title.text = presentation_title
+
+#     if subtitle and len(title_slide.placeholders) > 1:
+#         title_slide.placeholders[1].text = subtitle
+
+#     # Paint title with theme color
+#     if title_slide.shapes.title.text_frame:
+#         for paragraph in title_slide.shapes.title.text_frame.paragraphs:
+#             for run in paragraph.runs:
+#                 run.font.color.rgb = primary_color
+
+#     # Standard python-pptx presentation template layouts
+#     LAYOUT_CONTENT = prs.slide_layouts[1]  # Title and Content
+#     LAYOUT_TWO_COLUMN = prs.slide_layouts[4]  # Two Content (Side-by-side)
+
+#     # 3. Content Iteration & Layout Logic
+#     for slide_idx, slide_data in enumerate(slides):
+#         layout_type = str(slide_data.get("layout", "content")).lower()
+
+#         # Select appropriate layout variant
+#         if layout_type == "two_column":
+#             slide = prs.slides.add_slide(LAYOUT_TWO_COLUMN)
+#         else:
+#             slide = prs.slides.add_slide(LAYOUT_CONTENT)
+
+#         # Enforce header text formatting and color theme
+#         slide.shapes.title.text = slide_data.get("title", f"Slide {slide_idx + 1}")
+#         for paragraph in slide.shapes.title.text_frame.paragraphs:
+#             for run in paragraph.runs:
+#                 run.font.color.rgb = primary_color
+
+#         # Parse content body text
+#         body_data = slide_data.get("body", "")
+
+#         if layout_type == "two_column":
+#             # Safe unpacking of array content or single string split for side-by-side columns
+#             column_contents = (
+#                 body_data if isinstance(body_data, list) else [body_data, ""]
+#             )
+
+#             if len(slide.placeholders) > 1:
+#                 slide.placeholders[1].text_frame.text = (
+#                     str(column_contents[0]) if len(column_contents) > 0 else ""
+#                 )
+#             if len(slide.placeholders) > 2:
+#                 slide.placeholders[2].text_frame.text = (
+#                     str(column_contents[1]) if len(column_contents) > 1 else ""
+#                 )
+#         else:
+#             # Handle standard single column list layout
+#             if len(slide.placeholders) > 1:
+#                 text_payload = (
+#                     "\n".join(body_data)
+#                     if isinstance(body_data, list)
+#                     else str(body_data)
+#                 )
+#                 slide.placeholders[1].text_frame.text = text_payload
+
+#         # 4. Inject Speaker Notes for Oral Defense Prep
+#         speaker_notes = slide_data.get("speaker_notes", "")
+#         if speaker_notes:
+#             notes_slide = slide.notes_slide
+#             notes_slide.notes_text_frame.text = str(speaker_notes)
+
+#     # 5. Serialization and File Generation
+#     filename = f"{presentation_title.replace(' ', '_').lower()}_slides.pptx"
+#     safe_path = os.path.join(os.getcwd(), filename)
+#     prs.save(safe_path)
+
+#     return f"Presentation slides '{presentation_title}' successfully generated with {len(slides)} slides. Safe file path: {safe_path}. Design configuration theme: {color_theme}."

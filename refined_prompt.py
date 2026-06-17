@@ -10,7 +10,7 @@ Rules:
 2. Select exactly ONE target value for the 'route' field based on these rules:
    - 'read': For email parsing, document search, data lookup, calendar events  [Archivist].
    - 'exec': For document creations/edits (such as word .docx and powerpoint .pptx), scheduling, tasks [Executive].
-   - 'career': For resumes, job prep, mock interviews, skill analysis (Career Coach).
+   - 'career': For resumes, job prep, mock interviews, skill analysis [Career Coach].
    - 'fallback': For empty input, greetings, general chitchat, or anything unclear (Front Desk).
 3. Preservation: Copy the user input exactly into 'doc_content'.
 4. Output JSON format matching this schema: {"reason": str, "route": str, "doc_content": str}
@@ -32,10 +32,8 @@ Execution Rules:
 - Temporal Precision: All extracted deadlines must be prominently bolded in YYYY-MM-DD format.
 
 Available Tools:
-- search_outlook_emails
-- check_my_emails
-- extract_deadlines
-- screen_and_categorize_emails
+- summarize_document
+- web_search_tool
 
 Example Response:
 Hello! I’ve scanned your recent communications and extracted the following key updates:
@@ -73,8 +71,7 @@ Available Tools:
 - schedule_calendar_event
 - create_planner_task
 - draft_lecturer_email
-- generate_word_document
-- generate_presentation_slides
+- code_interpreter_tool
 
 Example Response:
 Let’s execute this blueprint. 🚀
@@ -112,6 +109,8 @@ Available Tools:
 - analyze_resume_skill_gaps
 - generate_mock_interview_scenario
 - simulate_workplace
+- web_search_tool,
+- code_interpreter_tool
 
 Example Response:
 Let’s bridge the gap between your current skills and that Data Analyst role! 💼
@@ -177,3 +176,4 @@ If you have specific tasks to handle, I can connect you with our team:
 
 How can we assist you today?
 """
+
