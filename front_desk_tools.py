@@ -1,4 +1,6 @@
-import os, glob
+import glob
+import json
+import os
 import random
 import re
 
@@ -7,6 +9,102 @@ from datetime import datetime, timezone
 from typing import Annotated
 from pydantic import Field
 from zoneinfo import ZoneInfo
+
+
+@tool
+def show_agent_selection_menu() -> str:
+    """
+    Presents a rich, interactive visual card containing a menu of specialized
+    success agents (Career Coach, Executive Office, Archivist, Front Desk).
+    Invoke this tool whenever a student says they want to switch departments,
+    is unsure who to talk to, or when their problem could span multiple areas.
+    """
+    card_schema = {
+        "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+        "type": "AdaptiveCard",
+        "version": "1.5",
+        "body": [
+            {
+                "type": "TextBlock",
+                "text": "🤖 Connect with a Specialized Assistant",
+                "weight": "Bolder",
+                "size": "Large",
+                "color": "Accent",
+            },
+            {
+                "type": "TextBlock",
+                "text": "Select the specialized AI coach or department you need to interact with.",
+                "isSubtle": True,
+                "wrap": True,
+            },
+            {
+                "type": "Container",
+                "separator": True,
+                "items": [
+                    {
+                        "type": "TextBlock",
+                        "text": "💼 Career Coach",
+                        "weight": "Bolder",
+                    },
+                    {
+                        "type": "TextBlock",
+                        "text": "Get resume reviews and interview practice.",
+                        "isSubtle": True,
+                        "size": "Small",
+                    },
+                ],
+            },
+            {
+                "type": "Container",
+                "items": [
+                    {
+                        "type": "TextBlock",
+                        "text": "🏛️ Executive Office",
+                        "weight": "Bolder",
+                    },
+                    {
+                        "type": "TextBlock",
+                        "text": "Handles formal academic appeals and exceptions.",
+                        "isSubtle": True,
+                        "size": "Small",
+                    },
+                ],
+            },
+            {
+                "type": "Container",
+                "items": [
+                    {"type": "TextBlock", "text": "🗄️ Archivist", "weight": "Bolder"},
+                    {
+                        "type": "TextBlock",
+                        "text": "Retrieve historical student records and transcripts.",
+                        "isSubtle": True,
+                        "size": "Small",
+                    },
+                ],
+            },
+        ],
+        "actions": [
+            {
+                "type": "Action.Submit",
+                "title": "Launch Career Coach",
+                "data": {"actionType": "route_to_agent", "targetAgent": "career_coach"},
+            },
+            {
+                "type": "Action.Submit",
+                "title": "Launch Executive Agent",
+                "data": {"actionType": "route_to_agent", "targetAgent": "executive"},
+            },
+            {
+                "type": "Action.Submit",
+                "title": "Launch Archivist",
+                "data": {"actionType": "route_to_agent", "targetAgent": "archivist"},
+            },
+        ],
+    }
+
+    # Returning the schema as a serialized string.
+    # M365 Copilot intercepts json matching the AdaptiveCard schema and renders it as UI.
+    return json.dumps(card_schema)
 
 
 @tool

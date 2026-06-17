@@ -14,7 +14,7 @@ from zoneinfo import ZoneInfo
 import azure.cognitiveservices.speech as speechsdk
 from agent_framework import tool
 
-from constants import COMMON_ABBR, CUHK_ABBR
+from constants import CUHK_ABBR
 
 
 load_dotenv()
@@ -68,27 +68,57 @@ def file_search(
 
 
 @tool(
-    name="inquire_abbrieviations",
+    name="inquire_abbreviations",
     description="Call this function whenever there is an abbrieviation for clearer context",
-    approval_mode="never_require"
+    approval_mode="never_require",
 )
-def inquire_abbrieviations(abbreviation: str) -> str:
+def inquire_abbreviations(abbreviation: str) -> str:
     """
-    Retrieve a dictionary of common abbreviations and
-    a dictionary of CUHK-specific abbreviations
+    Retrieve the full form of a common or CUHK-specific abbreviation.
+
+    **Usage guidelines for the LLM (conservative approach):**
+    1. **ALWAYS call this function** when the token is:
+       - a recognised short form in the context (e.g., "sem", "reg"),
+       - and clearly used as an abbreviation, not as a regular word.
+       - clearly in uppercase (e.g. ART)
+       - when you suspect that a word could be an abbreviation
+
+    2. **Do not expand** if:
+       - the token is a common English word (e.g., "art" → treat as "art", not "Faculty of Arts"),
+       - the token is ambiguous without further context,
+       - the token appears in a proper name or quoted text,
+       - the user's intent is unclear (e.g., they may have typed a typo).
+
+    3. **When the dictionary returns an empty result**:
+       - Do **not** invent an expansion.
+       - Return an empty string and treat the token as‑is.
+
+    4. **When the dictionary returns a match but the context suggests otherwise**:
+       - Prefer the literal token over the expansion.
+       - For example, if the user says "I study art", do not replace "art" with "Faculty of Arts".
+
+    5. **If multiple expansions exist** (e.g., "CSC" could be Career Services or Campus Services),
+       - avoid returning a single one; either ask the user for clarification or keep the abbreviation unchanged.
+
+    6. **Fallback**:
+       - If you are not certain that the token is an abbreviation intended to be expanded,
+         do not use this function. Let the user's original text stand.
 
     Args:
-        abbrieviation: a case-insensitive abbreviation to inquire
+        abbreviation: a case‑insensitive abbreviation to inquire.
+    Returns:
+        The full expansion if the abbreviation is found and confidently applicable,
+        otherwise an empty string.
     """
-
-    dictionary: dict = COMMON_ABBR.fromkeys(CUHK_ABBR)
+    
+    dictionary: dict = CUHK_ABBR
     result = dictionary.get(abbreviation, "")
 
     # Clean return format
     if result:
-        return f"{abbreviation} means {result}"
+        return f"{abbreviation}: {result}"
     else:
-        return ""
+        return f"There is probably no cuhk-specific meaning for the word f{abbreviation}"
 
 
 @tool(approval_mode="never_require")

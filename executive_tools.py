@@ -1,16 +1,19 @@
+import os
+
 from agent_framework import tool
-from pydantic import Field
+from agent_framework.foundry import FoundryChatClient
+from azure.identity import DefaultAzureCredential
+from azure.storage.blob import BlobServiceClient, BlobSasPermissions, generate_blob_sas
 
 import datetime
 import httpx
-
-from typing import Annotated, List, Dict, Optional
-from random import randint
-import os
+from datetime import datetime, timedelta
+from docx import Document  # Example document generator library
 from dotenv import load_dotenv
-from typing import Any, Literal
-from agent_framework.foundry import FoundryChatClient
-from azure.identity import DefaultAzureCredential
+from pydantic import Field
+from random import randint
+from typing import Annotated, List, Dict, Optional, Any, Literal
+
 
 # ==========================================
 # TOOL 1: SCHEDULE CALENDAR EVENT
@@ -118,9 +121,95 @@ def draft_lecturer_email(
     selected_template = templates.get(tone.lower(), templates["respectful"])
     return selected_template.format(main_idea=main_idea) + f" Length of email: {length}"
 
+import os
+from datetime import datetime
+from azure.identity import DefaultAzureCredential
+from azure.storage.blob import BlobServiceClient
+from docx import Document
+
+
+def generate_and_archive_document(
+    student_id: str, student_name: str, summary: str
+) -> str:
+    """
+    Generate a student success report and save it to blob storage.
+    """
+    account_url = os.environ.get("AZURE_STORAGE_ACCOUNT_URL")
+    container_name = os.environ.get("AZURE_BLOB_CONTAINER_NAME")
+
+    if account_url is None or container_name is None:
+        return "FAILED TO GET AZURE STORAGE ACCOUNT URL"
+
+    # 1. Authenticate using DefaultAzureCredential
+    credential = DefaultAzureCredential()
+    blob_service_client = BlobServiceClient(account_url, credential=credential)
+    blob_client = blob_service_client.get_blob_client(
+        container=container_name,
+        blob=f"{student_id}_success_report_{datetime.now().strftime('%Y%m%d')}.docx",
+    )
+
+    # 2. Generate the document locally
+    doc = Document()
+    doc.add_heading(f"Student Success Report: {student_name}", 0)
+    doc.add_paragraph(summary)
+
+    local_file_path = f"/tmp/{student_id}_temp.docx"
+    doc.save(local_file_path)
+
+    # 3. Upload to your secure container
+    with open(local_file_path, "rb") as data:
+        blob_client.upload_blob(data, overwrite=True)
+
+    # Clean up local memory
+    os.remove(local_file_path)
+
+    return f"Report successfully generated and archived in container '{container_name}' for {student_name}."
+
+
+def generate_and_store_student_report(student_id: str, report_content: str) -> str:
+    """
+    Generates a student success report, uploads it to secure storage,
+    and returns a temporary secure download link.
+    """
+    # 1. Generate the document locally in the sandbox/runtime env
+    file_name = f"Report_{student_id}_{datetime.now().strftime('%Y%m%d')}.docx"
+    doc = Document()
+    doc.add_heading("Student Success Progress Report", 0)
+    doc.add_paragraph(report_content)
+    doc.save(file_name)
+
+    # 2. Connect to your Azure Storage Account
+    connect_str = os.getenv("AZURE_STORAGE_CONNECTION_STRING")
+    blob_service_client = BlobServiceClient.from_connection_string(connect_str)
+    container_name = "student-downloads"
+    blob_client = blob_service_client.get_blob_client(
+        container=container_name, blob=file_name
+    )
+
+    # 3. Upload the file to Azure
+    with open(file_name, "rb") as data:
+        blob_client.upload_blob(data, overwrite=True)
+
+    # Clean up the local sandbox storage
+    os.remove(file_name)
+
+    # 4. Create a 15-minute secure access token (SAS) for the student
+    sas_token = generate_blob_sas(
+        account_name=blob_service_client.account_name,
+        container_name=container_name,
+        blob_name=file_name,
+        account_key=blob_service_client.credential.account_key,
+        permission=BlobSasPermissions(read=True),
+        expiry=datetime.utcnow() + timedelta(minutes=15),
+    )
+
+    download_url = f"{blob_client.url}?{sas_token}"
+    return f"Document generated successfully. Provide this link to the student: {download_url}"
+
+
 # Helper function
 # def upload_to_foundry_agents(file_bytes: bytes, filename: str, client) -> str:
-    
+
 #     load_dotenv()
 
 #     PROJECT_ENDPOINT = os.environ.get("FOUNDRY_PROJECT_ENDPOINT", "")
