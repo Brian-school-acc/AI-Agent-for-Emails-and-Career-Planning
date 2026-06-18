@@ -1,19 +1,26 @@
 import os
+import io
+import json
 
 from agent_framework import tool
 from agent_framework.foundry import FoundryChatClient
 from azure.identity import DefaultAzureCredential
 from azure.storage.blob import BlobServiceClient, BlobSasPermissions, generate_blob_sas
 
-import datetime
+import pandas as pd
 import httpx
 import tempfile
-from datetime import datetime, timedelta
-from docx import Document
 from dotenv import load_dotenv
 from pydantic import Field
 from random import randint
+from datetime import datetime, timedelta, timezone
+
+from docx import Document
+from pptx import Presentation
 from typing import Annotated, List, Dict, Optional, Any, Literal
+from reportlab.lib.pagesizes import letter
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
+from reportlab.lib.styles import getSampleStyleSheet
 
 
 load_dotenv()
@@ -125,59 +132,265 @@ def draft_lecturer_email(
     return selected_template.format(main_idea=main_idea) + f" Length of email: {length}"
 
 
-@tool(
-    name="generate_and_link_docx",
-    description="Generates a report and provides a secure download link.",
-)
-def generate_and_link_docx(filename: str, content: str) -> str:
-    account_name = os.environ.get("AZURE_STORAGE_ACCOUNT_NAME")
-    # account_key = os.environ.get("AZURE_STORAGE_ACCOUNT_KEY")
-    container_name = os.environ.get("AZURE_BLOB_CONTAINER_NAME")
+# ============================================================================================================
+# TOOL 4: Generate Documents of Different File Types - Lightweight independent tools + local_2_azure() helper
+# ============================================================================================================
 
-    # 0. Checking storage account credentials
+# 1. THE HELPER FUNCTION (Not a tool, just reusable code)
+def upload_and_link(temp_path: str, filename: str) -> str:
+    ACCOUNT_NAME = os.environ.get("AZURE_STORAGE_ACCOUNT_NAME")
+    ACCOUNT_KEY = os.environ.get("AZURE_STORAGE_ACCOUNT_KEY")
+    CONTAINER_NAME = os.environ.get("AZURE_BLOB_CONTAINER_NAME")
+
+    # 0. Check all three credentials
     err_msg: list[str] = []
-    if account_name is None:
-        err_msg.append(f"ACCOUNT_NAME: {account_name}")
-    # if account_key is None:
-        # err_msg.append(f"ACCOUNT_KEY: {account_key}")
-    if container_name is None:
-        err_msg.append(f"CONTAINER_NAME: {container_name}")
-    
+    if ACCOUNT_NAME is None:
+        err_msg.append("ACCOUNT_NAME")
+    if ACCOUNT_KEY is None:
+        err_msg.append("ACCOUNT_KEY")
+    if CONTAINER_NAME is None:
+        err_msg.append("CONTAINER_NAME")
+
     if err_msg:
-        raise EnvironmentError(f"Mssing Credentials: {", ".join(err_msg)}")
+        raise EnvironmentError(f"Missing Credentials: {', '.join(err_msg)}")
 
-    # 1. Generate local document
-    doc = Document()
-    for line in content.split("\n"):
-        doc.add_paragraph(line.strip())
-
-    temp_path = os.path.join(tempfile.gettempdir(), filename)
-    doc.save(temp_path)
-
-    # 2. Upload to Azure
     blob_service_client = BlobServiceClient(
-        account_url=f"https://{account_name}.blob.core.windows.net",
-        credential=DefaultAzureCredentials(),
+        account_url=f"https://{ACCOUNT_NAME}.blob.core.windows.net",
+        credential=ACCOUNT_KEY,
     )
     blob_client = blob_service_client.get_blob_client(
-        container=container_name, blob=filename # type: ignore
+        container=CONTAINER_NAME, blob=filename # type: ignore
     )
 
     with open(temp_path, "rb") as data:
         blob_client.upload_blob(data, overwrite=True)
 
-    # 3. Generate a 1-hour SAS Download URL
+    expiry_time = datetime.now(timezone.utc) + timedelta(hours=1)
     sas_token = generate_blob_sas(
-        account_name=account_name, # type: ignore
-        container_name=container_name, # type: ignore
+        account_name=ACCOUNT_NAME, # type: ignore
+        container_name=CONTAINER_NAME, # type: ignore
         blob_name=filename,
-        account_key=account_key,
+        account_key=ACCOUNT_KEY,
         permission=BlobSasPermissions(read=True),
-        expiry=datetime.now(timezone.utc) + timedelta(hours=1),
+        expiry=expiry_time,
     )
 
-    download_url = f"https://{account_name}.blob.core.windows.net/{container_name}/{filename}?{sas_token}"
-    os.remove(temp_path)
+    os.remove(temp_path)  # Clean up
+    return f"https://{ACCOUNT_NAME}.blob.core.windows.net/{CONTAINER_NAME}/{filename}?{sas_token}"
 
-    # The agent will output this markdown directly to the Copilot UI
-    return f"Document generated successfully. [Click here to download {filename}]({download_url})"
+
+# 4A - DOCX
+@tool(
+    name="generate_docx",
+    description=(
+        "Generates a Microsoft Word document (.docx) from structured text content. "
+        "Use this tool when a user explicitly requests a text report, formal summary, or essay download. "
+        "The file extension '.docx' is automatically appended if missing."
+    ),
+)
+def generate_docx(filename: str, content: str) -> str:
+    """
+    Generates a Word file from text, pushes it to Azure Storage, and outputs a download URL.
+
+    Args:
+        filename (str): Desired output name (e.g., 'academic_report.docx').
+        content (str): Plain text file data. Newlines create individual document paragraphs.
+
+    Returns:
+        str: A Markdown string embedding the functional file download hyperlink.
+    """
+    if not filename.lower().endswith(".docx"):
+        filename += ".docx"
+
+    doc = Document()
+    for line in content.split("\n"):
+        if line.strip():
+            doc.add_paragraph(line.strip())
+
+    temp_path = os.path.join(tempfile.gettempdir(), filename)
+    doc.save(temp_path)
+
+    url = upload_and_link(temp_path, filename)
+    return f"Document ready: [Download {filename}]({url})"
+
+
+# 4B - XLSX
+@tool(
+    name="generate_xlsx",
+    description=(
+        "Generates a professional Microsoft Excel (.xlsx) spreadsheet from a raw CSV text string. "
+        "Use this tool whenever structural tabular data, datasets, or grade listings must be compiled "
+        "and made downloadable for analysis. The system handles table indexing and auto-formatting."
+    ),
+)
+def generate_xlsx(filename: str, csv_data: str) -> str:
+    """
+    Parses a CSV data string into a Pandas DataFrame, exports to Excel format, and uploads to cloud storage.
+
+    Args:
+        filename (str): Target spreadsheet filename (e.g., 'student_grades.xlsx').
+        csv_data (str): Comma-separated or tabular string layout containing rows and headers.
+
+    Returns:
+        str: Markdown output link to fetch the target compiled spreadsheet file.
+    """
+    if not filename.lower().endswith(".xlsx"):
+        filename += ".xlsx"
+
+    # Convert the plain text CSV string into a structure Pandas can work with
+    df = pd.read_csv(io.StringIO(csv_data.strip()))
+
+    temp_path = os.path.join(tempfile.gettempdir(), filename)
+    df.to_excel(temp_path, index=False, engine="openpyxl")
+
+    url = upload_and_link(temp_path, filename)
+    return f"Spreadsheet ready: [Download {filename}]({url})"
+
+
+# 4C - PPTX
+@tool(
+    name="generate_pptx",
+    description=(
+        "Generates a Microsoft PowerPoint (.pptx) presentation deck. The 'slides_json' input parameter "
+        "MUST be a JSON-formatted string array of objects where each slide configuration explicitly "
+        "contains a 'title' string and a 'bullets' list of strings. Use this for presentation summaries."
+    ),
+)
+def generate_pptx(filename: str, slides_json: str) -> str:
+    """
+    Compiles a structured presentation layout array into a downloadable PowerPoint slide deck.
+
+    Args:
+        filename (str): Presentation filename target (e.g., 'lecture_summary.pptx').
+        slides_json (str): A serialized JSON array matching the structure:
+            '[{"title": "Intro", "bullets": ["Point A", "Point B"]}]'
+
+    Returns:
+        str: Hyperlink payload directing users to download the resulting presentation file.
+    """
+    if not filename.lower().endswith(".pptx"):
+        filename += ".pptx"
+
+    prs = Presentation()
+    slide_layout = prs.slide_layouts[1]  # Title and Content slide structure template
+
+    try:
+        slide_data = json.loads(slides_json)
+        for data in slide_data:
+            slide = prs.slides.add_slide(slide_layout)
+            slide.shapes.title.text = data.get("title", "Untitled Slide")
+
+            tf = slide.placeholders[1].text_frame
+            for idx, bullet in enumerate(data.get("bullets", [])):
+                p = tf.add_paragraph() if idx > 0 else tf.paragraphs[0]
+                p.text = bullet
+    except Exception as e:
+        return f"Error compiling presentation layout parameters: {str(e)}"
+
+    temp_path = os.path.join(tempfile.gettempdir(), filename)
+    prs.save(temp_path)
+
+    url = upload_and_link(temp_path, filename)
+    return f"Presentation deck ready: [Download {filename}]({url})"
+
+
+# 4D - PDF
+@tool(
+    name="generate_pdf",
+    description=(
+        "Generates an unmodifiable Portable Document Format (.pdf) file. Use this tool specifically "
+        "when unalterable or print-ready formal assets like certificate letters, formal transcript text wrappers, "
+        "or invoices are requested by the user."
+    ),
+)
+def generate_pdf(filename: str, content: str) -> str:
+    """
+    Constructs a structurally sound PDF document out of plaintext content, managing layouts elegantly via ReportLab.
+
+    Args:
+        filename (str): Target PDF filename constraint (e.g., 'official_notice.pdf').
+        content (str): Plain text asset blocks. Newlines represent layout spacers or structural paragraph breaks.
+
+    Returns:
+        str: Hyperlink payload pointing directly to the compiled cloud-hosted PDF.
+    """
+    if not filename.lower().endswith(".pdf"):
+        filename += ".pdf"
+
+    temp_path = os.path.join(tempfile.gettempdir(), filename)
+
+    doc = SimpleDocTemplate(temp_path, pagesize=letter)
+    styles = getSampleStyleSheet()
+    story = []
+
+    for line in content.split("\n"):
+        if line.strip():
+            p = Paragraph(line.strip(), styles["Normal"])
+            story.append(p)
+            story.append(
+                Spacer(1, 12)
+            )  # Consistent standard typographic spacing padding
+
+    doc.build(story)
+
+    url = upload_and_link(temp_path, filename)
+    return f"PDF Asset generated successfully: [Download {filename}]({url})"
+
+
+# ======================================================================================================
+# TOOL 5: Generate Documents of Different File Types - code_interpreter + sandbox_2_azure() helper
+# ======================================================================================================
+
+
+@tool(
+    name="upload_sandbox_file_to_azure",
+    description=(
+        "MANDATORY POST-EXECUTION HOOK: You must call this tool immediately after saving ANY file "
+        "to '/mnt/data/' using the code_interpreter. Do not reply to the user until you have passed "
+        "the local filepath to this tool and received the secure Azure URL in return."
+    ),
+)
+def upload_sandbox_file_to_azure(sandbox_file_path: str, destination_filename: str) -> str:
+    if not os.path.exists(sandbox_file_path):
+        return f"Error: Cannot find file at {sandbox_file_path}. Are you sure the code_interpreter saved it there?"
+
+    ACCOUNT_NAME = os.environ.get("AZURE_STORAGE_ACCOUNT_NAME")
+    ACCOUNT_KEY = os.environ.get("AZURE_STORAGE_ACCOUNT_KEY")
+    CONTAINER_NAME = os.environ.get("AZURE_BLOB_CONTAINER_NAME")
+
+    # 0. Check all three credentials
+    err_msg: list[str] = []
+    if ACCOUNT_NAME is None:
+        err_msg.append("ACCOUNT_NAME")
+    if ACCOUNT_KEY is None:
+        err_msg.append("ACCOUNT_KEY")
+    if CONTAINER_NAME is None:
+        err_msg.append("CONTAINER_NAME")
+
+    if err_msg:
+        raise EnvironmentError(f"Missing Credentials: {', '.join(err_msg)}")
+
+    blob_service_client = BlobServiceClient(
+        account_url=f"https://{ACCOUNT_NAME}.blob.core.windows.net",
+        credential=ACCOUNT_KEY,
+    )
+    blob_client = blob_service_client.get_blob_client(
+        container=CONTAINER_NAME, blob=destination_filename  # type: ignore
+    )
+
+    with open(sandbox_file_path, "rb") as data:
+        blob_client.upload_blob(data, overwrite=True)
+
+    expiry_time = datetime.now(timezone.utc) + timedelta(hours=1)
+    sas_token = generate_blob_sas(
+        account_name=ACCOUNT_NAME,  # type: ignore
+        container_name=CONTAINER_NAME,  # type: ignore
+        blob_name=destination_filename,
+        account_key=ACCOUNT_KEY,
+        permission=BlobSasPermissions(read=True),
+        expiry=expiry_time,
+    )
+
+    os.remove(destination_filename)  # Clean up
+    download_url = f"https://{ACCOUNT_NAME}.blob.core.windows.net/{CONTAINER_NAME}/{destination_filename}?{sas_token}"
+    return f"Success! [Download {sandbox_file_path}]({download_url})"

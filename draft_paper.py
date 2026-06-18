@@ -13,6 +13,18 @@ curl -sS -X POST http://localhost:8088/responses -H "Content-Type: application/j
 curl -sS -X POST http://localhost:8088/responses -H "Content-Type: application/json" -d '{"input": "Hello, what is the time now? "}'
 curl -sS -X POST http://localhost:8088/responses -H "Content-Type: application/json" -d '{"input": "Hello, how to connect to the wifi in campus? Where to park my Tesla? What shuttles can I take to Shaw College? "}'
 
+# Test docx
+curl -sS -X POST http://localhost:8088/responses -H "Content-Type: application/json" -d '{"input": "Hello, generate a word document on the topic of climate change. "}'
+
+# Test xlsx
+curl -sS -X POST http://localhost:8088/responses -H "Content-Type: application/json" -d '{"input": "Hello, generate a excel sheet of sample data on the topic of air pollution."}'
+
+# Test pptx
+curl -sS -X POST http://localhost:8088/responses -H "Content-Type: application/json" -d '{"input": "Hello, generate a powerpoint slides on the topic of human resources"}'
+
+# Test pdf
+curl -sS -X POST http://localhost:8088/responses -H "Content-Type: application/json" -d '{"input": "Hello, generate a pdf file for an event poster in the format of application form"}'
+
 
 curl -sS -H "Content-Type: application/json" \
  -X POST http://localhost:8088/responses \

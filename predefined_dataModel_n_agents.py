@@ -39,9 +39,11 @@ from executive_tools import (
     draft_lecturer_email,
     create_planner_task,
     schedule_calendar_event,
-    generate_and_link_docx,
-    # generate_word_document,
-    # generate_presentation_slides,
+    generate_docx,
+    generate_xlsx,
+    generate_pptx,
+    generate_pdf,
+    upload_sandbox_file_to_azure,
 )
 from career_coach_tools import (
     analyze_resume_skill_gaps,
@@ -55,7 +57,6 @@ PROJECT_ENDPOINT = os.environ.get("FOUNDRY_PROJECT_ENDPOINT", "")
 MODEL_NAME = os.environ.get("AZURE_AI_MODEL_DEPLOYMENT_NAME", "")
 
 # --- 1. DATA MODELS ---
-
 
 class TriageResult(BaseModel):
     """Structured routing schema for incoming documents."""
@@ -232,9 +233,11 @@ def create_executive_agent(credential=DefaultAzureCredential()) -> Agent:
         create_planner_task,
         schedule_calendar_event,
         code_interpreter_tool,
-        generate_and_link_docx,
-        # generate_word_document,
-        # generate_presentation_slides,
+        upload_sandbox_file_to_azure,
+        # generate_docx,
+        # generate_xlsx,
+        # generate_pptx,
+        # generate_pdf,
     ]
 
     return Agent(
