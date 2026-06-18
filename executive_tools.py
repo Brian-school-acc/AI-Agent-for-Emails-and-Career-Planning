@@ -131,15 +131,15 @@ def draft_lecturer_email(
 )
 def generate_and_link_docx(filename: str, content: str) -> str:
     account_name = os.environ.get("AZURE_STORAGE_ACCOUNT_NAME")
-    account_key = os.environ.get("AZURE_STORAGE_ACCOUNT_KEY")
+    # account_key = os.environ.get("AZURE_STORAGE_ACCOUNT_KEY")
     container_name = os.environ.get("AZURE_BLOB_CONTAINER_NAME")
 
     # 0. Checking storage account credentials
     err_msg: list[str] = []
     if account_name is None:
         err_msg.append(f"ACCOUNT_NAME: {account_name}")
-    if account_key is None:
-        err_msg.append(f"ACCOUNT_KEY: {account_key}")
+    # if account_key is None:
+        # err_msg.append(f"ACCOUNT_KEY: {account_key}")
     if container_name is None:
         err_msg.append(f"CONTAINER_NAME: {container_name}")
     
@@ -157,7 +157,7 @@ def generate_and_link_docx(filename: str, content: str) -> str:
     # 2. Upload to Azure
     blob_service_client = BlobServiceClient(
         account_url=f"https://{account_name}.blob.core.windows.net",
-        credential=account_key,
+        credential=DefaultAzureCredentials(),
     )
     blob_client = blob_service_client.get_blob_client(
         container=container_name, blob=filename # type: ignore
