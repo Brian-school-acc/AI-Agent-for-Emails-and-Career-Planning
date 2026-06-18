@@ -345,9 +345,10 @@ def generate_pdf(filename: str, content: str) -> str:
 @tool(
     name="upload_sandbox_file_to_azure",
     description=(
-        "MANDATORY POST-EXECUTION HOOK: You must call this tool immediately after saving ANY file "
-        "to '/mnt/data/' using the code_interpreter. Do not reply to the user until you have passed "
-        "the local filepath to this tool and received the secure Azure URL in return."
+        "MANDATORY POST-EXECUTION HOOK FOR code_interpreter_tool: You must call this tool immediately after"
+        "saving ANY file to '/mnt/data/' using the code_interpreter. Do not reply to the user until you have"
+        "passed the local filepath to this tool and received the secure Azure URL in return."
+        "If retrying code_interpreter fails, switch to other lightweight tools OR return a failure message"
     ),
 )
 def upload_sandbox_file_to_azure(sandbox_file_path: str, destination_filename: str) -> str:

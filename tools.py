@@ -13,6 +13,7 @@ from zoneinfo import ZoneInfo
 
 import azure.cognitiveservices.speech as speechsdk
 from agent_framework import tool
+from azure.ai.projects.models import MemorySearchPreviewTool, PromptAgentDefinition
 
 from constants import CUHK_ABBR
 
@@ -175,6 +176,18 @@ async def convert_text_to_speech(
                 return f"Speech Recognition canceled: {cancellation_details.reason}"
             else:
                 return f"Speech Recognition Fallback: none of the above reasons"
-        
+
         except Exception as e:
             return f"Error details: {e}"
+
+
+# Set scope to associate the memories with
+scope = "{{$userId}}"
+
+# Create memory search tool
+memory_search_preview_tool = MemorySearchPreviewTool(
+    memory_store_name=os.environ.get("MEMORY_STORE_NAME", "default_memory_store"),
+    scope=scope,
+    update_delay=2,  # Wait 5 seconds of inactivity before updating memories
+    # In a real application, set this to a higher value like 300 (5 minutes, default)
+)

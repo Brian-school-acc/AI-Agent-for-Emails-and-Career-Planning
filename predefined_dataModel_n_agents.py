@@ -12,6 +12,8 @@ from agent_framework import (
 )
 from agent_framework.foundry import FoundryChatClient
 from azure.identity import DefaultAzureCredential
+from azure.ai.projects.models import MemorySearchPreviewTool, PromptAgentDefinition
+
 from pydantic import BaseModel, Field  # Structured outputs for safer parsing
 from prompts import (
     TRIAGE_PROMPT,
@@ -24,6 +26,7 @@ from tools import (
     summarize_document,
     inquire_abbreviations,
     convert_text_to_speech,
+    memory_search_preview_tool,
 )
 from front_desk_tools import (
     show_agent_selection_menu,
@@ -43,7 +46,7 @@ from executive_tools import (
     generate_xlsx,
     generate_pptx,
     generate_pdf,
-    upload_sandbox_file_to_azure,
+    # upload_sandbox_file_to_azure,
 )
 from career_coach_tools import (
     analyze_resume_skill_gaps,
@@ -55,6 +58,7 @@ load_dotenv()
 
 PROJECT_ENDPOINT = os.environ.get("FOUNDRY_PROJECT_ENDPOINT", "")
 MODEL_NAME = os.environ.get("AZURE_AI_MODEL_DEPLOYMENT_NAME", "")
+SCOPE = "user_demo"
 
 # --- 1. DATA MODELS ---
 
@@ -104,44 +108,44 @@ async def triage_and_route(messages: list[Message], ctx: WorkflowContext[list[Me
     # Initialize target_route for the following 2 routes: A, B
     target_route = None
 
-    # --- ROUTE A (ACTION CARD): INTERCEPT ADAPTIVE CARD SUBMISSIONS ---
-    is_card_click = False
+    # # --- ROUTE A (ACTION CARD): INTERCEPT ADAPTIVE CARD SUBMISSIONS ---
+    # is_card_click = False
 
-    try:
-        # If it's a card submission, original_prompt will be a stringified JSON object
-        card_data = json.loads(original_prompt.strip())
-        if (
-            isinstance(card_data, dict)
-            and card_data.get("actionType") == "route_to_agent"
-        ):
-            is_card_click = True
-            target_route = card_data.get("targetAgent")
-            print(f"🎯 Intercepted Card Click! Direct routing to: {target_route}")
-    except (json.JSONDecodeError, TypeError):
-        # Not a JSON payload; it's regular student text. Proceed to LLM triage.
-        pass
+    # try:
+    #     # If it's a card submission, original_prompt will be a stringified JSON object
+    #     card_data = json.loads(original_prompt.strip())
+    #     if (
+    #         isinstance(card_data, dict)
+    #         and card_data.get("actionType") == "route_to_agent"
+    #     ):
+    #         is_card_click = True
+    #         target_route = card_data.get("targetAgent")
+    #         print(f"🎯 Intercepted Card Click! Direct routing to: {target_route}")
+    # except (json.JSONDecodeError, TypeError):
+    #     # Not a JSON payload; it's regular student text. Proceed to LLM triage.
+    #     pass
 
-    # 2. Package request bundle for specialists
-    user_msg = Message("user", contents=[str(original_prompt)])
-    specialist_request = AgentExecutorRequest(messages=[user_msg], should_respond=True)
+    # # 2. Package request bundle for specialists
+    # user_msg = Message("user", contents=[str(original_prompt)])
+    # specialist_request = AgentExecutorRequest(messages=[user_msg], should_respond=True)
 
-    # 3. Execution Path Logic
-    if is_card_click:
-        # Bypasses LLM entirely, saving latency and money
-        if target_route == "career_coach":
-            print("➡️ Dispatcher: Routing to Archivist Agent.")
-            await ctx.send_message(specialist_request, "archivist_exec") # type: ignore
-        elif target_route == "executive":
-            print("➡️ Dispatcher: Routing to Executive Agent.")
-            await ctx.send_message(specialist_request, "executive_exec") # type: ignore
-        elif target_route == "archivist":
-            print("➡️ Dispatcher: Routing to Career Coach Agent.")
-            await ctx.send_message(specialist_request, "career_coach_exec") # type: ignore
-        else:
-            print("➡️ Dispatcher: Routing to Front Desk Fallback.")
-            await ctx.send_message(specialist_request, "front_desk_exec") # type: ignore
-    else:
-        target_route = None  # Revert the initial status of target_route
+    # # 3. Execution Path Logic
+    # if is_card_click:
+    #     # Bypasses LLM entirely, saving latency and money
+    #     if target_route == "career_coach":
+    #         print("➡️ Dispatcher: Routing to Archivist Agent.")
+    #         await ctx.send_message(specialist_request, "archivist_exec") # type: ignore
+    #     elif target_route == "executive":
+    #         print("➡️ Dispatcher: Routing to Executive Agent.")
+    #         await ctx.send_message(specialist_request, "executive_exec") # type: ignore
+    #     elif target_route == "archivist":
+    #         print("➡️ Dispatcher: Routing to Career Coach Agent.")
+    #         await ctx.send_message(specialist_request, "career_coach_exec") # type: ignore
+    #     else:
+    #         print("➡️ Dispatcher: Routing to Front Desk Fallback.")
+    #         await ctx.send_message(specialist_request, "front_desk_exec") # type: ignore
+    # else:
+    #     target_route = None  # Revert the initial status of target_route
 
     # --- ROUTE B (LLM TRIAGE): FALLBACK TO ORIGINAL SILENT LLM TRIAGE ---
 
@@ -211,6 +215,7 @@ def create_archivist_agent(credential=DefaultAzureCredential()) -> Agent:
         inquire_abbreviations,
         summarize_document,
         web_search_tool,
+        memory_search_preview_tool,
     ]
 
     return Agent(
@@ -225,19 +230,18 @@ def create_archivist_agent(credential=DefaultAzureCredential()) -> Agent:
 def create_executive_agent(credential=DefaultAzureCredential()) -> Agent:
     client = _get_foundry_client(credential)
 
-    code_interpreter_tool = client.get_code_interpreter_tool()
-
     tool_list: list[Any] = [
         inquire_abbreviations,
         draft_lecturer_email,
         create_planner_task,
         schedule_calendar_event,
-        code_interpreter_tool,
-        upload_sandbox_file_to_azure,
-        # generate_docx,
-        # generate_xlsx,
-        # generate_pptx,
-        # generate_pdf,
+        # code_interpreter_tool,
+        # upload_sandbox_file_to_azure,
+        generate_docx,
+        generate_xlsx,
+        generate_pptx,
+        generate_pdf,
+        memory_search_preview_tool,
     ]
 
     return Agent(
@@ -263,6 +267,7 @@ def create_career_coach_agent(credential=DefaultAzureCredential()) -> Agent:
         generate_mock_interview_scenario,
         simulate_workplace,
         convert_text_to_speech,
+        memory_search_preview_tool,
     ]
 
     return Agent(
@@ -290,6 +295,7 @@ def create_front_desk_agent(credential=DefaultAzureCredential()) -> Agent:
         get_current_time,
         get_general_faq,
         web_search_tool,
+        memory_search_preview_tool,
     ]
 
     return Agent(
