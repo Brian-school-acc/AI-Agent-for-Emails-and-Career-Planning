@@ -8,6 +8,10 @@ protocols:
 environment_variables:
   - name: AZURE_AI_MODEL_DEPLOYMENT_NAME
     value: ${AZURE_AI_MODEL_DEPLOYMENT_NAME}
+  - name: AZURE_STORAGE_ACCOUNT_NAME
+    value: ${AZURE_STORAGE_ACCOUNT_NAME}
+  - name: AZURE_BLOB_CONTAINER_NAME
+    value: ${AZURE_BLOB_CONTAINER_NAME}
 description: >
   An Agent Framework workflow hosted by Foundry.
 metadata:
