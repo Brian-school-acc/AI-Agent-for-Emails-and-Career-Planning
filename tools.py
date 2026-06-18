@@ -7,13 +7,10 @@ import glob
 from dotenv import load_dotenv
 from typing import Annotated
 from pydantic import Field
-from random import randint
-from datetime import datetime
-from zoneinfo import ZoneInfo
 
 import azure.cognitiveservices.speech as speechsdk
 from agent_framework import tool
-from azure.ai.projects.models import MemorySearchPreviewTool, PromptAgentDefinition
+from azure.ai.projects.models import MemorySearchPreviewTool
 
 from constants import CUHK_ABBR
 

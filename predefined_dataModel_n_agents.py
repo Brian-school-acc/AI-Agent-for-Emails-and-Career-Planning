@@ -12,7 +12,6 @@ from agent_framework import (
 )
 from agent_framework.foundry import FoundryChatClient
 from azure.identity import DefaultAzureCredential
-from azure.ai.projects.models import MemorySearchPreviewTool, PromptAgentDefinition
 
 from pydantic import BaseModel, Field  # Structured outputs for safer parsing
 from prompts import (
@@ -69,23 +68,34 @@ class TriageResult(BaseModel):
     route: Literal["read", "exec", "career", "fallback"] = Field(
         description="Select 'read' for analysis/lookup, 'exec' for timelines/deadlines/tasks, 'career' for resumes, or 'fallback' if general/unclear."
     )
-    
+
     doc_content: str = Field(
         default="", description="The exact unaltered original document text."
     )
 
 
 # --- 2. Helper Function: CLIENT FACTORY ---
+_client: FoundryChatClient | None = None
+
 def _get_foundry_client(credential: DefaultAzureCredential) -> FoundryChatClient:
     """Helper method to construct the centralized inference provider client."""
-    if not PROJECT_ENDPOINT:
-        raise ValueError("Missing environment variable: FOUNDRY_PROJECT_ENDPOINT")
+    # 0. Check and Ensure there is one instance of client
+    global _client
 
-    return FoundryChatClient(
-        project_endpoint=PROJECT_ENDPOINT,
-        model=MODEL_NAME,
-        credential=credential
-    )
+    # 1. Return the cached client if it already exists
+    if _client is not None:
+        return _client
+    
+    else:
+        if not PROJECT_ENDPOINT:
+            raise ValueError("Missing environment variable: FOUNDRY_PROJECT_ENDPOINT")
+
+        _client = FoundryChatClient(
+            project_endpoint=PROJECT_ENDPOINT,
+            model=MODEL_NAME,
+            credential=credential
+        )
+        return _client
 
 
 # --- CENTRALIZED DISPATCHER ROUTER ---

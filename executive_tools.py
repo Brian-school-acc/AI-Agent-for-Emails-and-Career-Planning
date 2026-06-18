@@ -3,12 +3,9 @@ import io
 import json
 
 from agent_framework import tool
-from agent_framework.foundry import FoundryChatClient
-from azure.identity import DefaultAzureCredential
 from azure.storage.blob import BlobServiceClient, BlobSasPermissions, generate_blob_sas
 
 import pandas as pd
-import httpx
 import tempfile
 from dotenv import load_dotenv
 from pydantic import Field
@@ -17,7 +14,7 @@ from datetime import datetime, timedelta, timezone
 
 from docx import Document
 from pptx import Presentation
-from typing import Annotated, List, Dict, Optional, Any, Literal
+from typing import Annotated
 from reportlab.lib.pagesizes import letter
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
 from reportlab.lib.styles import getSampleStyleSheet
