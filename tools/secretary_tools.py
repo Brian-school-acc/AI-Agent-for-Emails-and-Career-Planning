@@ -134,56 +134,7 @@ def draft_lecturer_email(
 # ============================================================================================================
 
 
-# 1. THE HELPER FUNCTION (Not a tool, just reusable code)
-def upload_and_link(temp_path: str, filename: str) -> str:
-    ACCOUNT_NAME = os.environ.get("AZURE_STORAGE_ACCOUNT_NAME")
-    ACCOUNT_KEY = os.environ.get("AZURE_STORAGE_ACCOUNT_KEY")
-    CONTAINER_NAME = os.environ.get("AZURE_BLOB_CONTAINER_NAME")
-
-    # 1. Credential Validation
-    err_msg: list[str] = []
-    if not ACCOUNT_NAME:
-        err_msg.append("ACCOUNT_NAME")
-    if not ACCOUNT_KEY:
-        err_msg.append("ACCOUNT_KEY")
-    if not CONTAINER_NAME:
-        err_msg.append("CONTAINER_NAME")
-
-    if err_msg:
-        raise EnvironmentError(f"Missing Credentials: {', '.join(err_msg)}")
-
-    # 2. Upload and Link Generation with Safe Cleanup
-    try:
-        blob_service_client = BlobServiceClient(
-            account_url=f"https://{ACCOUNT_NAME}.blob.core.windows.net",
-            credential=ACCOUNT_KEY,
-        )
-        blob_client = blob_service_client.get_blob_client(
-            container=CONTAINER_NAME, blob=filename # type: ignore
-        )
-
-        # Upload the file
-        with open(temp_path, "rb") as data:
-            blob_client.upload_blob(data, overwrite=True)
-
-        # Generate SAS token
-        expiry_time = datetime.now(timezone.utc) + timedelta(hours=1)
-        sas_token = generate_blob_sas(
-            account_name=ACCOUNT_NAME, # type: ignore
-            container_name=CONTAINER_NAME, # type: ignore
-            blob_name=filename,
-            account_key=ACCOUNT_KEY,
-            permission=BlobSasPermissions(read=True),
-            expiry=expiry_time,
-        )
-
-        return f"https://{ACCOUNT_NAME}.blob.core.windows.net/{CONTAINER_NAME}/{filename}?{sas_token}"
-
-    finally:
-        # 3. Guaranteed Cleanup
-        if os.path.exists(temp_path):
-            os.remove(temp_path)
-
+from tools.general_tools import upload_and_link
 
 # 4A - DOCX
 @tool(

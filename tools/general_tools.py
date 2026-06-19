@@ -36,43 +36,6 @@ def summarize_document(document_id: str) -> str:
 
 
 @tool(
-    name="file_search",
-    description=(
-        "Search local documents/notes for a keyword or phrase. Use when the user "
-        "asks about content that may live in saved files or exports. Returns "
-        "matching snippets with their file names."
-    ),
-)
-def file_search(
-    query: Annotated[str, Field(description="Keyword or phrase to search for.")],
-    folder: Annotated[str, Field(description="Folder to search in.")] = "./docs",
-) -> str:
-    """Naive local full-text search over .txt/.md files."""
-    print(f"🔧 file_search called: {query!r}")   # remove once confirmed working
-
-    hits = []
-    for path in glob.glob(os.path.join(folder, "**", "*"), recursive=True):
-        if not path.lower().endswith((".txt", ".md")):
-            continue
-        try:
-            with open(path, "r", encoding="utf-8", errors="ignore") as f:
-                text = f.read()
-        except OSError:
-            continue
-        if query.lower() in text.lower():
-            idx = text.lower().find(query.lower())
-            start, end = max(0, idx - 80), idx + 120
-            snippet = text[start:end].replace("\n", " ").strip()
-            hits.append(f"[{os.path.basename(path)}] …{snippet}…")
-        if len(hits) >= 5:
-            break
-
-    if not hits:
-        return f'No local files matched "{query}". State "Data insufficient" to the user.'
-    return "Found these matches:\n" + "\n".join(hits)
-
-
-@tool(
     name="inquire_abbreviations",
     description="Call this function whenever there is an abbrieviation for clearer context",
     approval_mode="never_require",
@@ -124,6 +87,57 @@ def inquire_abbreviations(abbreviation: str) -> str:
         return f"{abbreviation}: {result}"
     else:
         return f"There is probably no cuhk-specific meaning for the word f{abbreviation}"
+
+
+# 1. THE HELPER FUNCTION (Not a tool, just reusable code)
+def upload_and_link(temp_path: str, filename: str) -> str:
+    ACCOUNT_NAME = os.environ.get("AZURE_STORAGE_ACCOUNT_NAME")
+    ACCOUNT_KEY = os.environ.get("AZURE_STORAGE_ACCOUNT_KEY")
+    CONTAINER_NAME = os.environ.get("AZURE_BLOB_CONTAINER_NAME")
+
+    # 1. Credential Validation
+    err_msg: list[str] = []
+    if not ACCOUNT_NAME:
+        err_msg.append("ACCOUNT_NAME")
+    if not ACCOUNT_KEY:
+        err_msg.append("ACCOUNT_KEY")
+    if not CONTAINER_NAME:
+        err_msg.append("CONTAINER_NAME")
+
+    if err_msg:
+        raise EnvironmentError(f"Missing Credentials: {', '.join(err_msg)}")
+
+    # 2. Upload and Link Generation with Safe Cleanup
+    try:
+        blob_service_client = BlobServiceClient(
+            account_url=f"https://{ACCOUNT_NAME}.blob.core.windows.net",
+            credential=ACCOUNT_KEY,
+        )
+        blob_client = blob_service_client.get_blob_client(
+            container=CONTAINER_NAME, blob=filename # type: ignore
+        )
+
+        # Upload the file
+        with open(temp_path, "rb") as data:
+            blob_client.upload_blob(data, overwrite=True)
+
+        # Generate SAS token
+        expiry_time = datetime.now(timezone.utc) + timedelta(hours=1)
+        sas_token = generate_blob_sas(
+            account_name=ACCOUNT_NAME, # type: ignore
+            container_name=CONTAINER_NAME, # type: ignore
+            blob_name=filename,
+            account_key=ACCOUNT_KEY,
+            permission=BlobSasPermissions(read=True),
+            expiry=expiry_time,
+        )
+
+        return f"https://{ACCOUNT_NAME}.blob.core.windows.net/{CONTAINER_NAME}/{filename}?{sas_token}"
+
+    finally:
+        # 3. Guaranteed Cleanup
+        if os.path.exists(temp_path):
+            os.remove(temp_path)
 
 
 @tool(approval_mode="never_require")
@@ -183,6 +197,12 @@ async def convert_text_to_speech(
                 f"speech_{hash(text)}_{datetime.now().strftime('%Y%m%d%H%M%S')}.mp3"
             )
 
+            # === CRITICAL WINDOWS FIX ===
+            # Explicitly delete the SDK objects to flush and release the file handle lock
+            del synthesizer
+            del audio_config
+            # ============================
+            
             # Delegate upload, SAS generation, and cleanup to your helper
             audio_url = upload_and_link(temp_filename, blob_name)
 
