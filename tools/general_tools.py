@@ -155,7 +155,8 @@ async def convert_text_to_speech(
 ) -> str:
     """
     Converts a given text block into synthesized speech and saves it as an audio file.
-    Use this when the user requests an audio read-out or spoken delivery of a student milestone.
+    ALWAYS use this when a real-life scenario is related, e.g. workplace simulation, interview, etc.
+    Also, ALWAYS use this when the user requests an audio read-out or spoken delivery of a student milestone.
     """
     # Grab configuration from your Foundry environment variables
     speech_key = os.environ.get("AZURE_SPEECH_KEY")
@@ -202,7 +203,7 @@ async def convert_text_to_speech(
             del synthesizer
             del audio_config
             # ============================
-            
+
             # Delegate upload, SAS generation, and cleanup to your helper
             audio_url = upload_and_link(temp_filename, blob_name)
 

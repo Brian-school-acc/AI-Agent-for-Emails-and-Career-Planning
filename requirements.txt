@@ -1,14 +1,23 @@
-# For Agent Body
-agent-framework==1.9.0
-agent_framework_foundry_hosting
-azure-ai-projects==2.2.0
+# =========================================================
+# Agent Framework & Core Infrastructure
+# =========================================================
+agent-framework-core==1.8.1
+agent-framework-foundry
+agent-framework-foundry-hosting
+azure-ai-projects>=2.0.0b1
 
-# For Tools
+# =========================================================
+# Document Processing & Data Tooling Dependencies
+# =========================================================
 python-docx==1.2.0
 python-pptx==1.0.2
 reportlab==4.5.1
 pandas==3.0.3
-openpyxl==3.1.5
+openpyxl>=3.1.0
 
-# For Azure resources
+# =========================================================
+# Cognitive & Identity Azure Services
+# =========================================================
 azure-cognitiveservices-speech==1.50.0
+azure-identity>=1.16.0
+mcp

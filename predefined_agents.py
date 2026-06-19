@@ -80,7 +80,7 @@ class TriageResult(BaseModel):
 # --- 2. Helper Function: CLIENT & TOOL FACTORY ---
 _client: FoundryChatClient | None = None
 _file_search_tool: Any | None = None
-
+_memory_search_preview_tool: Any | None = None
 
 def _get_foundry_client(credential: DefaultAzureCredential) -> FoundryChatClient:
     """Helper method to construct the centralized inference provider client."""
@@ -96,7 +96,9 @@ def _get_foundry_client(credential: DefaultAzureCredential) -> FoundryChatClient
             raise ValueError("Missing environment variable: FOUNDRY_PROJECT_ENDPOINT")
 
         _client = FoundryChatClient(
-            project_endpoint=PROJECT_ENDPOINT, model=MODEL_NAME, credential=credential
+            project_endpoint=PROJECT_ENDPOINT,
+            model=MODEL_NAME,
+            credential=credential,
         )
         return _client
 
@@ -112,6 +114,19 @@ async def _get_cached_file_search_tool(client: FoundryChatClient) -> Any:
     # 2. Otherwise, await the creation and cache it
     _file_search_tool = await get_file_search_tool(client)
     return _file_search_tool
+
+
+def _get_cached_memory_search_preview_tool() -> Any:
+    """Helper method to construct and cache the memory search tool globally."""
+    global _memory_search_preview_tool
+
+    # 1. Return the cached tool if it already exists
+    if _memory_search_preview_tool is not None:
+        return _memory_search_preview_tool
+
+    # 2. Otherwise, create and cache it (assuming synchronous based on original usage)
+    _memory_search_preview_tool = get_memory_search_preview_tool()
+    return _memory_search_preview_tool
 
 
 # --- CENTRALIZED DISPATCHER ROUTER ---
@@ -242,7 +257,7 @@ async def create_archivist_agent(credential=DefaultAzureCredential()) -> Agent:
         search_context_size="high",
         allowed_domains=["lib.cuhk.edu.hk"],
     )
-    memory_search_preview_tool = get_memory_search_preview_tool()
+    memory_search_preview_tool = _get_cached_memory_search_preview_tool()
     file_search_tool = await _get_cached_file_search_tool(client)
 
     tool_list: list[Any] = [
@@ -264,7 +279,7 @@ async def create_archivist_agent(credential=DefaultAzureCredential()) -> Agent:
 
 async def create_secretary_agent(credential=DefaultAzureCredential()) -> Agent:
     client = _get_foundry_client(credential)
-    memory_search_preview_tool = get_memory_search_preview_tool()
+    memory_search_preview_tool = _get_cached_memory_search_preview_tool()
     file_search_tool = await _get_cached_file_search_tool(client)
     code_interpreter_tool = client.get_code_interpreter_tool()
 
@@ -297,7 +312,7 @@ async def create_career_coach_agent(credential=DefaultAzureCredential()) -> Agen
     web_search_tool = client.get_web_search_tool(
         search_context_size="high",
     )
-    memory_search_preview_tool = get_memory_search_preview_tool()
+    memory_search_preview_tool = _get_cached_memory_search_preview_tool()
     file_search_tool = await _get_cached_file_search_tool(client)
     code_interpreter_tool = client.get_code_interpreter_tool()
 
@@ -331,7 +346,7 @@ async def create_front_desk_agent(credential=DefaultAzureCredential()) -> Agent:
             "region": "Hong Kong",
         }
     )
-    memory_search_preview_tool = get_memory_search_preview_tool()
+    memory_search_preview_tool = _get_cached_memory_search_preview_tool()
     file_search_tool = await _get_cached_file_search_tool(client)
     code_interpreter_tool = client.get_code_interpreter_tool()
 
@@ -342,7 +357,7 @@ async def create_front_desk_agent(credential=DefaultAzureCredential()) -> Agent:
         code_interpreter_tool,
         upload_sandbox_file_to_azure,
         inquire_abbreviations,
-        show_agent_selection_menu,
+        # show_agent_selection_menu,
         get_weather,
         get_current_time,
         get_general_faq,

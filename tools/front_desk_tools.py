@@ -104,8 +104,20 @@ def show_agent_selection_menu() -> str:
     return json.dumps(card_schema)
 
 
-@tool
-def get_weather(location: Annotated[str, "The city name or location string (e.g., 'Seattle', 'Hong Kong')."],) -> str:
+@tool(
+    name="get_weather",
+    description=("Get the current weather conditions and temperature for a given location."
+                 "If the location is not given, presume that it refers to Hong Kong by default"),
+    approval_mode="never_require"
+)
+def get_weather(
+    location: Annotated[
+        str,
+        Field(
+            description="The city name or location string (e.g., 'Seattle', 'Hong Kong')."
+        ),
+    ],
+) -> str:
     """
     Get the current weather conditions and temperature for a given location.
     If the user does not specify the location, use "Hong Kong" as the default location,
@@ -119,7 +131,7 @@ def get_weather(location: Annotated[str, "The city name or location string (e.g.
     return f"The weather in {location} is currently {chosen_condition} with a high of {high_temp}°C and a low of {low_temp}°C."
 
 
-@tool
+@tool(approval_mode="never_require")
 def get_current_time() -> str:
     """
     Get the current local time for a given location to help answer relative time and date questions.
