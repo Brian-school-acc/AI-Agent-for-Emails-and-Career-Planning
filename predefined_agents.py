@@ -37,9 +37,7 @@ from tools.front_desk_tools import (
     get_general_faq,
 )
 
-# from archivist_tools import (
-
-# )
+from tools.archivist_tools import retrieve_student_emails
 from tools.secretary_tools import (
     draft_lecturer_email,
     create_planner_task,
@@ -200,6 +198,7 @@ async def triage_and_route(
         instructions=TRIAGE_PROMPT,
         name="triage_agent",
         default_options={"store": False, "reasoning": None, "allow_multiple_tool_calls": True},  # type: ignore
+        require_per_service_call_history_persistence=True,
     )
 
     print("🔍 Executing silent triage classification...")
@@ -266,6 +265,7 @@ async def create_archivist_agent(credential=DefaultAzureCredential()) -> Agent:
         file_search_tool,
         inquire_abbreviations,
         summarize_document,
+        retrieve_student_emails,
     ]
 
     return Agent(
@@ -274,20 +274,21 @@ async def create_archivist_agent(credential=DefaultAzureCredential()) -> Agent:
         name="archivist_agent",
         tools=tool_list,
         default_options={"store": False, "reasoning": None, "allow_multiple_tool_calls": True},  # type: ignore
+        require_per_service_call_history_persistence=True,
     )
 
 
 async def create_secretary_agent(credential=DefaultAzureCredential()) -> Agent:
     client = _get_foundry_client(credential)
     memory_search_preview_tool = _get_cached_memory_search_preview_tool()
-    file_search_tool = await _get_cached_file_search_tool(client)
-    code_interpreter_tool = client.get_code_interpreter_tool()
+    # file_search_tool = await _get_cached_file_search_tool(client)
+    # code_interpreter_tool = client.get_code_interpreter_tool()
 
     tool_list: list[Any] = [
         memory_search_preview_tool,
-        file_search_tool,
-        code_interpreter_tool,
-        upload_sandbox_file_to_azure,
+        # file_search_tool,
+        # code_interpreter_tool,
+        # upload_sandbox_file_to_azure,
         inquire_abbreviations,
         draft_lecturer_email,
         create_planner_task,
@@ -304,6 +305,7 @@ async def create_secretary_agent(credential=DefaultAzureCredential()) -> Agent:
         name="secretary_agent",
         tools=tool_list,
         default_options={"store": False, "reasoning": None, "allow_multiple_tool_calls": True},  # type: ignore
+        require_per_service_call_history_persistence=True,
     )
 
 
@@ -314,14 +316,14 @@ async def create_career_coach_agent(credential=DefaultAzureCredential()) -> Agen
     )
     memory_search_preview_tool = _get_cached_memory_search_preview_tool()
     file_search_tool = await _get_cached_file_search_tool(client)
-    code_interpreter_tool = client.get_code_interpreter_tool()
+    # code_interpreter_tool = client.get_code_interpreter_tool()
 
     tool_list: list[Any] = [
         web_search_tool,
         memory_search_preview_tool,
         file_search_tool,
-        code_interpreter_tool,
-        upload_sandbox_file_to_azure,
+        # code_interpreter_tool,
+        # upload_sandbox_file_to_azure,
         inquire_abbreviations,
         analyze_resume_skill_gaps,
         generate_mock_interview_scenario,
@@ -335,12 +337,15 @@ async def create_career_coach_agent(credential=DefaultAzureCredential()) -> Agen
         name="career_coach_agent",
         tools=tool_list,
         default_options={"store": False, "reasoning": None, "allow_multiple_tool_calls": True},  # type: ignore
+        require_per_service_call_history_persistence=True,
     )
 
 
 async def create_front_desk_agent(credential=DefaultAzureCredential()) -> Agent:
     """Handles general chit-chat, greetings, and unsupported requests."""
     client = _get_foundry_client(credential)
+    # openai_client = ChatClient
+
     web_search_tool = client.get_web_search_tool(
         user_location={
             "region": "Hong Kong",
@@ -348,14 +353,14 @@ async def create_front_desk_agent(credential=DefaultAzureCredential()) -> Agent:
     )
     memory_search_preview_tool = _get_cached_memory_search_preview_tool()
     file_search_tool = await _get_cached_file_search_tool(client)
-    code_interpreter_tool = client.get_code_interpreter_tool()
+    # code_interpreter_tool = client.get_code_interpreter_tool()
 
     tool_list: list[Any] = [
         web_search_tool,
         memory_search_preview_tool,
         file_search_tool,
-        code_interpreter_tool,
-        upload_sandbox_file_to_azure,
+        # code_interpreter_tool,
+        # upload_sandbox_file_to_azure,
         inquire_abbreviations,
         # show_agent_selection_menu,
         get_weather,
@@ -369,4 +374,5 @@ async def create_front_desk_agent(credential=DefaultAzureCredential()) -> Agent:
         name="front_desk_agent",
         tools=tool_list,
         default_options={"store": False, "reasoning": None, "allow_multiple_tool_calls": True},  # type: ignore
+        require_per_service_call_history_persistence=True,
     )

@@ -21,6 +21,7 @@ def _patched_init(self, *args, **kwargs):
         [
             "openai.lib.streaming.responses._events:ResponseTextDeltaEvent",
             "openai.lib.streaming.responses._events:ResponseTextDoneEvent",
+            "agent_framework_orchestrations._handoff:HandoffAgentUserRequest",
         ]
     )
 

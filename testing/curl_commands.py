@@ -13,6 +13,11 @@ curl -sS -X POST http://localhost:8088/responses -H "Content-Type: application/j
 curl -sS -X POST http://localhost:8088/responses -H "Content-Type: application/json" -d '{"input": "Hello, what is the time now? "}'
 curl -sS -X POST http://localhost:8088/responses -H "Content-Type: application/json" -d '{"input": "Hello, how to connect to the wifi in campus? Where to park my Tesla? What shuttles can I take to Shaw College? "}'
 
+
+# Test email summary
+curl -sS -X POST http://localhost:8088/responses -H "Content-Type: application/json" -d '{"input": "Please summarize the email in my account"}'
+
+
 # Test docx
 curl -sS -X POST http://localhost:8088/responses -H "Content-Type: application/json" -d '{"input": "Hello, generate a word document on the topic of climate change. "}'
 

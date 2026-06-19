@@ -1,10 +1,90 @@
-import json
-import re
 import datetime
 import httpx
+import json
+import os
+import re
+
+from dotenv import load_dotenv
 from typing import Annotated, List, Dict, Any, Optional
 from pydantic import Field
+from nylas import Client
+
 from agent_framework import tool
+from agent_framework.foundry import FoundryAgent
+
+
+load_dotenv()
+
+# Initialize the Nylas V3 Client
+NYLAS_API_KEY = os.environ.get("NYLAS_API_KEY", "")
+NYLAS_GRANT_ID = os.environ.get("NYLAS_GRANT_ID", "")
+if not NYLAS_API_KEY or not NYLAS_GRANT_ID:
+    raise EnvironmentError("Invalid Nylas Credentials: Nylas API Key or Grant ID.")
+
+nylas_client = Client(api_key=NYLAS_API_KEY)
+
+
+# ==========================================
+# NYLAS EMAIL RETRIEVAL TOOL
+# ==========================================
+
+
+@tool(
+    name="retrieve_student_emails",
+    description="Searches and retrieves recent emails from a student's inbox using semantic keywords or sender names.",
+    approval_mode="never_require",
+)
+def retrieve_student_emails(
+    search_query: Annotated[
+        str,
+        Field(
+            description="Keywords to search for in the email thread (e.g., 'medical leave', 'Dean', 'grades')."
+        ),
+    ],
+) -> str:
+    """Queries the connected email inbox via Nylas API and returns clean text summaries."""
+    grant_id = NYLAS_GRANT_ID
+
+    if not grant_id:
+        return "Error: Nylas Grant ID missing from environment configuration."
+
+    try:
+        # Search messages using query parameters
+        query_params = {
+            "search_query_native": search_query,
+            "limit": 30,  # Keep context small and relevant
+        }
+
+        # Fetch messages from the Nylas API
+        # Removed tuple unpacking; Nylas V3 Python SDK returns a ListResponse object
+        response = nylas_client.messages.list(
+            identifier=grant_id,
+            query_params=query_params,  # type: ignore
+        )
+
+        # Access the list of messages via the `.data` attribute
+        if not response.data:
+            return f"No recent emails found matching query: '{search_query}'."
+
+        formatted_emails = []
+        for msg in response.data:
+            # Safely extract sender information using object attributes
+            sender = msg.from_[0] if msg.from_ else "Unknown"
+            subject = msg.subject if msg.subject else "(No Subject)"
+            snippet = msg.snippet if msg.snippet else "(Empty Body)"
+
+            formatted_emails.append(
+                f"From: {sender}\n"
+                f"Subject: {subject}\n"
+                f"Snippet: {snippet}\n"
+                f"---"
+            )
+
+        return "\n\n".join(formatted_emails)
+
+    except Exception as e:
+        return f"Failed to retrieve emails via Nylas: {str(e)}"
+
 
 # ==========================================
 # TOOL 1: OUTLOOK EMAIL SEARCH (GRAPH API MOCK)
@@ -330,4 +410,3 @@ def screen_and_categorize_emails(
         },
         indent=4,
     )
-
