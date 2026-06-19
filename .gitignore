@@ -41,7 +41,6 @@ pip-delete-this-directory.txt
 # Never commit credentials, API keys, or project endpoints to git
 .env
 .env.local
-.env.*
 *.env
 secrets.json
 

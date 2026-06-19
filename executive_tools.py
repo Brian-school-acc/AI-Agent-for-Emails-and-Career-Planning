@@ -133,47 +133,56 @@ def draft_lecturer_email(
 # TOOL 4: Generate Documents of Different File Types - Lightweight independent tools + local_2_azure() helper
 # ============================================================================================================
 
+
 # 1. THE HELPER FUNCTION (Not a tool, just reusable code)
 def upload_and_link(temp_path: str, filename: str) -> str:
     ACCOUNT_NAME = os.environ.get("AZURE_STORAGE_ACCOUNT_NAME")
     ACCOUNT_KEY = os.environ.get("AZURE_STORAGE_ACCOUNT_KEY")
     CONTAINER_NAME = os.environ.get("AZURE_BLOB_CONTAINER_NAME")
 
-    # 0. Check all three credentials
+    # 1. Credential Validation
     err_msg: list[str] = []
-    if ACCOUNT_NAME is None:
+    if not ACCOUNT_NAME:
         err_msg.append("ACCOUNT_NAME")
-    if ACCOUNT_KEY is None:
+    if not ACCOUNT_KEY:
         err_msg.append("ACCOUNT_KEY")
-    if CONTAINER_NAME is None:
+    if not CONTAINER_NAME:
         err_msg.append("CONTAINER_NAME")
 
     if err_msg:
         raise EnvironmentError(f"Missing Credentials: {', '.join(err_msg)}")
 
-    blob_service_client = BlobServiceClient(
-        account_url=f"https://{ACCOUNT_NAME}.blob.core.windows.net",
-        credential=ACCOUNT_KEY,
-    )
-    blob_client = blob_service_client.get_blob_client(
-        container=CONTAINER_NAME, blob=filename # type: ignore
-    )
+    # 2. Upload and Link Generation with Safe Cleanup
+    try:
+        blob_service_client = BlobServiceClient(
+            account_url=f"https://{ACCOUNT_NAME}.blob.core.windows.net",
+            credential=ACCOUNT_KEY,
+        )
+        blob_client = blob_service_client.get_blob_client(
+            container=CONTAINER_NAME, blob=filename # type: ignore
+        )
 
-    with open(temp_path, "rb") as data:
-        blob_client.upload_blob(data, overwrite=True)
+        # Upload the file
+        with open(temp_path, "rb") as data:
+            blob_client.upload_blob(data, overwrite=True)
 
-    expiry_time = datetime.now(timezone.utc) + timedelta(hours=1)
-    sas_token = generate_blob_sas(
-        account_name=ACCOUNT_NAME, # type: ignore
-        container_name=CONTAINER_NAME, # type: ignore
-        blob_name=filename,
-        account_key=ACCOUNT_KEY,
-        permission=BlobSasPermissions(read=True),
-        expiry=expiry_time,
-    )
+        # Generate SAS token
+        expiry_time = datetime.now(timezone.utc) + timedelta(hours=1)
+        sas_token = generate_blob_sas(
+            account_name=ACCOUNT_NAME, # type: ignore
+            container_name=CONTAINER_NAME, # type: ignore
+            blob_name=filename,
+            account_key=ACCOUNT_KEY,
+            permission=BlobSasPermissions(read=True),
+            expiry=expiry_time,
+        )
 
-    os.remove(temp_path)  # Clean up
-    return f"https://{ACCOUNT_NAME}.blob.core.windows.net/{CONTAINER_NAME}/{filename}?{sas_token}"
+        return f"https://{ACCOUNT_NAME}.blob.core.windows.net/{CONTAINER_NAME}/{filename}?{sas_token}"
+
+    finally:
+        # 3. Guaranteed Cleanup
+        if os.path.exists(temp_path):
+            os.remove(temp_path)
 
 
 # 4A - DOCX
@@ -339,56 +348,56 @@ def generate_pdf(filename: str, content: str) -> str:
 # ======================================================================================================
 
 
-@tool(
-    name="upload_sandbox_file_to_azure",
-    description=(
-        "MANDATORY POST-EXECUTION HOOK FOR code_interpreter_tool: You must call this tool immediately after"
-        "saving ANY file to '/mnt/data/' using the code_interpreter. Do not reply to the user until you have"
-        "passed the local filepath to this tool and received the secure Azure URL in return."
-        "If retrying code_interpreter fails, switch to other lightweight tools OR return a failure message"
-    ),
-)
-def upload_sandbox_file_to_azure(sandbox_file_path: str, destination_filename: str) -> str:
-    if not os.path.exists(sandbox_file_path):
-        return f"Error: Cannot find file at {sandbox_file_path}. Are you sure the code_interpreter saved it there?"
+# @tool(
+#     name="upload_sandbox_file_to_azure",
+#     description=(
+#         "MANDATORY POST-EXECUTION HOOK FOR code_interpreter_tool: You must call this tool immediately after"
+#         "saving ANY file to '/mnt/data/' using the code_interpreter. Do not reply to the user until you have"
+#         "passed the local filepath to this tool and received the secure Azure URL in return."
+#         "If retrying code_interpreter fails, switch to other lightweight tools OR return a failure message"
+#     ),
+# )
+# def upload_sandbox_file_to_azure(sandbox_file_path: str, destination_filename: str) -> str:
+#     if not os.path.exists(sandbox_file_path):
+#         return f"Error: Cannot find file at {sandbox_file_path}. Are you sure the code_interpreter saved it there?"
 
-    ACCOUNT_NAME = os.environ.get("AZURE_STORAGE_ACCOUNT_NAME")
-    ACCOUNT_KEY = os.environ.get("AZURE_STORAGE_ACCOUNT_KEY")
-    CONTAINER_NAME = os.environ.get("AZURE_BLOB_CONTAINER_NAME")
+#     ACCOUNT_NAME = os.environ.get("AZURE_STORAGE_ACCOUNT_NAME")
+#     ACCOUNT_KEY = os.environ.get("AZURE_STORAGE_ACCOUNT_KEY")
+#     CONTAINER_NAME = os.environ.get("AZURE_BLOB_CONTAINER_NAME")
 
-    # 0. Check all three credentials
-    err_msg: list[str] = []
-    if ACCOUNT_NAME is None:
-        err_msg.append("ACCOUNT_NAME")
-    if ACCOUNT_KEY is None:
-        err_msg.append("ACCOUNT_KEY")
-    if CONTAINER_NAME is None:
-        err_msg.append("CONTAINER_NAME")
+#     # 0. Check all three credentials
+#     err_msg: list[str] = []
+#     if ACCOUNT_NAME is None:
+#         err_msg.append("ACCOUNT_NAME")
+#     if ACCOUNT_KEY is None:
+#         err_msg.append("ACCOUNT_KEY")
+#     if CONTAINER_NAME is None:
+#         err_msg.append("CONTAINER_NAME")
 
-    if err_msg:
-        raise EnvironmentError(f"Missing Credentials: {', '.join(err_msg)}")
+#     if err_msg:
+#         raise EnvironmentError(f"Missing Credentials: {', '.join(err_msg)}")
 
-    blob_service_client = BlobServiceClient(
-        account_url=f"https://{ACCOUNT_NAME}.blob.core.windows.net",
-        credential=ACCOUNT_KEY,
-    )
-    blob_client = blob_service_client.get_blob_client(
-        container=CONTAINER_NAME, blob=destination_filename  # type: ignore
-    )
+#     blob_service_client = BlobServiceClient(
+#         account_url=f"https://{ACCOUNT_NAME}.blob.core.windows.net",
+#         credential=ACCOUNT_KEY,
+#     )
+#     blob_client = blob_service_client.get_blob_client(
+#         container=CONTAINER_NAME, blob=destination_filename  # type: ignore
+#     )
 
-    with open(sandbox_file_path, "rb") as data:
-        blob_client.upload_blob(data, overwrite=True)
+#     with open(sandbox_file_path, "rb") as data:
+#         blob_client.upload_blob(data, overwrite=True)
 
-    expiry_time = datetime.now(timezone.utc) + timedelta(hours=1)
-    sas_token = generate_blob_sas(
-        account_name=ACCOUNT_NAME,  # type: ignore
-        container_name=CONTAINER_NAME,  # type: ignore
-        blob_name=destination_filename,
-        account_key=ACCOUNT_KEY,
-        permission=BlobSasPermissions(read=True),
-        expiry=expiry_time,
-    )
+#     expiry_time = datetime.now(timezone.utc) + timedelta(hours=1)
+#     sas_token = generate_blob_sas(
+#         account_name=ACCOUNT_NAME,  # type: ignore
+#         container_name=CONTAINER_NAME,  # type: ignore
+#         blob_name=destination_filename,
+#         account_key=ACCOUNT_KEY,
+#         permission=BlobSasPermissions(read=True),
+#         expiry=expiry_time,
+#     )
 
-    os.remove(destination_filename)  # Clean up
-    download_url = f"https://{ACCOUNT_NAME}.blob.core.windows.net/{CONTAINER_NAME}/{destination_filename}?{sas_token}"
-    return f"Success! [Download {sandbox_file_path}]({download_url})"
+#     os.remove(destination_filename)  # Clean up
+#     download_url = f"https://{ACCOUNT_NAME}.blob.core.windows.net/{CONTAINER_NAME}/{destination_filename}?{sas_token}"
+#     return f"Success! [Download {sandbox_file_path}]({download_url})"

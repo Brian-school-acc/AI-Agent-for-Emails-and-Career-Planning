@@ -25,6 +25,8 @@ curl -sS -X POST http://localhost:8088/responses -H "Content-Type: application/j
 # Test pdf
 curl -sS -X POST http://localhost:8088/responses -H "Content-Type: application/json" -d '{"input": "Hello, generate a pdf file for an event poster in the format of application form"}'
 
+# Test File Upload and Vector Store
+curl -sS -X POST http://localhost:8088/responses -H "Content-Type: application/json" -d '{"input": "Hello, upload the OUTLINE.md to the vector store for me"}'
 
 curl -sS -H "Content-Type: application/json" \
  -X POST http://localhost:8088/responses \

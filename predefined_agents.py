@@ -1,3 +1,4 @@
+import asyncio
 import os
 import json
 from dotenv import load_dotenv
@@ -25,7 +26,8 @@ from tools import (
     summarize_document,
     inquire_abbreviations,
     convert_text_to_speech,
-    memory_search_preview_tool,
+    get_memory_search_preview_tool,
+    get_file_search_tool,
 )
 from front_desk_tools import (
     show_agent_selection_menu,
@@ -45,7 +47,6 @@ from executive_tools import (
     generate_xlsx,
     generate_pptx,
     generate_pdf,
-    # upload_sandbox_file_to_azure,
 )
 from career_coach_tools import (
     analyze_resume_skill_gaps,
@@ -74,8 +75,9 @@ class TriageResult(BaseModel):
     )
 
 
-# --- 2. Helper Function: CLIENT FACTORY ---
+# --- 2. Helper Function: CLIENT & TOOL FACTORY ---
 _client: FoundryChatClient | None = None
+_file_search_tool: Any | None = None
 
 def _get_foundry_client(credential: DefaultAzureCredential) -> FoundryChatClient:
     """Helper method to construct the centralized inference provider client."""
@@ -85,7 +87,7 @@ def _get_foundry_client(credential: DefaultAzureCredential) -> FoundryChatClient
     # 1. Return the cached client if it already exists
     if _client is not None:
         return _client
-    
+
     else:
         if not PROJECT_ENDPOINT:
             raise ValueError("Missing environment variable: FOUNDRY_PROJECT_ENDPOINT")
@@ -97,6 +99,18 @@ def _get_foundry_client(credential: DefaultAzureCredential) -> FoundryChatClient
         )
         return _client
 
+
+async def _get_cached_file_search_tool(client: FoundryChatClient) -> Any:
+    """Helper method to construct and cache the file search tool globally."""
+    global _file_search_tool
+    
+    # 1. Return the cached tool if it already exists
+    if _file_search_tool is not None:
+        return _file_search_tool
+        
+    # 2. Otherwise, await the creation and cache it
+    _file_search_tool = await get_file_search_tool(client)
+    return _file_search_tool
 
 # --- CENTRALIZED DISPATCHER ROUTER ---
 
@@ -209,7 +223,7 @@ async def triage_and_route(messages: list[Message], ctx: WorkflowContext[list[Me
 # --- AGENT CONSTRUCTORS ---
 
 
-def create_archivist_agent(credential=DefaultAzureCredential()) -> Agent:
+async def create_archivist_agent(credential=DefaultAzureCredential()) -> Agent:
     """Helper to create a document analyst agent."""
     client: FoundryChatClient = _get_foundry_client(credential)
     web_search_tool = client.get_web_search_tool(
@@ -218,14 +232,17 @@ def create_archivist_agent(credential=DefaultAzureCredential()) -> Agent:
             "region": "Hong Kong",
         },
         search_context_size="high",
-        allowed_domains=["https://www.lib.cuhk.edu.hk/en/"],
+        allowed_domains=["lib.cuhk.edu.hk"],
     )
+    memory_search_preview_tool = get_memory_search_preview_tool()
+    file_search_tool = await _get_cached_file_search_tool(client)
 
     tool_list: list[Any] = [
-        inquire_abbreviations,
-        summarize_document,
         web_search_tool,
         memory_search_preview_tool,
+        file_search_tool,
+        inquire_abbreviations,
+        summarize_document,
     ]
 
     return Agent(
@@ -237,21 +254,22 @@ def create_archivist_agent(credential=DefaultAzureCredential()) -> Agent:
         )
 
 
-def create_executive_agent(credential=DefaultAzureCredential()) -> Agent:
+async def create_executive_agent(credential=DefaultAzureCredential()) -> Agent:
     client = _get_foundry_client(credential)
+    memory_search_preview_tool = get_memory_search_preview_tool()
+    file_search_tool = await _get_cached_file_search_tool(client)
 
     tool_list: list[Any] = [
+        memory_search_preview_tool,
+        file_search_tool,
         inquire_abbreviations,
         draft_lecturer_email,
         create_planner_task,
         schedule_calendar_event,
-        # code_interpreter_tool,
-        # upload_sandbox_file_to_azure,
         generate_docx,
         generate_xlsx,
         generate_pptx,
         generate_pdf,
-        memory_search_preview_tool,
     ]
 
     return Agent(
@@ -262,22 +280,23 @@ def create_executive_agent(credential=DefaultAzureCredential()) -> Agent:
         default_options={"store": False, "reasoning": None, "allow_multiple_tool_calls": True}, # type: ignore
     )
 
-def create_career_coach_agent(credential=DefaultAzureCredential()) -> Agent:
+async def create_career_coach_agent(credential=DefaultAzureCredential()) -> Agent:
     client = _get_foundry_client(credential)
     web_search_tool = client.get_web_search_tool(
         search_context_size="high",
     )
-    code_interpreter_tool = client.get_code_interpreter_tool()
+    memory_search_preview_tool = get_memory_search_preview_tool()
+    file_search_tool = await _get_cached_file_search_tool(client)
 
     tool_list: list[Any] = [
         inquire_abbreviations,
         web_search_tool,
-        code_interpreter_tool,
+        memory_search_preview_tool,
+        file_search_tool,
         analyze_resume_skill_gaps,
         generate_mock_interview_scenario,
         simulate_workplace,
         convert_text_to_speech,
-        memory_search_preview_tool,
     ]
 
     return Agent(
@@ -288,24 +307,26 @@ def create_career_coach_agent(credential=DefaultAzureCredential()) -> Agent:
         default_options={"store": False, "reasoning": None, "allow_multiple_tool_calls": True}, # type: ignore
     )
 
-def create_front_desk_agent(credential=DefaultAzureCredential()) -> Agent:
+async def create_front_desk_agent(credential=DefaultAzureCredential()) -> Agent:
     """Handles general chit-chat, greetings, and unsupported requests."""
     client = _get_foundry_client(credential)
-    # Configure the web search tool with explicit CUHK location properties
     web_search_tool = client.get_web_search_tool(
         user_location={
             "region": "Hong Kong",
         }
     )
+    memory_search_preview_tool = get_memory_search_preview_tool()
+    file_search_tool = await _get_cached_file_search_tool(client)
 
     tool_list: list[Any] = [
+        web_search_tool,
+        memory_search_preview_tool,
+        file_search_tool,
         inquire_abbreviations,
         show_agent_selection_menu,
         get_weather,
         get_current_time,
         get_general_faq,
-        web_search_tool,
-        memory_search_preview_tool,
     ]
 
     return Agent(
