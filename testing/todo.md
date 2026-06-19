@@ -5,8 +5,7 @@ TODO !!!
 2. Knowledge includes azure blob container
 3. MCP servers: notion? supabase? langfuse?
 4. Make pitch deck + demo vid ==> put on github repo link
-5. clean the repo
-6. Secretary Agent > Archivist + Executive design?
+5. Secretary Agent > Archivist + Executive design?
 
 Testing:
 1. prompts

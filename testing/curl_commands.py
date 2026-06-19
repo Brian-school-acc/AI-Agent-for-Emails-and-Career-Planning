@@ -1,7 +1,7 @@
 # Archivist (read/analysis) branch
 curl -sS -X POST http://localhost:8088/responses -H "Content-Type: application/json" -d '{"input": "Please analyze this email about the Q3 deadline update from SharePoint."}'
 
-#  Executive (meeting scheduling) branch
+#  Secretary (meeting scheduling) branch
 curl -sS -X POST http://localhost:8088/responses -H "Content-Type: application/json" -d '{"input": "Schedule a project sync meeting for next Wednesday at 2 PM, and send calendar invites."}'
 
 # Career Coach

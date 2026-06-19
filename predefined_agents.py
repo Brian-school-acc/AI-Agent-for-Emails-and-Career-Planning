@@ -18,18 +18,19 @@ from pydantic import BaseModel, Field  # Structured outputs for safer parsing
 from prompts import (
     TRIAGE_PROMPT,
     ARCHIVIST_PROMPT,
-    EXECUTIVE_PROMPT,
+    SECRETARY_PROMPT,
     CAREER_COACH_PROMPT,
-    FRONTDESK_PROMPT
+    FRONTDESK_PROMPT,
 )
-from tools import (
+from tools.general_tools import (
     summarize_document,
     inquire_abbreviations,
     convert_text_to_speech,
     get_memory_search_preview_tool,
     get_file_search_tool,
+    upload_sandbox_file_to_azure,
 )
-from front_desk_tools import (
+from tools.front_desk_tools import (
     show_agent_selection_menu,
     get_weather,
     get_current_time,
@@ -39,7 +40,7 @@ from front_desk_tools import (
 # from archivist_tools import (
 
 # )
-from executive_tools import (
+from tools.secretary_tools import (
     draft_lecturer_email,
     create_planner_task,
     schedule_calendar_event,
@@ -48,7 +49,7 @@ from executive_tools import (
     generate_pptx,
     generate_pdf,
 )
-from career_coach_tools import (
+from tools.career_coach_tools import (
     analyze_resume_skill_gaps,
     generate_mock_interview_scenario,
     simulate_workplace,
@@ -61,6 +62,7 @@ MODEL_NAME = os.environ.get("AZURE_AI_MODEL_DEPLOYMENT_NAME", "")
 SCOPE = "user_demo"
 
 # --- 1. DATA MODELS ---
+
 
 class TriageResult(BaseModel):
     """Structured routing schema for incoming documents."""
@@ -79,6 +81,7 @@ class TriageResult(BaseModel):
 _client: FoundryChatClient | None = None
 _file_search_tool: Any | None = None
 
+
 def _get_foundry_client(credential: DefaultAzureCredential) -> FoundryChatClient:
     """Helper method to construct the centralized inference provider client."""
     # 0. Check and Ensure there is one instance of client
@@ -93,9 +96,7 @@ def _get_foundry_client(credential: DefaultAzureCredential) -> FoundryChatClient
             raise ValueError("Missing environment variable: FOUNDRY_PROJECT_ENDPOINT")
 
         _client = FoundryChatClient(
-            project_endpoint=PROJECT_ENDPOINT,
-            model=MODEL_NAME,
-            credential=credential
+            project_endpoint=PROJECT_ENDPOINT, model=MODEL_NAME, credential=credential
         )
         return _client
 
@@ -103,19 +104,23 @@ def _get_foundry_client(credential: DefaultAzureCredential) -> FoundryChatClient
 async def _get_cached_file_search_tool(client: FoundryChatClient) -> Any:
     """Helper method to construct and cache the file search tool globally."""
     global _file_search_tool
-    
+
     # 1. Return the cached tool if it already exists
     if _file_search_tool is not None:
         return _file_search_tool
-        
+
     # 2. Otherwise, await the creation and cache it
     _file_search_tool = await get_file_search_tool(client)
     return _file_search_tool
 
+
 # --- CENTRALIZED DISPATCHER ROUTER ---
 
+
 @executor(id="triage_and_route")
-async def triage_and_route(messages: list[Message], ctx: WorkflowContext[list[Message]]) -> None:
+async def triage_and_route(
+    messages: list[Message], ctx: WorkflowContext[list[Message]]
+) -> None:
     if not messages:
         print("❌ No input messages received at entrypoint.")
         return
@@ -159,9 +164,9 @@ async def triage_and_route(messages: list[Message], ctx: WorkflowContext[list[Me
     #     if target_route == "career_coach":
     #         print("➡️ Dispatcher: Routing to Archivist Agent.")
     #         await ctx.send_message(specialist_request, "archivist_exec") # type: ignore
-    #     elif target_route == "executive":
-    #         print("➡️ Dispatcher: Routing to Executive Agent.")
-    #         await ctx.send_message(specialist_request, "executive_exec") # type: ignore
+    #     elif target_route == "secretary":
+    #         print("➡️ Dispatcher: Routing to Secretary Agent.")
+    #         await ctx.send_message(specialist_request, "secretary_exec") # type: ignore
     #     elif target_route == "archivist":
     #         print("➡️ Dispatcher: Routing to Career Coach Agent.")
     #         await ctx.send_message(specialist_request, "career_coach_exec") # type: ignore
@@ -198,7 +203,9 @@ async def triage_and_route(messages: list[Message], ctx: WorkflowContext[list[Me
     except Exception as e:
         print(f"❌ Dispatcher validation failed: {e}. Defaulting to fallback route.")
         target_route = "fallback"
-        detection = TriageResult(reason="Fail-safe routing", route="fallback", doc_content=raw_text)
+        detection = TriageResult(
+            reason="Fail-safe routing", route="fallback", doc_content=raw_text
+        )
 
     # 3. Package the request bundle for your specialist agents
     user_msg = Message("user", contents=[str(original_prompt)])
@@ -209,8 +216,8 @@ async def triage_and_route(messages: list[Message], ctx: WorkflowContext[list[Me
         print("➡️ Dispatcher: Routing to Archivist Agent.")
         await ctx.send_message(specialist_request, "archivist_exec")  # type: ignore
     elif target_route == "exec":
-        print("➡️ Dispatcher: Routing to Executive Agent.")
-        await ctx.send_message(specialist_request, "executive_exec")  # type: ignore
+        print("➡️ Dispatcher: Routing to Secretary Agent.")
+        await ctx.send_message(specialist_request, "secretary_exec")  # type: ignore
     elif target_route == "career":
         print("➡️ Dispatcher: Routing to Career Coach Agent.")
         await ctx.send_message(specialist_request, "career_coach_exec")  # type: ignore
@@ -219,6 +226,7 @@ async def triage_and_route(messages: list[Message], ctx: WorkflowContext[list[Me
         await ctx.send_message(specialist_request, "front_desk_exec")  # type: ignore
 
     target_route = None  # Revert the initial status of target_route
+
 
 # --- AGENT CONSTRUCTORS ---
 
@@ -246,22 +254,25 @@ async def create_archivist_agent(credential=DefaultAzureCredential()) -> Agent:
     ]
 
     return Agent(
-            client=client,
-            instructions=ARCHIVIST_PROMPT,
-            name="archivist_agent",
-            tools=tool_list,
-            default_options={"store": False, "reasoning": None, "allow_multiple_tool_calls": True}, # type: ignore
-        )
+        client=client,
+        instructions=ARCHIVIST_PROMPT,
+        name="archivist_agent",
+        tools=tool_list,
+        default_options={"store": False, "reasoning": None, "allow_multiple_tool_calls": True},  # type: ignore
+    )
 
 
-async def create_executive_agent(credential=DefaultAzureCredential()) -> Agent:
+async def create_secretary_agent(credential=DefaultAzureCredential()) -> Agent:
     client = _get_foundry_client(credential)
     memory_search_preview_tool = get_memory_search_preview_tool()
     file_search_tool = await _get_cached_file_search_tool(client)
+    code_interpreter_tool = client.get_code_interpreter_tool()
 
     tool_list: list[Any] = [
         memory_search_preview_tool,
         file_search_tool,
+        code_interpreter_tool,
+        upload_sandbox_file_to_azure,
         inquire_abbreviations,
         draft_lecturer_email,
         create_planner_task,
@@ -274,11 +285,12 @@ async def create_executive_agent(credential=DefaultAzureCredential()) -> Agent:
 
     return Agent(
         client=client,
-        instructions=EXECUTIVE_PROMPT,
-        name="executive_agent",
+        instructions=SECRETARY_PROMPT,
+        name="secretary_agent",
         tools=tool_list,
-        default_options={"store": False, "reasoning": None, "allow_multiple_tool_calls": True}, # type: ignore
+        default_options={"store": False, "reasoning": None, "allow_multiple_tool_calls": True},  # type: ignore
     )
+
 
 async def create_career_coach_agent(credential=DefaultAzureCredential()) -> Agent:
     client = _get_foundry_client(credential)
@@ -287,12 +299,15 @@ async def create_career_coach_agent(credential=DefaultAzureCredential()) -> Agen
     )
     memory_search_preview_tool = get_memory_search_preview_tool()
     file_search_tool = await _get_cached_file_search_tool(client)
+    code_interpreter_tool = client.get_code_interpreter_tool()
 
     tool_list: list[Any] = [
-        inquire_abbreviations,
         web_search_tool,
         memory_search_preview_tool,
         file_search_tool,
+        code_interpreter_tool,
+        upload_sandbox_file_to_azure,
+        inquire_abbreviations,
         analyze_resume_skill_gaps,
         generate_mock_interview_scenario,
         simulate_workplace,
@@ -304,8 +319,9 @@ async def create_career_coach_agent(credential=DefaultAzureCredential()) -> Agen
         instructions=CAREER_COACH_PROMPT,
         name="career_coach_agent",
         tools=tool_list,
-        default_options={"store": False, "reasoning": None, "allow_multiple_tool_calls": True}, # type: ignore
+        default_options={"store": False, "reasoning": None, "allow_multiple_tool_calls": True},  # type: ignore
     )
+
 
 async def create_front_desk_agent(credential=DefaultAzureCredential()) -> Agent:
     """Handles general chit-chat, greetings, and unsupported requests."""
@@ -317,11 +333,14 @@ async def create_front_desk_agent(credential=DefaultAzureCredential()) -> Agent:
     )
     memory_search_preview_tool = get_memory_search_preview_tool()
     file_search_tool = await _get_cached_file_search_tool(client)
+    code_interpreter_tool = client.get_code_interpreter_tool()
 
     tool_list: list[Any] = [
         web_search_tool,
         memory_search_preview_tool,
         file_search_tool,
+        code_interpreter_tool,
+        upload_sandbox_file_to_azure,
         inquire_abbreviations,
         show_agent_selection_menu,
         get_weather,
@@ -334,5 +353,5 @@ async def create_front_desk_agent(credential=DefaultAzureCredential()) -> Agent:
         instructions=FRONTDESK_PROMPT,
         name="front_desk_agent",
         tools=tool_list,
-        default_options={"store": False, "reasoning": None, "allow_multiple_tool_calls": True}, # type: ignore
+        default_options={"store": False, "reasoning": None, "allow_multiple_tool_calls": True},  # type: ignore
     )

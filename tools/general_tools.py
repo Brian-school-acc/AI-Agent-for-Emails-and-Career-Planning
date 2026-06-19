@@ -6,7 +6,7 @@ import glob
 import os
 import tempfile
 
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 from dotenv import load_dotenv
 from typing import Annotated
 from pydantic import Field
@@ -17,7 +17,9 @@ import azure.cognitiveservices.speech as speechsdk
 from agent_framework import tool
 from azure.ai.projects.models import MemorySearchPreviewTool
 
-from constants import CUHK_ABBR
+from tools.constants import CUHK_ABBR
+
+from azure.storage.blob import BlobServiceClient, BlobSasPermissions, generate_blob_sas
 
 
 load_dotenv()
@@ -266,3 +268,64 @@ async def get_file_search_tool(client: FoundryChatClient):
     file_search_tool = client.get_file_search_tool(vector_store_ids=[vector_store.id])
 
     return file_search_tool
+
+# ======================================================================================================
+# TOOL 5: Generate Documents of Different File Types - code_interpreter + sandbox_2_azure() helper
+# ======================================================================================================
+
+
+@tool(
+    name="upload_sandbox_file_to_azure",
+    description=(
+        "MANDATORY POST-EXECUTION HOOK FOR code_interpreter_tool: You must call this tool immediately after"
+        "saving ANY file to '/mnt/data/' using the code_interpreter. Do not reply to the user until you have"
+        "passed the local filepath to this tool and received the secure Azure URL in return."
+        "If retrying code_interpreter fails, switch to other lightweight tools OR return a failure message"
+    ),
+)
+def upload_sandbox_file_to_azure(
+    sandbox_file_path: str, destination_filename: str
+) -> str:
+    if not os.path.exists(sandbox_file_path):
+        return f"Error: Cannot find file at {sandbox_file_path}. Are you sure the code_interpreter saved it there?"
+
+    ACCOUNT_NAME = os.environ.get("AZURE_STORAGE_ACCOUNT_NAME")
+    ACCOUNT_KEY = os.environ.get("AZURE_STORAGE_ACCOUNT_KEY")
+    CONTAINER_NAME = os.environ.get("AZURE_BLOB_CONTAINER_NAME")
+
+    # 0. Check all three credentials
+    err_msg: list[str] = []
+    if ACCOUNT_NAME is None:
+        err_msg.append("ACCOUNT_NAME")
+    if ACCOUNT_KEY is None:
+        err_msg.append("ACCOUNT_KEY")
+    if CONTAINER_NAME is None:
+        err_msg.append("CONTAINER_NAME")
+
+    if err_msg:
+        raise EnvironmentError(f"Missing Credentials: {', '.join(err_msg)}")
+
+    blob_service_client = BlobServiceClient(
+        account_url=f"https://{ACCOUNT_NAME}.blob.core.windows.net",
+        credential=ACCOUNT_KEY,
+    )
+    blob_client = blob_service_client.get_blob_client(
+        container=CONTAINER_NAME, blob=destination_filename  # type: ignore
+    )
+
+    with open(sandbox_file_path, "rb") as data:
+        blob_client.upload_blob(data, overwrite=True)
+
+    expiry_time = datetime.now(timezone.utc) + timedelta(hours=1)
+    sas_token = generate_blob_sas(
+        account_name=ACCOUNT_NAME,  # type: ignore
+        container_name=CONTAINER_NAME,  # type: ignore
+        blob_name=destination_filename,
+        account_key=ACCOUNT_KEY,
+        permission=BlobSasPermissions(read=True),
+        expiry=expiry_time,
+    )
+
+    os.remove(destination_filename)  # Clean up
+    download_url = f"https://{ACCOUNT_NAME}.blob.core.windows.net/{CONTAINER_NAME}/{destination_filename}?{sas_token}"
+    return f"Success! [Download {sandbox_file_path}]({download_url})"
