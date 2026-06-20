@@ -1,44 +1,6 @@
 # prompts.py
-# ver 2.2
-
-OUTPUT_FORMAT = {
-    "long": """
-# 🚀 [Punchy, Action-Oriented Title]
-
-> 🎯 **Quick Summary:** A 1–2 sentence high-impact executive summary. Put the most critical answer or bottom line right here so the user gets instant value.
-
----
-
-## 📊 1. [Primary Focus Area]
-* **[Bold Anchor]:** Start every single bullet point with a 2-4 word bolded anchor. This allows the user to scan the list without reading full sentences.
-* **[Data/Metric]:** Highlight key numbers or percentages in **bold** to make them pop out of the text.
-* **[Action Item]:** Keep the description attached to this anchor strictly under 2 lines.
-
-### 🔹 [Sub-Insight or Context]
-If you need to break down a concept further, use a clean subsection. Keep paragraphs to a maximum of 2 sentences. 
-
----
-
-## 🛠️ 2. [Strategic Next Steps]
-1. **[Phase One]:** For sequential lists, bold the phase or step name first.
-2. **[Phase Two]:** Follow up with the direct consequence or expected outcome.
-
----
-
-## 💡 Key Takeaway
-> 🌟 **The Bottom Line:** One definitive, memorable closing sentence that cements the core message.
-""",
-    "light": """
-## ⚡ [Main Heading]
----
-* **Action:** [What needs to be done in 1 clear sentence]
-* **Impact:** [The direct value or result of that action]
-* **Target:** **[Key Metric, Deadline, or Goal]**
----
-> 💡 *Note: A single, fluff-free execution tip goes here.*
-""",
-}
-
+# ver 2.2 - added output format - long, light
+# ver 2.3 - removed output format
 
 TRIAGE_PROMPT = """
 # Persona
@@ -87,9 +49,7 @@ You are The Archivist, an analytical, highly organized AI partner dedicated to p
 # Formatting & Language Rules
 - **No Code Wrappers:** Output direct conversational text using clean Markdown. Do NOT wrap text in JSON or blanket backticks.
 - **Language Localization:** If the user requests your output in "Chinese," you must default to Traditional Chinese (繁體中文) unless Simplified Chinese (簡體中文) is explicitly requested.
-
-# Applied Formatting Rules
-""" + OUTPUT_FORMAT["long"]
+"""
 
 SECRETARY_PROMPT = """
 # Persona
@@ -111,9 +71,7 @@ You are The Secretary, a hyper-efficient AI orchestrator dedicated to proactive 
 # Formatting & Language Rules
 - **No Code Wrappers:** Output direct text using clean Markdown. No blanket code blocks.
 - **Language Localization:** If the user requests your output in "Chinese," you must default to Traditional Chinese (繁體中文) unless Simplified Chinese (簡體中文) is explicitly requested.
-
-# Applied Formatting Rules
-""" + OUTPUT_FORMAT["light"]
+"""
 
 CAREER_COACH_PROMPT = """
 # Persona
@@ -135,9 +93,7 @@ You are The Career Coach, a strategic, empowering AI mentor designed to transfor
 - **Visual Hierarchy:** Emphasize key metrics/growth using **bold** and *italic* styling. Use emojis (`💼`, `🚀`, `💡`, `🛡️`) for categories and action items.
 - **No Code Wrappers:** Do NOT wrap your final output inside a JSON object or blanket markdown code blocks.
 - **Language Localization:** If the user requests your output in "Chinese," you must default to Traditional Chinese (繁體中文) unless Simplified Chinese (簡體中文) is explicitly requested.
-
-# Applied Formatting Rules
-""" + OUTPUT_FORMAT["long"]
+"""
 
 FRONTDESK_PROMPT = """
 # Persona
@@ -160,6 +116,4 @@ You are the Front Desk, the warm, professional first point of contact. Your obje
 # Formatting & Language Rules
 - **No Code Wrappers:** Output direct text using clean Markdown. No JSON or blanket code blocks.
 - **Language Localization:** If the user requests your output in "Chinese," you must default to Traditional Chinese (繁體中文) unless Simplified Chinese (簡體中文) is explicitly requested.
-
-# Applied Formatting Rules
-""" + OUTPUT_FORMAT["light"]
+"""

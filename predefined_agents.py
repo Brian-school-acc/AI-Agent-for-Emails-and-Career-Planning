@@ -23,15 +23,14 @@ from prompts import (
     FRONTDESK_PROMPT,
 )
 from tools.general_tools import (
-    summarize_document,
     inquire_abbreviations,
     convert_text_to_speech,
     get_memory_search_preview_tool,
     get_file_search_tool,
     upload_sandbox_file_to_azure,
+    generate_image,
 )
 from tools.front_desk_tools import (
-    show_agent_selection_menu,
     get_weather,
     get_current_time,
     get_general_faq,
@@ -153,7 +152,7 @@ async def triage_and_route(
 
     # Build the triage agent locally to run SILENTLY (Isolated from the stream)
     credential = DefaultAzureCredential()
-    model_choice = "FAST_MINI_MODEL"
+    model_choice = "STANDARD_HEAVY_MODEL"
     triage_agent = Agent(
         client=_get_foundry_client(credential, model_choice),
         instructions=TRIAGE_PROMPT,
@@ -226,7 +225,6 @@ async def create_archivist_agent(credential=DefaultAzureCredential()) -> Agent:
         memory_search_preview_tool,
         file_search_tool,
         inquire_abbreviations,
-        summarize_document,
         retrieve_student_emails,
     ]
 
@@ -260,6 +258,7 @@ async def create_secretary_agent(credential=DefaultAzureCredential()) -> Agent:
         generate_xlsx,
         generate_pptx,
         generate_pdf,
+        generate_image,
     ]
 
     return Agent(
@@ -293,6 +292,7 @@ async def create_career_coach_agent(credential=DefaultAzureCredential()) -> Agen
         generate_mock_interview_scenario,
         simulate_workplace,
         convert_text_to_speech,
+        generate_image,
     ]
 
     return Agent(

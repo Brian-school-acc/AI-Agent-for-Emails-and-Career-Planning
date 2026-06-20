@@ -9,6 +9,8 @@ _original_init = checkpoint_mod.FileCheckpointStorage.__init__
 
 
 def _patched_init(self, *args, **kwargs):
+    print("✅ Patched FileCheckpointStorage.__init__ called")
+
     allowed = kwargs.get("allowed_checkpoint_types")
     if allowed is None:
         allowed = set()
@@ -22,6 +24,7 @@ def _patched_init(self, *args, **kwargs):
             "openai.lib.streaming.responses._events:ResponseTextDeltaEvent",
             "openai.lib.streaming.responses._events:ResponseTextDoneEvent",
             "agent_framework_orchestrations._handoff:HandoffAgentUserRequest",
+            "types:GenericAlias",
         ]
     )
 

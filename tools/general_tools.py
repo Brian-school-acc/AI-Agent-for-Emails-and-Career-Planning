@@ -2,9 +2,11 @@
 so the framework exposes it. Import these into server.py and attach via tools=[...]."""
 
 import asyncio
-import glob
+import base64
 import os
+import requests
 import tempfile
+import uuid
 
 from datetime import datetime, timedelta, timezone
 from dotenv import load_dotenv
@@ -12,8 +14,9 @@ from typing import Annotated
 from pydantic import Field
 from zoneinfo import ZoneInfo
 
-from agent_framework.foundry import FoundryChatClient
 import azure.cognitiveservices.speech as speechsdk
+from openai import OpenAI
+from agent_framework.foundry import FoundryChatClient
 from agent_framework import tool
 from azure.ai.projects.models import MemorySearchPreviewTool
 
@@ -23,17 +26,6 @@ from azure.storage.blob import BlobServiceClient, BlobSasPermissions, generate_b
 
 
 load_dotenv()
-
-@tool(approval_mode="never_require")
-def summarize_document(document_id: str) -> str:
-    """
-    Retrieve a brief summary of a specific document by its ID or title.
-
-    Args:
-        document_id: The exact title or ID of the document to summarize.
-    """
-    return f"Summary of {document_id}: This document outlines the standard operating procedures and academic requirements for the current semester. It includes important dates, grading rubrics, and contact protocols."
-
 
 @tool(
     name="inquire_abbreviations",
@@ -350,3 +342,82 @@ def upload_sandbox_file_to_azure(
     os.remove(destination_filename)  # Clean up
     download_url = f"https://{ACCOUNT_NAME}.blob.core.windows.net/{CONTAINER_NAME}/{destination_filename}?{sas_token}"
     return f"Success! [Download {sandbox_file_path}]({download_url})"
+
+
+@tool(
+    name="generate_image",
+    description=(
+        "Generates a high-quality image from a text prompt using FLUX.2-pro. "
+        "Use this tool whenever a student requests a visual model, roadmap diagram, or illustration."
+    ),
+)
+def generate_image(
+    prompt: Annotated[
+        str,
+        Field(description="A highly detailed description of the image to generate."),
+    ],
+    filename: Annotated[
+        str,
+        Field(
+            description="A short, relevant filename for the output image ending in .png."
+        ),
+    ],
+) -> str:
+    """
+    Invokes the FLUX.2-pro provider API directly via HTTP, processes the byte stream,
+    and returns a Copilot-compliant markdown image link.
+    """
+    # 1. Retrieve environment configurations
+    # Note: For FLUX.2-pro, the endpoint should be the base URL up to '.azure.com'
+    base_endpoint = os.environ.get("IMAGE_GEN_URL")
+    deployment_name = os.environ.get("IMAGE_GEN_MODEL")
+    api_key = os.environ.get("IMAGE_GEN_API_KEY")
+
+    if not base_endpoint or not api_key:
+        return "Error: Missing Azure AI Foundry credentials."
+
+    # Ensure correct file extension
+    if not filename.lower().endswith(".png"):
+        filename += ".png"
+
+    # Prevent filename collisions in your Azure Blob storage
+    unique_filename = f"{filename.split('.png')[0]}_{uuid.uuid4().hex[:8]}.png"
+
+    # 2. Build Payload matching the Black Forest Labs specifications
+    headers = {"Content-Type": "application/json", "Authorization": f"Bearer {api_key}"}
+
+    payload = {
+        "prompt": prompt,
+        "model": deployment_name,
+        "width": 1024,
+        "height": 1024,
+        "n": 1,
+        "output_format": "png",
+    }
+
+    try:
+        # 3. Execute HTTP Post
+        response = requests.post(base_endpoint, json=payload, headers=headers)
+        response.raise_for_status()  # Catch HTTP codes like 400, 401, 500
+
+        response_data = response.json()
+
+        # 4. Extract and decode the base64 payload
+        b64_json = response_data["data"][0]["b64_json"]
+        image_bytes = base64.b64decode(b64_json)
+
+        # 5. Drop bytes into local temp directory for the Azure Blob helper to grab
+        temp_path = os.path.join(tempfile.gettempdir(), unique_filename)
+        with open(temp_path, "wb") as f:
+            f.write(image_bytes)
+
+        # 6. Hand off to your existing helper to push to Azure Storage and generate a SAS link
+        sas_url = upload_and_link(temp_path, unique_filename)
+
+        # 7. Deliver directly as markdown for M365 Copilot rendering
+        return f"![{prompt}]({sas_url})"
+
+    except requests.exceptions.RequestException as http_err:
+        return f"Network error calling {deployment_name} API: {http_err}"
+    except Exception as e:
+        return f"Error processing generated image: {str(e)}"

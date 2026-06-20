@@ -35,3 +35,15 @@ curl -sS -X POST http://localhost:8088/responses -H "Content-Type: application/j
 
 curl -sS -X POST http://localhost:8088/responses -H "Content-Type: application/json" -d '{"input": "Hello, I am going to have a job interview tomorrow for a social worker position in an NGO in Hong Kong. Prepare me with the interview with a detailed mock meeting using audio files"}'
 # Test Career Coach for Quality
+
+# Flux.2-pro
+curl -X POST "https://1155236599-1444-resource.services.ai.azure.com/providers/blackforestlabs/v1/flux-2-pro?api-version=preview" \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer $AZURE_API_KEY" \
+-d '{
+    "prompt": "A photograph of a red fox in an autumn forest",
+    "model": "FLUX.2-pro",
+    "width": 1024,
+    "height": 1024,
+    "n": 1
+}' | jq -r '.data[0].b64_json' | base64 --decode > generated_image.png

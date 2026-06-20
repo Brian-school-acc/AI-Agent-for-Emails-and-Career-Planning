@@ -235,9 +235,9 @@ def generate_pptx(filename: str, slides_json: str) -> str:
         slide_data = json.loads(slides_json)
         for data in slide_data:
             slide = prs.slides.add_slide(slide_layout)
-            slide.shapes.title.text = data.get("title", "Untitled Slide")
+            slide.shapes.title.text = data.get("title", "Untitled Slide") # type: ignore
 
-            tf = slide.placeholders[1].text_frame
+            tf = slide.placeholders[1].text_frame # type: ignore
             for idx, bullet in enumerate(data.get("bullets", [])):
                 p = tf.add_paragraph() if idx > 0 else tf.paragraphs[0]
                 p.text = bullet
