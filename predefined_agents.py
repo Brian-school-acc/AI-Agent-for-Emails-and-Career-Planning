@@ -66,8 +66,8 @@ class TriageResult(BaseModel):
     """Structured routing schema for incoming documents."""
 
     reason: str = Field(description="Analyze the user request step-by-step.")
-    route: Literal["read", "exec", "career", "fallback"] = Field(
-        description="Select 'read' for analysis/lookup, 'exec' for timelines/deadlines/tasks, 'career' for resumes, or 'fallback' if general/unclear."
+    route: Literal["read", "secretary", "career", "fallback"] = Field(
+        description="Select 'read' for analysis/lookup, 'secretary' for timelines/deadlines/tasks, 'career' for resumes, or 'fallback' if general/unclear."
     )
 
     doc_content: str = Field(
@@ -229,7 +229,7 @@ async def triage_and_route(
     if target_route == "read":
         print("➡️ Dispatcher: Routing to Archivist Agent.")
         await ctx.send_message(specialist_request, "archivist_exec")  # type: ignore
-    elif target_route == "exec":
+    elif target_route == "secretary":
         print("➡️ Dispatcher: Routing to Secretary Agent.")
         await ctx.send_message(specialist_request, "secretary_exec")  # type: ignore
     elif target_route == "career":

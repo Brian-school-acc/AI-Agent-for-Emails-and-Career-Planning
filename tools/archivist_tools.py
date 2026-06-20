@@ -48,12 +48,12 @@ def retrieve_student_emails(
     try:
         query_params = {
             "search_query_native": search_query,
-            "limit": 5,  # 🔴 CHANGE 2: Lower the limit. A card with 30 emails will be too large to render.
+            "limit": 30,
         }
 
         response = nylas_client.messages.list(
             identifier=grant_id,
-            query_params=query_params,
+            query_params=query_params, # type: ignore
         )
 
         if not response.data:
