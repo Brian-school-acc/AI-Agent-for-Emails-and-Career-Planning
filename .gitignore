@@ -77,3 +77,4 @@ Thumbs.db
 handoff_server.py
 requirements-nodeps.txt
 requirements-vendor.txt
+depreciated/
