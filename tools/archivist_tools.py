@@ -6,14 +6,96 @@ import re
 
 from dotenv import load_dotenv
 from typing import Annotated, List, Dict, Any, Optional
-from pydantic import Field
+from pydantic import BaseModel, Field
 from nylas import Client
 
 from agent_framework import tool
 from agent_framework.foundry import FoundryAgent
 
+from fastapi import FastAPI, HTTPException
+
 
 load_dotenv()
+
+NYLAS_API_KEY = os.environ.get("NYLAS_API_KEY", "")
+NYLAS_GRANT_ID = os.environ.get("NYLAS_GRANT_ID", "")
+
+if not NYLAS_API_KEY or not NYLAS_GRANT_ID:
+    raise EnvironmentError("Invalid Nylas Credentials: Nylas API Key or Grant ID.")
+
+nylas_client = Client(api_key=NYLAS_API_KEY)
+
+
+@tool(
+    name="retrieve_student_emails",
+    description="Searches and retrieves recent emails from a student's inbox using semantic keywords.",
+    approval_mode="never_require",
+)
+def retrieve_student_emails(
+    search_query: Annotated[
+        str,
+        Field(
+            description="Keywords to search for in the email thread (e.g., 'medical leave', 'Dean', 'grades')."
+        ),
+    ],
+) -> dict:  # 🔴 CHANGE 1: Return a dictionary, not a string
+    """Queries the connected email inbox via Nylas API and returns structured data for Adaptive Cards."""
+    grant_id = NYLAS_GRANT_ID
+
+    if not grant_id:
+        return {"error": "Nylas Grant ID missing from environment configuration."}
+
+    try:
+        query_params = {
+            "search_query_native": search_query,
+            "limit": 5,  # 🔴 CHANGE 2: Lower the limit. A card with 30 emails will be too large to render.
+        }
+
+        response = nylas_client.messages.list(
+            identifier=grant_id,
+            query_params=query_params,
+        )
+
+        if not response.data:
+            return {"search_query": search_query, "count": 0, "emails": []}
+
+        formatted_emails = []
+        for msg in response.data:
+            # Safely extract attributes
+            sender_obj = msg.from_[0] if msg.from_ else None
+
+            # Depending on the Nylas V3 SDK, sender might be an object with .name and .email
+            sender_name = getattr(sender_obj, "name", None) or getattr(
+                sender_obj, "email", "Unknown Sender"
+            )
+
+            subject = msg.subject if msg.subject else "(No Subject)"
+            snippet = msg.snippet if msg.snippet else "(Empty Body)"
+
+            # 🔴 CHANGE 3: Append a dictionary to the list
+            formatted_emails.append(
+                {
+                    "message_id": msg.id,  # Useful if you want to add an Action.Submit to "Read Full Email"
+                    "sender": sender_name,
+                    "subject": subject,
+                    "snippet": (
+                        snippet[:150] + "..." if len(snippet) > 150 else snippet
+                    ),  # Truncate for UI
+                }
+            )
+
+        # 🔴 CHANGE 4: Return the structured root object
+        return {
+            "search_query": search_query,
+            "count": len(formatted_emails),
+            "emails": formatted_emails,
+        }
+
+    except Exception as e:
+        return {"error": f"Failed to retrieve emails via Nylas: {str(e)}"}
+
+
+
 
 # Initialize the Nylas V3 Client
 NYLAS_API_KEY = os.environ.get("NYLAS_API_KEY", "")
@@ -34,7 +116,7 @@ nylas_client = Client(api_key=NYLAS_API_KEY)
     description="Searches and retrieves recent emails from a student's inbox using semantic keywords or sender names.",
     approval_mode="never_require",
 )
-def retrieve_student_emails(
+def retrieve_student_emailss(
     search_query: Annotated[
         str,
         Field(

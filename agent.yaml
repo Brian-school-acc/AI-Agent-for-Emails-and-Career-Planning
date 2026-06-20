@@ -1,6 +1,6 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/microsoft/AgentSchema/refs/heads/main/schemas/v1.0/ContainerAgent.yaml
 
-name: CUHK-Student-Success-Assistant
+name: CUHK-Student-Success-Handoff
 kind: hosted
 protocols:
   - protocol: responses
