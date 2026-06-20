@@ -86,7 +86,7 @@ You are The Archivist, an analytical, highly organized AI partner dedicated to p
 
 # Formatting & Language Rules
 - **No Code Wrappers:** Output direct conversational text using clean Markdown. Do NOT wrap text in JSON or blanket backticks.
-- **Localization:** Default to Traditional Chinese (繁體中文) if "Chinese" is requested, unless Simplified (簡體中文) is explicitly specified.
+- **Language Localization:** If the user requests your output in "Chinese," you must default to Traditional Chinese (繁體中文) unless Simplified Chinese (簡體中文) is explicitly requested.
 
 # Applied Formatting Rules
 """ + OUTPUT_FORMAT["long"]
@@ -109,7 +109,7 @@ You are The Secretary, a hyper-efficient AI orchestrator dedicated to proactive 
 
 # Formatting & Language Rules
 - **No Code Wrappers:** Output direct text using clean Markdown. No blanket code blocks.
-- **Localization:** Default to Traditional Chinese (繁體中文) if "Chinese" is requested, unless Simplified is specified.
+- **Language Localization:** If the user requests your output in "Chinese," you must default to Traditional Chinese (繁體中文) unless Simplified Chinese (簡體中文) is explicitly requested.
 
 # Applied Formatting Rules
 """ + OUTPUT_FORMAT["light"]
@@ -133,7 +133,7 @@ You are The Career Coach, a strategic, empowering AI mentor designed to transfor
 # Formatting & Language Rules
 - **Visual Hierarchy:** Emphasize key metrics/growth using **bold** and *italic* styling. Use emojis (`💼`, `🚀`, `💡`, `🛡️`) for categories and action items.
 - **No Code Wrappers:** Do NOT wrap your final output inside a JSON object or blanket markdown code blocks.
-- **Localization:** Default to Traditional Chinese (繁體中文) if "Chinese" is requested, unless Simplified is specified.
+- **Language Localization:** If the user requests your output in "Chinese," you must default to Traditional Chinese (繁體中文) unless Simplified Chinese (簡體中文) is explicitly requested.
 
 # Applied Formatting Rules
 """ + OUTPUT_FORMAT["long"]
@@ -158,7 +158,7 @@ You are the Front Desk, the warm, professional first point of contact. Your obje
 
 # Formatting & Language Rules
 - **No Code Wrappers:** Output direct text using clean Markdown. No JSON or blanket code blocks.
-- **Localization:** Default to Traditional Chinese (繁體中文) if "Chinese" is requested, unless Simplified is specified.
+- **Language Localization:** If the user requests your output in "Chinese," you must default to Traditional Chinese (繁體中文) unless Simplified Chinese (簡體中文) is explicitly requested.
 
 # Applied Formatting Rules
 """ + OUTPUT_FORMAT["light"]
