@@ -335,6 +335,7 @@ def upload_sandbox_file_to_azure(
         "the provider API directly via HTTP, processing the byte stream, and returning "
         "a Copilot-compliant markdown image link. Use this tool whenever a student requests "
         "a visual model, roadmap diagram, or illustration."
+        "Afterwards, you MUST DISPLAY the image to the user in the UI"
     ),
     approval_mode="never_require",
 )

@@ -41,16 +41,17 @@ checkpoint_mod.FileCheckpointStorage.__init__ = _patched_init
 # ====================================================================================
 
 import asyncio
-import os
-from dotenv import load_dotenv
-
-from agent_framework import WorkflowAgent
-from agent_framework.orchestrations import HandoffBuilder
+from agent_framework import (
+    AgentExecutor,
+    WorkflowBuilder,
+    WorkflowAgent,
+)
 from agent_framework_foundry_hosting import ResponsesHostServer
 from azure.identity import DefaultAzureCredential
-from agent_framework.foundry import FoundryChatClient
+from dotenv import load_dotenv
 
 from predefined_agents import (
+    triage_and_route,
     create_archivist_agent,
     create_secretary_agent,
     create_career_coach_agent,
@@ -63,22 +64,6 @@ load_dotenv()
 async def setup_workflow() -> WorkflowAgent:
     """Handles all asynchronous agent setup and returns the built workflow."""
     credential = DefaultAzureCredential()
-    chat_client = FoundryChatClient(
-        project_endpoint=os.environ["FOUNDRY_PROJECT_ENDPOINT"],
-        model=os.environ["FAST_MINI_MODEL"],
-        credential=DefaultAzureCredential(),
-    )
-    # Create triage/coordinator agent
-    triage_agent = chat_client.as_agent(
-        instructions=(
-            "You are frontline support triage. Route customer issues to the appropriate specialist agents "
-            "based on the problem described."
-        ),
-        description="Triage agent that handles general inquiries.",
-        name="triage_agent",
-        default_options={"store": False, "reasoning": None, "allow_multiple_tool_calls": True},  # type: ignore
-        require_per_service_call_history_persistence=True,
-    )
 
     # Await the creation of specialized agents
     archivist_agent = await create_archivist_agent(credential=credential)
@@ -86,66 +71,23 @@ async def setup_workflow() -> WorkflowAgent:
     career_coach_agent = await create_career_coach_agent(credential=credential)
     front_desk_agent = await create_front_desk_agent(credential=credential)
 
-    # Build the handoff workflow
+    # Wrap only specialist agents inside target Executors
+    archivist_agent_executor = AgentExecutor(archivist_agent, id="archivist_exec", context_mode="full")  # type: ignore
+    secretary_agent_executor = AgentExecutor(secretary_agent, id="secretary_exec", context_mode="full")  # type: ignore
+    career_coach_agent_executor = AgentExecutor(career_coach_agent, id="career_coach_exec", context_mode="full")  # type: ignore
+    front_desk_agent_executor = AgentExecutor(front_desk_agent, id="front_desk_exec", context_mode="full")  # type: ignore
+
+    # Establish clean structural layout using programmatic routing
     workflow = (
-        HandoffBuilder(
-            name="Student Support Handoff",
-            participants=[
-                triage_agent,
-                archivist_agent,
-                secretary_agent,
-                career_coach_agent,
-                front_desk_agent,
-            ],
-            termination_condition=lambda conversation: len(conversation) > 0
-            and "welcome" in conversation[-1].text.lower(),
+        WorkflowBuilder(
+            name="agent-cuhk-workflow",
+            description="a workflow to take user request and respond accordingly with tools",
+            start_executor=triage_and_route,
         )
-        .with_start_agent(triage_agent)  # Triage receives initial user input
-        # Triage cannot route directly to refund agent
-        .add_handoff(
-            triage_agent,
-            [archivist_agent, secretary_agent, career_coach_agent, front_desk_agent],
-        )
-        .add_handoff(
-            archivist_agent,
-            [
-                triage_agent,
-                archivist_agent,
-                secretary_agent,
-                career_coach_agent,
-                front_desk_agent,
-            ],
-        )
-        .add_handoff(
-            secretary_agent,
-            [
-                triage_agent,
-                archivist_agent,
-                secretary_agent,
-                career_coach_agent,
-                front_desk_agent,
-            ],
-        )
-        .add_handoff(
-            career_coach_agent,
-            [
-                triage_agent,
-                archivist_agent,
-                secretary_agent,
-                career_coach_agent,
-                front_desk_agent,
-            ],
-        )
-        .add_handoff(
-            front_desk_agent,
-            [
-                triage_agent,
-                archivist_agent,
-                secretary_agent,
-                career_coach_agent,
-                front_desk_agent,
-            ],
-        )
+        .add_edge(triage_and_route, archivist_agent_executor)
+        .add_edge(triage_and_route, secretary_agent_executor)
+        .add_edge(triage_and_route, career_coach_agent_executor)
+        .add_edge(triage_and_route, front_desk_agent_executor)
         .build()
         .as_agent()
     )

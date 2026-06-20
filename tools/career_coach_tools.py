@@ -199,8 +199,9 @@ def analyze_resume_skill_gaps(
     description=(
         "Generates an immersive, highly customized interview roleplay context including explicit "
         "dynamic reviewer personas, localized technical criteria, and an evaluation rubric based "
-        "on the specified industry and experience level. You MUST generate an audio file for "
-        "the simulation immediately after calling this tool."
+        "on the specified industry and experience level. You MUST generate an audio file AND call "
+        "the generate_image tool immediately after using this tool to create a realistic visual "
+        "representation of the interviewer or environment for the user."
     ),
     approval_mode="never_require",
 )
@@ -306,8 +307,10 @@ def generate_mock_interview_scenario(
     description=(
         "Constructs a complex, multi-layered workplace conflict, systemic failure, or prioritization "
         "crisis (configured via scenario type, department, and difficulty) to evaluate a student's "
-        "situational judgement and soft skills. You MUST generate an audio file for the simulation "
-        "immediately after calling this tool."
+        "situational judgement and soft skills. You MUST generate an audio file AND call the "
+        "generate_image tool immediately after using this tool to visually illustrate the scenario "
+        "and make the simulation feel immersive and realistic."
+        "Afterwards, you MUST DISPLAY the image to the user in the UI"
     ),
     approval_mode="never_require",
 )
