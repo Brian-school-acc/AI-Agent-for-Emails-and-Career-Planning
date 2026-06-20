@@ -1,10 +1,11 @@
 # =========================================================
 # Agent Framework & Core Infrastructure
 # =========================================================
-agent-framework-core==1.8.1
+agent-framework-core==1.9.0
 agent-framework-foundry
 agent-framework-foundry-hosting
 azure-ai-projects>=2.0.0b1
+agent-framework-orchestrations==1.0.0
 
 # =========================================================
 # Document Processing & Data Tooling Dependencies
