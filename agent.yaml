@@ -1,6 +1,6 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/microsoft/AgentSchema/refs/heads/main/schemas/v1.0/ContainerAgent.yaml
 
-name: CUHK-Student-Success-UI
+name: CUHK-Student-Success-Handoff
 kind: hosted
 protocols:
   - protocol: responses
@@ -10,8 +10,10 @@ environment_variables:
     value: "1"
   - name: FOUNDRY_PROJECT_ENDPOINT
     value: ${FOUNDRY_PROJECT_ENDPOINT}
-  - name: AZURE_AI_MODEL_DEPLOYMENT_NAME
-    value: ${AZURE_AI_MODEL_DEPLOYMENT_NAME}
+  - name: FAST_MINI_MODEL
+    value: ${FAST_MINI_MODEL}
+  - name: STANDARD_HEAVY_MODEL
+    value: ${STANDARD_HEAVY_MODEL}
   - name: AZURE_SPEECH_KEY
     value: ${AZURE_SPEECH_KEY}
   - name: AZURE_SPEECH_REGION
@@ -46,5 +48,5 @@ metadata:
     - Responses Protocol
     - Streaming
 resources:
-  cpu: '0.5'
-  memory: 1.0Gi
+  cpu: '2.0'
+  memory: 4.0Gi

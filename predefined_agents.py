@@ -80,10 +80,11 @@ _client: FoundryChatClient | None = None
 _file_search_tool: Any | None = None
 _memory_search_preview_tool: Any | None = None
 
-def _get_foundry_client(credential: DefaultAzureCredential) -> FoundryChatClient:
+def _get_foundry_client(credential: DefaultAzureCredential, model_choice: str) -> FoundryChatClient:
     """Helper method to construct the centralized inference provider client."""
     # 0. Check and Ensure there is one instance of client
     global _client
+    model_choice = os.environ[model_choice]
 
     # 1. Return the cached client if it already exists
     if _client is not None:
@@ -95,7 +96,7 @@ def _get_foundry_client(credential: DefaultAzureCredential) -> FoundryChatClient
 
         _client = FoundryChatClient(
             project_endpoint=PROJECT_ENDPOINT,
-            model=MODEL_NAME,
+            model=model_choice,
             credential=credential,
         )
         return _client
@@ -147,54 +148,14 @@ async def triage_and_route(
     else:
         original_prompt = str(last_message)
 
-    # Initialize target_route for the following 2 routes: A, B
+    # Initialize target_route for the routes
     target_route = None
 
-    # # --- ROUTE A (ACTION CARD): INTERCEPT ADAPTIVE CARD SUBMISSIONS ---
-    # is_card_click = False
-
-    # try:
-    #     # If it's a card submission, original_prompt will be a stringified JSON object
-    #     card_data = json.loads(original_prompt.strip())
-    #     if (
-    #         isinstance(card_data, dict)
-    #         and card_data.get("actionType") == "route_to_agent"
-    #     ):
-    #         is_card_click = True
-    #         target_route = card_data.get("targetAgent")
-    #         print(f"🎯 Intercepted Card Click! Direct routing to: {target_route}")
-    # except (json.JSONDecodeError, TypeError):
-    #     # Not a JSON payload; it's regular student text. Proceed to LLM triage.
-    #     pass
-
-    # # 2. Package request bundle for specialists
-    # user_msg = Message("user", contents=[str(original_prompt)])
-    # specialist_request = AgentExecutorRequest(messages=[user_msg], should_respond=True)
-
-    # # 3. Execution Path Logic
-    # if is_card_click:
-    #     # Bypasses LLM entirely, saving latency and money
-    #     if target_route == "career_coach":
-    #         print("➡️ Dispatcher: Routing to Archivist Agent.")
-    #         await ctx.send_message(specialist_request, "archivist_exec") # type: ignore
-    #     elif target_route == "secretary":
-    #         print("➡️ Dispatcher: Routing to Secretary Agent.")
-    #         await ctx.send_message(specialist_request, "secretary_exec") # type: ignore
-    #     elif target_route == "archivist":
-    #         print("➡️ Dispatcher: Routing to Career Coach Agent.")
-    #         await ctx.send_message(specialist_request, "career_coach_exec") # type: ignore
-    #     else:
-    #         print("➡️ Dispatcher: Routing to Front Desk Fallback.")
-    #         await ctx.send_message(specialist_request, "front_desk_exec") # type: ignore
-    # else:
-    #     target_route = None  # Revert the initial status of target_route
-
-    # --- ROUTE B (LLM TRIAGE): FALLBACK TO ORIGINAL SILENT LLM TRIAGE ---
-
-    # 2. Build the triage agent locally to run SILENTLY (Isolated from the stream)
+    # Build the triage agent locally to run SILENTLY (Isolated from the stream)
     credential = DefaultAzureCredential()
+    model_choice = "FAST_MINI_MODEL"
     triage_agent = Agent(
-        client=_get_foundry_client(credential),
+        client=_get_foundry_client(credential, model_choice),
         instructions=TRIAGE_PROMPT,
         name="triage_agent",
         default_options={"store": False, "reasoning": None, "allow_multiple_tool_calls": True},  # type: ignore
@@ -247,7 +208,8 @@ async def triage_and_route(
 
 async def create_archivist_agent(credential=DefaultAzureCredential()) -> Agent:
     """Helper to create a document analyst agent."""
-    client: FoundryChatClient = _get_foundry_client(credential)
+    model_choice = "STANDARD_HEAVY_MODEL"
+    client: FoundryChatClient = _get_foundry_client(credential, model_choice)
     web_search_tool = client.get_web_search_tool(
         user_location={
             "city": "The Chiense University of Hong Kong",
@@ -279,7 +241,8 @@ async def create_archivist_agent(credential=DefaultAzureCredential()) -> Agent:
 
 
 async def create_secretary_agent(credential=DefaultAzureCredential()) -> Agent:
-    client = _get_foundry_client(credential)
+    model_choice = "STANDARD_HEAVY_MODEL"
+    client: FoundryChatClient = _get_foundry_client(credential, model_choice)
     memory_search_preview_tool = _get_cached_memory_search_preview_tool()
     # file_search_tool = await _get_cached_file_search_tool(client)
     # code_interpreter_tool = client.get_code_interpreter_tool()
@@ -310,7 +273,8 @@ async def create_secretary_agent(credential=DefaultAzureCredential()) -> Agent:
 
 
 async def create_career_coach_agent(credential=DefaultAzureCredential()) -> Agent:
-    client = _get_foundry_client(credential)
+    model_choice = "STANDARD_HEAVY_MODEL"
+    client: FoundryChatClient = _get_foundry_client(credential, model_choice)
     web_search_tool = client.get_web_search_tool(
         search_context_size="high",
     )
@@ -343,7 +307,8 @@ async def create_career_coach_agent(credential=DefaultAzureCredential()) -> Agen
 
 async def create_front_desk_agent(credential=DefaultAzureCredential()) -> Agent:
     """Handles general chit-chat, greetings, and unsupported requests."""
-    client = _get_foundry_client(credential)
+    model_choice = "STANDARD_HEAVY_MODEL"
+    client: FoundryChatClient = _get_foundry_client(credential, model_choice)
     # openai_client = ChatClient
 
     web_search_tool = client.get_web_search_tool(
