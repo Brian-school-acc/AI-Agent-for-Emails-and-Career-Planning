@@ -1,6 +1,6 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/microsoft/AgentSchema/refs/heads/main/schemas/v1.0/ContainerAgent.yaml
 
-name: CUHK-Student-Success-Handoff
+name: CUHK-Student-Success-UI
 kind: hosted
 protocols:
   - protocol: responses
@@ -46,5 +46,5 @@ metadata:
     - Responses Protocol
     - Streaming
 resources:
-  cpu: '2.0'
-  memory: 4.0Gi
+  cpu: '0.5'
+  memory: 1.0Gi

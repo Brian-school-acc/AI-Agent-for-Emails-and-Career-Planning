@@ -15,6 +15,7 @@ reportlab==4.5.1
 pandas==3.0.3
 openpyxl>=3.1.0
 nylas==6.16.0
+fastapi
 
 # =========================================================
 # Cognitive & Identity Azure Services
