@@ -28,7 +28,10 @@ load_dotenv()
 
 @tool(
     name="schedule_calendar_event",
-    description="Creates a time-blocked event on the student's Outlook calendar for tasks, studying, or meetings.",
+    description=(
+        "Creates a time-blocked event on the student's Outlook calendar for tasks, studying, "
+        "or meetings. Requires the title, start time (in ISO 8601 format), and duration in minutes."
+    ),
     approval_mode="always_require",  # Approving calendar modifications is standard practice
 )
 def schedule_calendar_event(title: str, start_time: str, duration_minutes: int) -> str:
@@ -48,7 +51,10 @@ def schedule_calendar_event(title: str, start_time: str, duration_minutes: int) 
 
 @tool(
     name="create_planner_task",
-    description="Adds an actionable task to Microsoft To Do or Planner, complete with due dates and categorized buckets.",
+    description=(
+        "Adds an actionable task to Microsoft To Do or Planner, complete with due dates and "
+        "categorized buckets. Requires the task name, due date (in ISO 8601 format), and priority level."
+    ),
     approval_mode="never_require",
 )
 def create_planner_task(task_name: str, due_date: str, priority: str = "normal") -> str:
@@ -67,7 +73,17 @@ def create_planner_task(task_name: str, due_date: str, priority: str = "normal")
 # TOOL 3: DRAFT EMAILS TO LECTURERS
 # ==========================================
 
-@tool(approval_mode="never_require")
+
+@tool(
+    name="draft_lecturer_email",
+    description=(
+        "Generates a professionally structured, polished email draft specifically tailored for "
+        "academic staff and lecturers. This tool converts a student's raw thoughts and emotional "
+        "tone into a high-quality academic passage, ensuring correct structural layout (Subject "
+        "line, formal greeting, context, action item, and polite sign-off)."
+    ),
+    approval_mode="never_require",
+)
 def draft_lecturer_email(
     main_idea: Annotated[
         str,
@@ -144,6 +160,7 @@ from tools.general_tools import upload_and_link
         "Use this tool when a user explicitly requests a text report, formal summary, or essay download. "
         "The file extension '.docx' is automatically appended if missing."
     ),
+    approval_mode="never_require"
 )
 def generate_docx(filename: str, content: str) -> str:
     """
@@ -179,6 +196,7 @@ def generate_docx(filename: str, content: str) -> str:
         "Use this tool whenever structural tabular data, datasets, or grade listings must be compiled "
         "and made downloadable for analysis. The system handles table indexing and auto-formatting."
     ),
+    approval_mode="never_require",
 )
 def generate_xlsx(filename: str, csv_data: str) -> str:
     """
@@ -212,6 +230,7 @@ def generate_xlsx(filename: str, csv_data: str) -> str:
         "MUST be a JSON-formatted string array of objects where each slide configuration explicitly "
         "contains a 'title' string and a 'bullets' list of strings. Use this for presentation summaries."
     ),
+    approval_mode="never_require",
 )
 def generate_pptx(filename: str, slides_json: str) -> str:
     """
@@ -259,6 +278,7 @@ def generate_pptx(filename: str, slides_json: str) -> str:
         "when unalterable or print-ready formal assets like certificate letters, formal transcript text wrappers, "
         "or invoices are requested by the user."
     ),
+    approval_mode="never_require",
 )
 def generate_pdf(filename: str, content: str) -> str:
     """

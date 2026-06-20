@@ -10,9 +10,6 @@ from pydantic import BaseModel, Field
 from nylas import Client
 
 from agent_framework import tool
-from agent_framework.foundry import FoundryAgent
-
-from fastapi import FastAPI, HTTPException
 
 
 load_dotenv()
@@ -28,7 +25,13 @@ nylas_client = Client(api_key=NYLAS_API_KEY)
 
 @tool(
     name="retrieve_student_emails",
-    description="Searches and retrieves recent emails from a student's inbox using semantic keywords.",
+    description=(
+        "Searches and retrieves recent emails from a student's inbox using semantic keywords "
+        "via the Nylas API, returning structured data. If the user does not specify a particular "
+        "topic or keyword (e.g., generally asking 'check my emails' or 'are there any recent messages'), "
+        "you MUST use a broad, default search query such as 'in:inbox', 'is:unread', or 'newer_than:1d' "
+        "to ensure general recent emails are successfully retrieved."
+    ),
     approval_mode="never_require",
 )
 def retrieve_student_emails(
@@ -38,7 +41,7 @@ def retrieve_student_emails(
             description="Keywords to search for in the email thread (e.g., 'medical leave', 'Dean', 'grades')."
         ),
     ],
-) -> dict:  # 🔴 CHANGE 1: Return a dictionary, not a string
+) -> dict:  # Return a dictionary, not a string
     """Queries the connected email inbox via Nylas API and returns structured data for Adaptive Cards."""
     grant_id = NYLAS_GRANT_ID
 
@@ -72,7 +75,7 @@ def retrieve_student_emails(
             subject = msg.subject if msg.subject else "(No Subject)"
             snippet = msg.snippet if msg.snippet else "(Empty Body)"
 
-            # 🔴 CHANGE 3: Append a dictionary to the list
+            # 3. Append a dictionary to the list
             formatted_emails.append(
                 {
                     "message_id": msg.id,  # Useful if you want to add an Action.Submit to "Read Full Email"
@@ -84,7 +87,7 @@ def retrieve_student_emails(
                 }
             )
 
-        # 🔴 CHANGE 4: Return the structured root object
+        # 4. Return the structured root object
         return {
             "search_query": search_query,
             "count": len(formatted_emails),
@@ -93,8 +96,6 @@ def retrieve_student_emails(
 
     except Exception as e:
         return {"error": f"Failed to retrieve emails via Nylas: {str(e)}"}
-
-
 
 
 # Initialize the Nylas V3 Client
@@ -168,177 +169,138 @@ def retrieve_student_emailss(
         return f"Failed to retrieve emails via Nylas: {str(e)}"
 
 
-# ==========================================
-# TOOL 1: OUTLOOK EMAIL SEARCH (GRAPH API MOCK)
-# ==========================================
-
-
-@tool(
-    name="search_outlook_emails",
-    description="Searches the student's Outlook mailbox for recent communications, filtering by exact keyword queries and a sliding time window.",
-    approval_mode="never_require",
-)
-def search_outlook_emails(
-    query: Annotated[
-        str,
-        Field(
-            description="The primary search term, keyword, or KQL query (e.g., 'registration deadline', 'financial aid')."
-        ),
-    ],
-    days_back: Annotated[
-        int,
-        Field(description="The lookback window in days to restrict the search scope."),
-    ] = 7,
-) -> str:
+def screen_n_categorize(sentence: str) -> dict | None:
     """
-    Simulates a Microsoft Graph /me/messages search query. Filters a dynamic, temporally
-    accurate local database based on the requested lookback window and keyword matches.
+    Helper function to screen a sentence for dates/times and categorize its urgency.
+    Returns a structured dictionary if a temporal commitment or action is found, else None.
     """
-    # Base reference date: June 16, 2026
-    current_date = datetime.date(2026, 6, 16)
-    cutoff_date = current_date - datetime.timedelta(days=days_back)
+    # 1. Regex Patterns for Dates, Times, and Days
+    date_pattern = re.compile(
+        r"\b(?:\d{1,2}[-/]\d{1,2}[-/]\d{2,4}|\d{4}[-/]\d{1,2}[-/]\d{1,2}|(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]* \d{1,2}(?:st|nd|rd|th)?)\b",
+        re.IGNORECASE,
+    )
+    time_pattern = re.compile(
+        r"\b(?:1[0-2]|0?[1-9])(?::[0-5][0-9])?\s*(?:AM|PM|am|pm)\b", re.IGNORECASE
+    )
+    day_pattern = re.compile(
+        r"\b(?:Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday|Mon|Tue|Wed|Thu|Fri|Sat|Sun)\b",
+        re.IGNORECASE,
+    )
 
-    # Comprehensive mock database
-    MOCK_MAILBOX = [
-        {
-            "subject": "URGENT: Fall 2026 Registration Deadline",
-            "sender": "registrar@college.edu",
-            "date": "2026-06-15",
-            "body": "Please remember to submit your add/drop forms before the portal closes on Friday.",
-        },
-        {
-            "subject": "Weekly Campus Newsletter",
-            "sender": "student_affairs@college.edu",
-            "date": "2026-06-14",
-            "body": "Campus events this week include the tech job fair and alumni mixer.",
-        },
-        {
-            "subject": "Financial Aid Disbursement Update",
-            "sender": "finaid@college.edu",
-            "date": "2026-06-10",
-            "body": "Your pell grant has been applied to your tuition balance for the upcoming semester.",
-        },
-        {
-            "subject": "CS101: Syllabus Update",
-            "sender": "prof.davis@college.edu",
-            "date": "2026-06-05",
-            "body": "I have uploaded the revised syllabus detailing the new midterm weightings.",
-        },
-        {
-            "subject": "Library Overdue Notice",
-            "sender": "circulation@library.college.edu",
-            "date": "2026-06-12",
-            "body": "The book 'Algorithms 4th Ed' is currently 3 days overdue. Please return immediately.",
-        },
-    ]
+    dates_found = date_pattern.findall(sentence)
+    times_found = time_pattern.findall(sentence)
+    days_found = day_pattern.findall(sentence)
 
-    results = []
-    query_lower = query.lower()
+    sentence_lower = sentence.lower()
 
-    for email in MOCK_MAILBOX:
-        email_date = datetime.date.fromisoformat(email["date"])
+    # 2. Heuristic keywords for actionability
+    is_actionable = any(
+        kw in sentence_lower
+        for kw in [
+            "due",
+            "submit",
+            "deadline",
+            "by",
+            "required",
+            "rsvp",
+            "closing",
+            "assignment",
+        ]
+    )
+    is_urgent = any(
+        kw in sentence_lower
+        for kw in ["urgent", "immediately", "today", "tomorrow", "asap"]
+    )
 
-        # 1. Temporal Filter
-        if email_date < cutoff_date:
-            continue
+    # 3. Categorize and build the dictionary if conditions are met
+    if dates_found or days_found or is_actionable or is_urgent:
+        severity = "High" if is_urgent else ("Medium" if is_actionable else "Low")
 
-        # 2. Keyword Filter
-        if (
-            query_lower in email["subject"].lower()
-            or query_lower in email["body"].lower()
-        ):
-            results.append(
-                {
-                    "subject": email["subject"],
-                    "sender": email["sender"],
-                    "date": email["date"],
-                    "content_snippet": email["body"][:60] + "...",
-                }
-            )
+        # Determine the best date string to show
+        best_date = "Implied/Relative"
+        if dates_found:
+            best_date = dates_found[0]
+        elif days_found:
+            best_date = f"Coming {days_found[0]}"
 
-    response_payload = {
-        "search_parameters": {"query": query, "lookback_days": days_back},
-        "total_hits": len(results),
-        "results": results,
-    }
+        return {
+            "context": sentence.strip(),
+            "extracted_date": best_date,
+            "extracted_time": times_found[0] if times_found else "EOD (Assumed)",
+            "actionable": is_actionable,
+            "severity_tier": severity,
+        }
 
-    return json.dumps(response_payload, indent=4)
-
-
-# ==========================================
-# TOOL 2: REGEX-POWERED DEADLINE EXTRACTOR
-# ==========================================
+    return None
 
 
 @tool(
     name="extract_deadlines",
-    description="Scans a block of raw text or email content and extracts concrete dates, times, and actionable deadlines using heuristic pattern matching.",
+    description=(
+        "Scans a block of raw text OR a JSON payload of emails (from retrieve_student_emails) "
+        "and extracts concrete dates, times, and actionable deadlines using heuristic pattern matching."
+    ),
     approval_mode="never_require",
 )
 def extract_deadlines(
     text_content: Annotated[
         str,
         Field(
-            description="The raw text body from an email, syllabus, or SharePoint page to be parsed for deadlines."
+            description="The raw text body, or JSON string of emails, to be parsed for deadlines."
         ),
     ],
 ) -> str:
     """
-    Uses Regex heuristics to identify temporal commitments.
-    Classifies the severity of the deadline based on proximity keywords (e.g., 'urgent', 'required').
+    Uses Regex heuristics to identify temporal commitments. Smartly handles JSON email payloads
+    to preserve sender/subject context, or falls back to raw text processing.
     """
     extracted_data = []
+    severity_map = {"High": 1, "Medium": 2, "Low": 3}
 
-    # 1. Regex Patterns for Dates and Times
-    # Matches: MM/DD/YYYY, YYYY-MM-DD, Month DD
-    date_pattern = re.compile(
-        r"\b(?:\d{1,2}[-/]\d{1,2}[-/]\d{2,4}|\d{4}[-/]\d{1,2}[-/]\d{1,2}|(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]* \d{1,2}(?:st|nd|rd|th)?)\b",
-        re.IGNORECASE,
-    )
-    # Matches: HH:MM AM/PM
-    time_pattern = re.compile(
-        r"\b(?:1[0-2]|0?[1-9])(?::[0-5][0-9])?\s*(?:AM|PM|am|pm)\b"
-    )
+    # 1. Try parsing as JSON (integration with retrieve_student_emails)
+    try:
+        data = json.loads(text_content)
+        if isinstance(data, dict) and "emails" in data:
+            for email in data["emails"]:
+                # Combine subject and snippet for scanning
+                combined_text = (
+                    f"{email.get('subject', '')}. {email.get('snippet', '')}"
+                )
+                sentences = re.split(r"(?<=[.!?]) +", combined_text.replace("\n", " "))
 
-    # Split text into sentences for contextual extraction
-    sentences = re.split(r"(?<=[.!?]) +", text_content.replace("\n", " "))
+                for sentence in sentences:
+                    categorized = screen_n_categorize(sentence)
+                    if categorized:
+                        # Append email-specific metadata to the extracted deadline
+                        categorized["source"] = (
+                            f"Email from {email.get('sender', 'Unknown')}"
+                        )
+                        categorized["subject"] = email.get("subject", "No Subject")
+                        extracted_data.append(categorized)
 
-    for sentence in sentences:
-        dates_found = date_pattern.findall(sentence)
-        times_found = time_pattern.findall(sentence)
-
-        # Heuristic keywords for actionability
-        is_actionable = any(
-            kw in sentence.lower()
-            for kw in ["due", "submit", "deadline", "by", "required", "rsvp", "closing"]
-        )
-        is_urgent = any(
-            kw in sentence.lower()
-            for kw in ["urgent", "immediately", "today", "tomorrow", "asap"]
-        )
-
-        if dates_found or is_actionable:
-            severity = "High" if is_urgent else ("Medium" if is_actionable else "Low")
-
-            # Synthesize task context by stripping out the raw date text roughly
-            context_snippet = sentence.strip()
-
-            extracted_data.append(
+            extracted_data.sort(key=lambda x: severity_map.get(x["severity_tier"], 4))
+            return json.dumps(
                 {
-                    "context": context_snippet,
-                    "extracted_date": (
-                        dates_found[0] if dates_found else "Implied/Relative"
-                    ),
-                    "extracted_time": (
-                        times_found[0] if times_found else "EOD (Assumed)"
-                    ),
-                    "actionable": is_actionable,
-                    "severity_tier": severity,
-                }
+                    "status": "success",
+                    "emails_scanned": len(data["emails"]),
+                    "deadlines_identified": len(extracted_data),
+                    "found_deadlines": extracted_data,
+                },
+                indent=4,
             )
 
-    # Sort by severity purely for structured output
-    severity_map = {"High": 1, "Medium": 2, "Low": 3}
+    except json.JSONDecodeError:
+        pass  # Not a JSON payload, proceed to raw text parsing
+
+    # 2. Fallback: Parse as raw text
+    sentences = re.split(r"(?<=[.!?]) +", text_content.replace("\n", " "))
+    for sentence in sentences:
+        categorized_data = screen_n_categorize(sentence)
+        if categorized_data:
+            categorized_data["source"] = "Raw Text Document"
+            extracted_data.append(categorized_data)
+
+    # Sort by severity
     extracted_data.sort(key=lambda x: severity_map.get(x["severity_tier"], 4))
 
     return json.dumps(
@@ -347,148 +309,6 @@ def extract_deadlines(
             "characters_scanned": len(text_content),
             "deadlines_identified": len(extracted_data),
             "found_deadlines": extracted_data,
-        },
-        indent=4,
-    )
-
-
-# ==========================================
-# TOOL 3: EXECUTIVE INBOX TRIAGE PIPELINE
-# ==========================================
-
-
-@tool(
-    name="screen_and_categorize_emails",
-    description="Evaluates incoming inbox payloads, processes metadata, applies behavioral tags, and returns a clean actionable brief for executive multi-agent triage.",
-    approval_mode="never_require",
-)
-def screen_and_categorize_emails(
-    filter_type: Annotated[
-        str,
-        Field(
-            description="The targeted evaluation filter. Must be one of: 'unread', 'flagged', 'category-related', or 'time-specific'."
-        ),
-    ],
-    category_keyword: Annotated[
-        Optional[str],
-        Field(
-            description="The theme or keyword required if filter_type is set to 'category-related' (e.g., 'assignment', 'financial', 'admissions')."
-        ),
-    ] = None,
-    time_window_hours: Annotated[
-        Optional[int],
-        Field(
-            description="The sliding lookback window in hours if filter_type is 'time-specific'. Default is 24."
-        ),
-    ] = 24,
-) -> (
-    str
-):  # Returning str (JSON dumped List[Dict]) for standard agent passing, though signature allowed List[Dict]
-    """
-    Acts as the primary sensory interface for the Executive agent before transferring complex requests
-    downwards to the Archivist, Career Coach, or Front Desk agents.
-    """
-    # 1. Expanded, Temporally Contextualized Mock Inbox
-    mock_inbox = [
-        {
-            "id": "MSG-001",
-            "from": "Registrar Office",
-            "subject": "Tuition Balance Reminder",
-            "body": "Your account shows a pending balance of $200 due by Friday. Failure to pay will result in a hold.",
-            "unread": True,
-            "flagged": False,
-            "received_hours_ago": 2,
-        },
-        {
-            "id": "MSG-002",
-            "from": "Prof. Davis (CS101)",
-            "subject": "Assignment 3 Extension Granted",
-            "body": "Hi team, I am moving the deadline to Sunday night due to the AWS outage.",
-            "unread": True,
-            "flagged": True,
-            "received_hours_ago": 5,
-        },
-        {
-            "id": "MSG-003",
-            "from": "Career Services",
-            "subject": "Mock Interview Sign-ups",
-            "body": "Slots are now open for the upcoming tech mock interviews. First come, first served.",
-            "unread": False,
-            "flagged": True,
-            "received_hours_ago": 26,
-        },
-        {
-            "id": "MSG-004",
-            "from": "Student Housing",
-            "subject": "Room Inspection Notice",
-            "body": "Inspections will occur next Tuesday morning starting at 9 AM. Ensure rooms are clean.",
-            "unread": False,
-            "flagged": False,
-            "received_hours_ago": 48,
-        },
-        {
-            "id": "MSG-005",
-            "from": "IT Helpdesk",
-            "subject": "Action Required: Password Expiry",
-            "body": "Your university single sign-on password will expire in 24 hours. Update it immediately.",
-            "unread": True,
-            "flagged": True,
-            "received_hours_ago": 1,
-        },
-    ]
-
-    screened_results = []
-
-    # 2. Filtering Logic
-    for email in mock_inbox:
-        match = False
-        if filter_type.lower() == "unread" and email["unread"]:
-            match = True
-        elif filter_type.lower() == "flagged" and email["flagged"]:
-            match = True
-        elif filter_type.lower() == "category-related" and category_keyword:
-            kw = category_keyword.lower()
-            if kw in email["subject"].lower() or kw in email["body"].lower():
-                match = True
-        elif filter_type.lower() == "time-specific":
-            if email["received_hours_ago"] <= (time_window_hours or 24):
-                match = True
-
-        # 3. Automatic Heuristic Categorization
-        if match:
-            category = "General Administrative"
-            subj_body = (email["subject"] + " " + email["body"]).lower()
-
-            if any(
-                k in subj_body
-                for k in ["assignment", "grade", "syllabus", "midterm", "prof"]
-            ):
-                category = "Academic / Faculty"
-            elif any(k in subj_body for k in ["tuition", "balance", "finaid", "grant"]):
-                category = "Financial Services"
-            elif any(k in subj_body for k in ["interview", "career", "resume", "job"]):
-                category = "Career Development"
-            elif any(k in subj_body for k in ["password", "it", "outage", "sso"]):
-                category = "IT / Security"
-
-            # 4. Triage Brief Generation
-            one_liner = f"[{category}] From {email['from']}: Actionable requirement regarding '{email['subject']}' received {email['received_hours_ago']}h ago."
-
-            screened_results.append(
-                {
-                    "email_id": email["id"],
-                    "triage_category": category,
-                    "executive_summary": one_liner,
-                    "urgency_flag": email["flagged"] or ("urgent" in subj_body),
-                }
-            )
-
-    # Return as structured JSON for reliable LLM ingestion
-    return json.dumps(
-        {
-            "triage_filter_applied": filter_type,
-            "total_screened": len(screened_results),
-            "actionable_triage_list": screened_results,
         },
         indent=4,
     )

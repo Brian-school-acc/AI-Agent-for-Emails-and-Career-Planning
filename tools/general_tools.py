@@ -29,46 +29,20 @@ load_dotenv()
 
 @tool(
     name="inquire_abbreviations",
-    description="Call this function whenever there is an abbrieviation for clearer context",
+    description=(
+        "Call this function whenever there is an abbrieviation for clearer context"
+        ", especially when the context is about academics or any university"
+        "**Do not expand** if:"
+        "- the token is a common English word (e.g., art → treat as 'art', not 'Faculty of Arts')"
+        "- the token is ambiguous without further context"
+        "- the token appears in a proper name or quoted text"
+        "- the user's intent is unclear (e.g., they may have typed a typo)."
+    ),
     approval_mode="never_require",
 )
 def inquire_abbreviations(abbreviation: str) -> str:
     """
     Retrieve the full form of a common or CUHK-specific abbreviation.
-
-    **Usage guidelines for the LLM (conservative approach):**
-    1. **ALWAYS call this function** when the token is:
-       - a recognised short form in the context (e.g., "sem", "reg"),
-       - and clearly used as an abbreviation, not as a regular word.
-       - clearly in uppercase (e.g. ART)
-       - when you suspect that a word could be an abbreviation
-
-    2. **Do not expand** if:
-       - the token is a common English word (e.g., "art" → treat as "art", not "Faculty of Arts"),
-       - the token is ambiguous without further context,
-       - the token appears in a proper name or quoted text,
-       - the user's intent is unclear (e.g., they may have typed a typo).
-
-    3. **When the dictionary returns an empty result**:
-       - Do **not** invent an expansion.
-       - Return an empty string and treat the token as‑is.
-
-    4. **When the dictionary returns a match but the context suggests otherwise**:
-       - Prefer the literal token over the expansion.
-       - For example, if the user says "I study art", do not replace "art" with "Faculty of Arts".
-
-    5. **If multiple expansions exist** (e.g., "CSC" could be Career Services or Campus Services),
-       - avoid returning a single one; either ask the user for clarification or keep the abbreviation unchanged.
-
-    6. **Fallback**:
-       - If you are not certain that the token is an abbreviation intended to be expanded,
-         do not use this function. Let the user's original text stand.
-
-    Args:
-        abbreviation: a case‑insensitive abbreviation to inquire.
-    Returns:
-        The full expansion if the abbreviation is found and confidently applicable,
-        otherwise an empty string.
     """
 
     dictionary: dict = CUHK_ABBR
@@ -132,7 +106,16 @@ def upload_and_link(temp_path: str, filename: str) -> str:
             os.remove(temp_path)
 
 
-@tool(approval_mode="never_require")
+@tool(
+    name="convert_text_to_description",
+    description=(
+        "Converts a given text block into synthesized speech and saves it as an audio file. "
+        "ALWAYS use this when a real-life scenario is related, e.g., workplace simulation, "
+        "interview, etc. Also, ALWAYS use this when the user requests an audio read-out "
+        "or spoken delivery of a student milestone."
+    ),
+    approval_mode="never_require",
+)
 async def convert_text_to_speech(
     text: Annotated[
         str,
@@ -295,6 +278,7 @@ async def get_file_search_tool(client: FoundryChatClient):
         "passed the local filepath to this tool and received the secure Azure URL in return."
         "If retrying code_interpreter fails, switch to other lightweight tools OR return a failure message"
     ),
+    approval_mode="always_require",
 )
 def upload_sandbox_file_to_azure(
     sandbox_file_path: str, destination_filename: str
@@ -347,9 +331,12 @@ def upload_sandbox_file_to_azure(
 @tool(
     name="generate_image",
     description=(
-        "Generates a high-quality image from a text prompt using FLUX.2-pro. "
-        "Use this tool whenever a student requests a visual model, roadmap diagram, or illustration."
+        "Generates a high-quality image from a text prompt using FLUX.2-pro by invoking "
+        "the provider API directly via HTTP, processing the byte stream, and returning "
+        "a Copilot-compliant markdown image link. Use this tool whenever a student requests "
+        "a visual model, roadmap diagram, or illustration."
     ),
+    approval_mode="never_require",
 )
 def generate_image(
     prompt: Annotated[
@@ -371,7 +358,7 @@ def generate_image(
     # Note: For FLUX.2-pro, the endpoint should be the base URL up to '.azure.com'
     base_endpoint = os.environ.get("IMAGE_GEN_URL")
     deployment_name = os.environ.get("IMAGE_GEN_MODEL")
-    api_key = os.environ.get("IMAGE_GEN_API_KEY")
+    api_key = os.environ.get("AZURE_API_KEY")
 
     if not base_endpoint or not api_key:
         return "Error: Missing Azure AI Foundry credentials."

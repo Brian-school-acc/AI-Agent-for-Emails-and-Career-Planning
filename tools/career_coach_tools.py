@@ -11,7 +11,11 @@ from agent_framework import tool
 
 @tool(
     name="analyze_resume_skill_gaps",
-    description="Compares a student's current skills against a highly detailed, industry-mapped taxonomy to detect technical and soft skill gaps, providing a multi-tiered upskilling roadmap.",
+    description=(
+        "Compares a student's current skills against a highly detailed, industry-mapped taxonomy "
+        "to detect technical and soft skill gaps, providing a multi-tiered upskilling roadmap. "
+        "Requires the targeted job role and a comma-separated list of the student's current skills."
+    ),
     approval_mode="never_require",
 )
 def analyze_resume_skill_gaps(
@@ -192,9 +196,12 @@ def analyze_resume_skill_gaps(
 
 @tool(
     name="generate_mock_interview_scenario",
-    description=("Generates an immersive, highly customized interview roleplay context including "
-                 "explicit dynamic reviewer personas, localized technical criteria, and an evaluation rubric. "
-                 "Make sure you generate an audio file for the simulation after this tool calling."),
+    description=(
+        "Generates an immersive, highly customized interview roleplay context including explicit "
+        "dynamic reviewer personas, localized technical criteria, and an evaluation rubric based "
+        "on the specified industry and experience level. You MUST generate an audio file for "
+        "the simulation immediately after calling this tool."
+    ),
     approval_mode="never_require",
 )
 def generate_mock_interview_scenario(
@@ -290,15 +297,18 @@ def generate_mock_interview_scenario(
 
 
 # ==========================================
-# TOOL 3: SIMULATE WORKPLACE SCENARIO 
+# TOOL 3: SIMULATE WORKPLACE SCENARIO
 # ==========================================
 
 
 @tool(
     name="simulate_workplace",
-    description=("Constructs a complex, multi-layered workplace conflict, systemic failure, or prioritization crisis "
-                 "to evaluate a student's situational judgement and soft skills. "
-                 "Make sure you generate an audio file for the simulation after this tool calling."),
+    description=(
+        "Constructs a complex, multi-layered workplace conflict, systemic failure, or prioritization "
+        "crisis (configured via scenario type, department, and difficulty) to evaluate a student's "
+        "situational judgement and soft skills. You MUST generate an audio file for the simulation "
+        "immediately after calling this tool."
+    ),
     approval_mode="never_require",
 )
 def simulate_workplace(

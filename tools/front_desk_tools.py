@@ -10,15 +10,22 @@ from zoneinfo import ZoneInfo
 
 @tool(
     name="get_weather",
-    description=("Get the current weather conditions and temperature for a given location. "
-                 "If the location is not given, it means Hong Kong"),
+    description=(
+        "Get the current weather conditions and temperature for a given location. "
+        "If the user does not specify the location, use 'Hong Kong' "
+        "as the default location, and explicitly state it in your response."
+    ),
     approval_mode="never_require"
 )
 def get_weather(
     location: Annotated[
         str,
         Field(
-            description="The city name or location string (e.g., 'Hong Kong')."
+            description=(
+                "Get the current weather conditions and temperature for a given location. "
+                "If the location is not explicitly specified by the user, default to 'Hong Kong'. "
+                "Always include the location in your final response."
+            )
         ),
     ],
 ) -> str:
@@ -35,7 +42,15 @@ def get_weather(
     return f"The weather in {location} is currently {chosen_condition} with a high of {high_temp}°C and a low of {low_temp}°C."
 
 
-@tool(approval_mode="never_require")
+@tool(
+    name="get_current_time",
+    description=(
+        "Get the current local time for a given location to help answer relative time "
+        "and date questions. If the user does not specify the location, use 'Hong Kong' "
+        "as the default location, and explicitly state it in your response."
+    ),
+    approval_mode="never_require"
+)
 def get_current_time() -> str:
     """
     Get the current local time for a given location to help answer relative time and date questions.
@@ -49,7 +64,15 @@ def get_current_time() -> str:
     return now_utc8.strftime("%I:%M %p on %A, %B %d, %Y in Hong Kong (UTC+8)")
 
 
-@tool(approval_mode="never_require")
+@tool(
+    name="get_general_faq",
+    description=(
+        "Look up standard institutional operational answers such as WiFi details, "
+        "office hours, or public contacts. You must provide an exact topic keyword "
+        "to lookup. Valid keywords are: wifi, hours, support, parking, address, "
+        "shuttle, library, graduation, access, tuition."
+    ),
+    approval_mode="never_require")
 def get_general_faq(
     topic: Annotated[
         str,

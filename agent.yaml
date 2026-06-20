@@ -1,6 +1,6 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/microsoft/AgentSchema/refs/heads/main/schemas/v1.0/ContainerAgent.yaml
 
-name: CUHK-Student-Success-Handoff
+name: CUHK-Student-Success-Assistant
 kind: hosted
 protocols:
   - protocol: responses
@@ -10,16 +10,26 @@ environment_variables:
     value: "1"
   - name: FOUNDRY_PROJECT_ENDPOINT
     value: ${FOUNDRY_PROJECT_ENDPOINT}
+  - name: AZURE_API_KEY
+    value: ${AZURE_API_KEY}
+
   - name: FAST_MINI_MODEL
     value: ${FAST_MINI_MODEL}
   - name: STANDARD_HEAVY_MODEL
     value: ${STANDARD_HEAVY_MODEL}
+
+  - name: IMAGE_GEN_MODEL
+    value: ${IMAGE_GEN_MODEL}
+  - name: IMAGE_GEN_URL
+    value: ${IMAGE_GEN_URL}
+
   - name: AZURE_SPEECH_KEY
     value: ${AZURE_SPEECH_KEY}
   - name: AZURE_SPEECH_REGION
     value: ${AZURE_SPEECH_REGION}
   - name: SPEECH_RESOURCE_ENDPOINT
     value: ${SPEECH_RESOURCE_ENDPOINT}
+
   - name: AZURE_STORAGE_ACCOUNT_NAME
     value: ${AZURE_STORAGE_ACCOUNT_NAME}
   - name: AZURE_STORAGE_ACCOUNT_KEY
@@ -28,12 +38,19 @@ environment_variables:
     value: ${AZURE_BLOB_CONTAINER_NAME}
   - name: AZURE_STORAGE_ACCOUNT_URL
     value: ${AZURE_STORAGE_ACCOUNT_URL}
+
   - name: MEMORY_STORE_NAME
     value: ${MEMORY_STORE_NAME}
   - name: MEMORY_STORE_CHAT_MODEL_DEPLOYMENT_NAME
     value: ${MEMORY_STORE_CHAT_MODEL_DEPLOYMENT_NAME}
   - name: MEMORY_STORE_EMBEDDING_MODEL_DEPLOYMENT_NAME
     value: ${MEMORY_STORE_EMBEDDING_MODEL_DEPLOYMENT_NAME}
+
+  - name: AZURE_SEARCH_ENDPOINT
+    value: ${AZURE_SEARCH_ENDPOINT}
+  - name: AZURE_SEARCH_KEY
+    value: ${AZURE_SEARCH_KEY}
+
   - name: NYLAS_API_KEY
     value: ${NYLAS_API_KEY}
   - name: NYLAS_GRANT_ID
