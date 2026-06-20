@@ -76,15 +76,15 @@ async def setup_workflow() -> WorkflowAgent:
         ),
         description="Triage agent that handles general inquiries.",
         name="triage_agent",
-        default_options={"store": False, "reasoning": None, "allow_multiple_tool_calls": True},  # type: ignore
+        default_options={"store": False, "reasoning": None, "allow_multiple_tool_calls": False},  # type: ignore
         require_per_service_call_history_persistence=True,
     )
 
     # Await the creation of specialized agents
-    archivist_agent = await create_archivist_agent(credential=credential)
-    secretary_agent = await create_secretary_agent(credential=credential)
-    career_coach_agent = await create_career_coach_agent(credential=credential)
-    front_desk_agent = await create_front_desk_agent(credential=credential)
+    archivist_agent = await create_archivist_agent(credential=credential, allow_multiple_tool_calls=False)
+    secretary_agent = await create_secretary_agent(credential=credential, allow_multiple_tool_calls=False)
+    career_coach_agent = await create_career_coach_agent(credential=credential, allow_multiple_tool_calls=False)
+    front_desk_agent = await create_front_desk_agent(credential=credential, allow_multiple_tool_calls=False)
 
     # Build the handoff workflow
     workflow = (
@@ -97,8 +97,6 @@ async def setup_workflow() -> WorkflowAgent:
                 career_coach_agent,
                 front_desk_agent,
             ],
-            termination_condition=lambda conversation: len(conversation) > 0
-            and "welcome" in conversation[-1].text.lower(),
         )
         .with_start_agent(triage_agent)  # Triage receives initial user input
         # Triage cannot route directly to refund agent
@@ -108,19 +106,43 @@ async def setup_workflow() -> WorkflowAgent:
         )
         .add_handoff(
             archivist_agent,
-            [triage_agent, archivist_agent, secretary_agent, career_coach_agent, front_desk_agent],
+            [
+                triage_agent,
+                archivist_agent,
+                secretary_agent,
+                career_coach_agent,
+                front_desk_agent,
+            ],
         )
         .add_handoff(
             secretary_agent,
-            [triage_agent, archivist_agent, secretary_agent, career_coach_agent, front_desk_agent],
+            [
+                triage_agent,
+                archivist_agent,
+                secretary_agent,
+                career_coach_agent,
+                front_desk_agent,
+            ],
         )
         .add_handoff(
             career_coach_agent,
-            [triage_agent, archivist_agent, secretary_agent, career_coach_agent, front_desk_agent],
+            [
+                triage_agent,
+                archivist_agent,
+                secretary_agent,
+                career_coach_agent,
+                front_desk_agent,
+            ],
         )
         .add_handoff(
             front_desk_agent,
-            [triage_agent, archivist_agent, secretary_agent, career_coach_agent, front_desk_agent],
+            [
+                triage_agent,
+                archivist_agent,
+                secretary_agent,
+                career_coach_agent,
+                front_desk_agent,
+            ],
         )
         .build()
         .as_agent()

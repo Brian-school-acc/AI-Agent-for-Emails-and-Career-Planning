@@ -36,7 +36,10 @@ from tools.front_desk_tools import (
     get_general_faq,
 )
 
-from tools.archivist_tools import retrieve_student_emails
+from tools.archivist_tools import (
+    retrieve_student_emails,
+    extract_deadlines,
+)
 from tools.secretary_tools import (
     draft_lecturer_email,
     create_planner_task,
@@ -205,7 +208,9 @@ async def triage_and_route(
 # --- AGENT CONSTRUCTORS ---
 
 
-async def create_archivist_agent(credential=DefaultAzureCredential()) -> Agent:
+async def create_archivist_agent(
+    credential=DefaultAzureCredential(), allow_multiple_tool_calls: bool = True,
+) -> Agent:
     """Helper to create a document analyst agent."""
     model_choice = "STANDARD_HEAVY_MODEL"
     client: FoundryChatClient = _get_foundry_client(credential, model_choice)
@@ -226,6 +231,7 @@ async def create_archivist_agent(credential=DefaultAzureCredential()) -> Agent:
         file_search_tool,
         inquire_abbreviations,
         retrieve_student_emails,
+        extract_deadlines,
     ]
 
     return Agent(
@@ -233,12 +239,15 @@ async def create_archivist_agent(credential=DefaultAzureCredential()) -> Agent:
         instructions=ARCHIVIST_PROMPT,
         name="archivist_agent",
         tools=tool_list,
-        default_options={"store": False, "reasoning": None, "allow_multiple_tool_calls": True},  # type: ignore
+        default_options={"store": False, "reasoning": None,
+                         "allow_multiple_tool_calls": allow_multiple_tool_calls},  # type: ignore
         require_per_service_call_history_persistence=True,
     )
 
 
-async def create_secretary_agent(credential=DefaultAzureCredential()) -> Agent:
+async def create_secretary_agent(
+    credential=DefaultAzureCredential(), allow_multiple_tool_calls: bool = True,
+) -> Agent:
     model_choice = "STANDARD_HEAVY_MODEL"
     client: FoundryChatClient = _get_foundry_client(credential, model_choice)
     memory_search_preview_tool = _get_cached_memory_search_preview_tool()
@@ -266,12 +275,15 @@ async def create_secretary_agent(credential=DefaultAzureCredential()) -> Agent:
         instructions=SECRETARY_PROMPT,
         name="secretary_agent",
         tools=tool_list,
-        default_options={"store": False, "reasoning": None, "allow_multiple_tool_calls": True},  # type: ignore
+        default_options={"store": False, "reasoning": None,
+                         "allow_multiple_tool_calls": allow_multiple_tool_calls},  # type: ignore
         require_per_service_call_history_persistence=True,
     )
 
 
-async def create_career_coach_agent(credential=DefaultAzureCredential()) -> Agent:
+async def create_career_coach_agent(
+    credential=DefaultAzureCredential(), allow_multiple_tool_calls: bool = True,
+) -> Agent:
     model_choice = "STANDARD_HEAVY_MODEL"
     client: FoundryChatClient = _get_foundry_client(credential, model_choice)
     web_search_tool = client.get_web_search_tool(
@@ -300,12 +312,15 @@ async def create_career_coach_agent(credential=DefaultAzureCredential()) -> Agen
         instructions=CAREER_COACH_PROMPT,
         name="career_coach_agent",
         tools=tool_list,
-        default_options={"store": False, "reasoning": None, "allow_multiple_tool_calls": True},  # type: ignore
+        default_options={"store": False, "reasoning": None,
+                         "allow_multiple_tool_calls": allow_multiple_tool_calls},  # type: ignore
         require_per_service_call_history_persistence=True,
     )
 
 
-async def create_front_desk_agent(credential=DefaultAzureCredential()) -> Agent:
+async def create_front_desk_agent(
+    credential=DefaultAzureCredential(), allow_multiple_tool_calls: bool = True,
+) -> Agent:
     """Handles general chit-chat, greetings, and unsupported requests."""
     model_choice = "STANDARD_HEAVY_MODEL"
     client: FoundryChatClient = _get_foundry_client(credential, model_choice)
@@ -338,6 +353,7 @@ async def create_front_desk_agent(credential=DefaultAzureCredential()) -> Agent:
         instructions=FRONTDESK_PROMPT,
         name="front_desk_agent",
         tools=tool_list,
-        default_options={"store": False, "reasoning": None, "allow_multiple_tool_calls": True},  # type: ignore
+        default_options={"store": False, "reasoning": None,
+                         "allow_multiple_tool_calls": allow_multiple_tool_calls},  # type: ignore
         require_per_service_call_history_persistence=True,
     )
