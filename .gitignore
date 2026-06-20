@@ -74,7 +74,7 @@ Thumbs.db
 /samples
 
 
-handoff_server.py
+# handoff_server.py
 requirements-nodeps.txt
 requirements-vendor.txt
 depreciated/
