@@ -155,7 +155,7 @@ async def triage_and_route(
 
     # Build the triage agent locally to run SILENTLY (Isolated from the stream)
     credential = DefaultAzureCredential()
-    model_choice = "STANDARD_HEAVY_MODEL"
+    model_choice = "FAST_MINI_MODEL"
     triage_agent = Agent(
         client=_get_foundry_client(credential, model_choice),
         instructions=TRIAGE_PROMPT,
@@ -276,7 +276,7 @@ async def create_secretary_agent(
         name="secretary_agent",
         tools=tool_list,
         default_options={"store": False, "reasoning": None,
-                         "allow_multiple_tool_calls": allow_multiple_tool_calls},  # type: ignore
+                         "allow_multiple_tool_calls": allow_multiple_tool_calls,},  # type: ignore
         require_per_service_call_history_persistence=True,
     )
 
@@ -322,7 +322,7 @@ async def create_front_desk_agent(
     credential=DefaultAzureCredential(), allow_multiple_tool_calls: bool = True,
 ) -> Agent:
     """Handles general chit-chat, greetings, and unsupported requests."""
-    model_choice = "STANDARD_HEAVY_MODEL"
+    model_choice = "FAST_MINI_MODEL"
     client: FoundryChatClient = _get_foundry_client(credential, model_choice)
     # openai_client = ChatClient
 
@@ -332,17 +332,16 @@ async def create_front_desk_agent(
         }
     )
     memory_search_preview_tool = _get_cached_memory_search_preview_tool()
-    file_search_tool = await _get_cached_file_search_tool(client)
+    # file_search_tool = await _get_cached_file_search_tool(client)
     # code_interpreter_tool = client.get_code_interpreter_tool()
 
     tool_list: list[Any] = [
         web_search_tool,
         memory_search_preview_tool,
-        file_search_tool,
+        # file_search_tool,
         # code_interpreter_tool,
         # upload_sandbox_file_to_azure,
         inquire_abbreviations,
-        # show_agent_selection_menu,
         get_weather,
         get_current_time,
         get_general_faq,
