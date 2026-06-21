@@ -17,8 +17,9 @@ from pptx import Presentation
 from typing import Annotated
 from reportlab.lib.pagesizes import letter
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
-from reportlab.lib.styles import getSampleStyleSheet
-
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
 
 load_dotenv()
 
@@ -295,18 +296,25 @@ def generate_pdf(filename: str, content: str) -> str:
         filename += ".pdf"
 
     temp_path = os.path.join(tempfile.gettempdir(), filename)
+    font_path = os.path.join("tools", "Arial-Unicode-MS.ttf")  # Register a font that supports the symbols
+    pdfmetrics.registerFont(TTFont('CustomFont', font_path))
 
     doc = SimpleDocTemplate(temp_path, pagesize=letter)
     styles = getSampleStyleSheet()
+    # 2. Create a style that uses your new font
+    style = ParagraphStyle(
+        "NormalWithSymbols", parent=styles["Normal"], fontName="CustomFont"
+    )
     story = []
 
+    # 3. Use that style in your loop
     for line in content.split("\n"):
         if line.strip():
-            p = Paragraph(line.strip(), styles["Normal"])
+            p = Paragraph(line.strip(), style)  # Use the custom style
             story.append(p)
             story.append(
                 Spacer(1, 12)
-            )  # Consistent standard typographic spacing padding
+            ) # Consistent standard typographic spacing padding
 
     doc.build(story)
 
