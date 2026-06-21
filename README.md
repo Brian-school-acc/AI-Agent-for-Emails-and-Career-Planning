@@ -8,8 +8,8 @@ A specialized, autonomous AI workflow designed for the **MSHK AI Agent Lab Hacka
 
 Quick access to our official MSHK AI Agent Lab submission materials:
 
-* 🎬 **Video Demo:** [Insert Link Here](https://www.google.com/search?q=%23) *(A complete walkthrough of the multi-agent workflow)*
-* 📊 **Pitch Deck:** [Insert Link Here](https://www.google.com/search?q=%23) *(Architecture, problem statement, and impact)*
+* 🎬 **Video Demo:** [https://mycuhk-my.sharepoint.com/:f:/g/personal/1155236599_link_cuhk_edu_hk/IgBS8uc-eu_dR7d-DlTj-5XZAdeJeCfLDpmURsTAN29hA1A?e=0CT1F5](https://www.google.com/search?q=%23) *(A complete walkthrough of the multi-agent workflow)*
+* 📊 **Pitch Deck:** [https://www.canva.com/design/DAHNGojhR5w/3GwLiBREjQm6OPrucXAVZA/edit](https://www.google.com/search?q=%23) *(Architecture, problem statement, and impact)*
 * 🤖 **Live Copilot / Demo:** [https://m365.cloud.microsoft/chat/?titleId=T_4792fcf9-f189-e60b-489f-58d0e821475c](https://www.google.com/search?q=%23) *(Try CUHK Student Success Ecosystem)*
 
 ---
