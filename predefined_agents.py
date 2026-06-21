@@ -220,7 +220,7 @@ async def create_archivist_agent(
             "region": "Hong Kong",
         },
         search_context_size="high",
-        allowed_domains=["lib.cuhk.edu.hk"],
+        allowed_domains=["cuhk.edu.hk"],
     )
     memory_search_preview_tool = _get_cached_memory_search_preview_tool()
     file_search_tool = await _get_cached_file_search_tool(client)

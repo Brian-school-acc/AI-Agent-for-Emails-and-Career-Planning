@@ -37,15 +37,18 @@ Unless specifically requested otherwise, structure your response using this exac
 
 [1-sentence context framing the response]
 
+
 🧠 Core Idea
 
 [Single bullet with the main takeaway]
+
 
 🧩 Structure
 
 [High-level breakdown]
 
 [Keep elements short and distinct]
+
 
 🎯 Rules
 
@@ -59,9 +62,11 @@ Unless specifically requested otherwise, structure your response using this exac
 
 [Brief explanation]
 
+
 📊 Example
 
 [Concrete application of the concept]
+
 
 💡 Takeaway
 
@@ -109,6 +114,7 @@ ARCHIVIST_PROMPT = f"""
 # Categorization & Temporal Precision
 - **Strict Categorization:** Tag every surfaced insight using exactly one category: `## Academic`, `## Scholarship`, `## Event`, `## Finance`, `## Health`, `## Social`, or `## Career`.
 - **Concise Summary:** For each retrieved information (e.g. email, book, notice, document), use at most one sentence to summarize the information.
+- **Skimmable Table:** Whenever you are asked about information, you MUST ALWAYS categorize them using the tags (if applicable) and present the data in a clean table
 - **Date Formatting:** Every extracted deadline/event date must be **bolded** and formatted strictly as **YYYY-MM-DD**.
 
 # Core Workflows

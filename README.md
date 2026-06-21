@@ -1,219 +1,72 @@
-# Student Success Multi‑Agent Ecosystem
+# Student Success Multi-Agent Ecosystem 🎓
 
-A hackathon project for **MSHK AI Agent Lab** – an intelligent multi‑agent workflow that routes user requests to specialized agents (Archivist, Executive, Career Coach) using Azure AI Foundry and Microsoft Graph integration.
-
-![MIT License](https://img.shields.io/badge/license-MIT-green)
+A specialized, autonomous AI workflow designed for the **MSHK AI Agent Lab Hackathon**. Built on Azure AI Foundry, this project reimagines how university students manage their time, data, and future careers through a centralized swarm of hyper-specialized AI personas.
 
 ---
 
-## 📖 What This Project Does
+## 🏆 Hackathon Deliverables (For Judges)
 
-Students face information overload, fragmented calendars, and unclear career guidance. This system orchestrates four AI agents:
+Quick access to our official MSHK AI Agent Lab submission materials:
 
-| Agent | Role |
-|-------|------|
-| **Triage Manager** | Analyzes intent and routes to the correct specialist |
-| **Archivist** | Extracts deadlines and insights from emails/documents |
-| **Executive** | Creates schedules, tasks, and operational plans |
-| **Career Coach** | Improves resumes and provides career roadmaps |
-
-All agents run locally via a **Responses API server** on `http://localhost:8088`. Send a request, the workflow routes it, and you receive a structured answer.
+* 🎬 **Video Demo:** [Insert Link Here](https://www.google.com/search?q=%23) *(A complete walkthrough of the multi-agent workflow)*
+* 📊 **Pitch Deck:** [Insert Link Here](https://www.google.com/search?q=%23) *(Architecture, problem statement, and impact)*
+* 🤖 **Live Copilot / Demo:** [https://m365.cloud.microsoft/chat/?titleId=T_4792fcf9-f189-e60b-489f-58d0e821475c](https://www.google.com/search?q=%23) *(Try CUHK Student Success Ecosystem)*
 
 ---
 
-## 🛠️ Setup Instructions (for programmers new to Git)
+## 🧠 The Vision: Zero Cognitive Load
 
-### 1. Install Git & Python
+University life is fragmented. Students bounce between rigid academic portals, chaotic email threads, and generic career advice. We built an ecosystem that does the heavy lifting for them.
 
-- **Git**: Download from [git-scm.com](https://git-scm.com/). Verify with `git --version`.
-- **Python 3.10+**: Download from [python.org](https://python.org). Verify with `python --version`.
+Instead of one generic chatbot that hallucinates or provides walls of text, we engineered a **Triage & Routing Architecture**. The user sends a single natural language request, and our Master Orchestrator instantly deduces the intent and dispatches it to the perfect specialist.
 
-### 2. Clone the repository
-
-```bash
-git clone https://github.com/your-org/student-success-agent.git
-cd student-success-agent
-```
-
-### 3. Manage branches and changes (basic Git workflow)
-
-```bash
-# Create your own branch to work safely
-git checkout -b feature/your-name
-
-# After making changes, see what changed
-git status
-
-# Stage all changes
-git add .
-
-# Commit with a meaningful message
-git commit -m "Add: improved triage prompt"
-
-# Push your branch to the remote repository
-git push origin feature/your-name
-```
-
-> **Tip**: Never commit directly to `main`. Always work on a feature branch and later create a Pull Request.
-
-### 4. Set up Python environment
-
-```bash
-# Create a virtual environment
-python -m venv venv
-
-# Activate it
-# On Windows:
-venv\Scripts\activate
-# On macOS/Linux:
-source venv/bin/activate
-
-# Install dependencies
-pip install -r requirements.txt
-```
-
-### 5. Configure environment variables (`.env` file)
-
-Create a file named `.env` in the project **root folder** (same level as `server.py`). Open it with any text editor and add the following lines:
-
-```ini
-FOUNDRY_PROJECT_ENDPOINT=https://your-foundry-project.openai.azure.com/
-AZURE_AI_MODEL_DEPLOYMENT_NAME=gpt-oss-120b
-```
-
-> **Explanation**:
-> - `FOUNDRY_PROJECT_ENDPOINT` – Your Azure AI Foundry project endpoint (e.g., `https://<region>.api.cognitive.microsoft.com/` or a custom domain).
-> - `AZURE_AI_MODEL_DEPLOYMENT_NAME` – The deployment name of your model in Azure AI Foundry. Here we use `gpt-oss-120b` (a placeholder – replace with your actual deployment name).
-
-If you also need to authenticate via Azure CLI or service principal, add these optional variables:
-
-```ini
-AZURE_CLIENT_ID=your-client-id
-AZURE_TENANT_ID=your-tenant-id
-AZURE_CLIENT_SECRET=your-client-secret
-```
-
-But the simplest is to run `az login` once – `DefaultAzureCredential()` will then work without extra variables.
+**Our Core UX Philosophy (Version 2.5):** Every agent is strictly bound to a unified output format. We prioritize *extreme skimmability*, hierarchical chunking, and progressive disclosure. If a student only has 5 seconds to read a response between classes, they will walk away with the exact information they need.
 
 ---
 
-## 🚀 How to Run the Server
+## 🧩 The Swarm: Meet the Agents
 
-```bash
-python server.py
-```
+Our system utilizes prompt-engineered personas, each with strict operational guardrails, unique tones, and specific toolsets.
 
-You should see:
+### 🔀 The Master Orchestrator
 
-```
-🚀 Starting local Agent Response Server interface on http://localhost:8088...
-```
+* **Role:** The silent brain of the ecosystem.
+* **Function:** Operates strictly in the background. It analyzes the user's input, applies logical deduction, and outputs a structured JSON routing payload.
+* **Impact:** Ensures users never have to guess "which bot" to talk to.
 
-The server stays running until you press `Ctrl+C`. It exposes a single endpoint: `POST /responses`.
+### 💁 The Front Desk (CUHK Assistant Abstraction)
 
----
+* **Role:** The warm, professional first point of contact.
+* **Function:** Handles greetings, explains the ecosystem capabilities, and acts as a high-level CUHK campus guide (navigating landmarks like the Pavilion of Harmony or Million Dollar Boulevard).
+* **Impact:** Protects the specialized agents from simple queries while providing immediate environmental context.
 
-## 🧪 Testing with `curl` Commands
+### 📚 The Archivist
 
-Open a **new terminal** (keep the server running) and run the following examples.
+* **Role:** The analytical data-miner.
+* **Function:** Silently triggers search tools to scan emails, documents, and notices. It strictly categorizes data (Finance, Academic, Career) and outputs chronologically ordered timelines.
+* **Impact:** Never misses a deadline. It turns a messy inbox into a clean, bolded list of actionable dates without exposing raw backend data.
 
-### 1. Archivist branch (read/analysis)
+### 📅 The Secretary
 
-```bash
-curl -sS -X POST http://localhost:8088/responses \
-  -H "Content-Type: application/json" \
-  -d '{"input": "Please analyze this email about the Q3 deadline update from SharePoint.", "stream": false}'
-```
+* **Role:** The hyper-efficient executive.
+* **Function:** Eliminates conversational filler to focus purely on action. It proactively blocks out schedules, suggests task automations, and utilizes tools to generate Word, PPT, or Excel files.
+* **Impact:** Transforms a vague request like "I need to plan my week" into structured time blocks and print-ready itineraries.
 
-### 2. Executive branch (meeting scheduling)
+### 💼 The Career Coach
 
-```bash
-curl -sS -X POST http://localhost:8088/responses \
-  -H "Content-Type: application/json" \
-  -d '{"input": "Schedule a project sync meeting for next Wednesday at 2 PM, and send calendar invites.", "stream": false}'
-```
-
-### 3. Career Coach branch
-
-```bash
-curl -sS -X POST http://localhost:8088/responses \
-  -H "Content-Type: application/json" \
-  -d '{"input": "I want to plan ahead for my career", "stream": false}'
-```
-
-### 4. Fallback branch (no flags matched)
-
-```bash
-curl -sS -X POST http://localhost:8088/responses \
-  -H "Content-Type: application/json" \
-  -d '{"input": "Hello, how are you?", "stream": false}'
-```
-
-### 5. Multi-turn conversation (using `agent_session_id`)
-
-First request creates a session; copy the returned `agent_session_id`. Use it in later requests to maintain context:
-
-```bash
-# Request 1
-curl -sS -X POST http://localhost:8088/responses \
-  -H "Content-Type: application/json" \
-  -d '{"input": "I need to block out next Thursday afternoon for an architecture review.", "stream": false}'
-
-# Request 2 (continuing the same session)
-curl -sS -X POST http://localhost:8088/responses \
-  -H "Content-Type: application/json" \
-  -d '{"input": "What was the review for? I have forgotten that.", "stream": false, "agent_session_id": "d3a76465b41aee9d05919d455e598c6981a40cdf4d4054c3f5f0d85aa9a91b3"}'
-```
-
-> Replace the session ID with the one you received from the first response.
+* **Role:** The empowering, data-driven mentor.
+* **Function:** Uses radical candor and the STAR framework to analyze resumes and run immersive mock interviews.
+* **Impact:** Goes beyond text. The coach autonomously triggers text-to-speech and image generation tools during mock interviews to create a fully multimedia simulation experience.
 
 ---
 
-## 📝 TODO List (`todo.md`)
+## ⚡ What Makes This Different?
 
-The following items are planned for future iterations. We maintain a separate `todo.md` file in the repository. Its current content:
-
-```markdown
-# TODO
-
-## Agents
-- [ ] Add a fallback **FrontDeskAgent** for general conversation
-- [ ] Integrate tools:
-  - [ ] Web search (Bing / Tavily)
-  - [ ] File search (local / SharePoint)
-- [ ] Improve response output format (currently raw JSON in playground)
-- [ ] Refine prompts for better accuracy
-
-## Microsoft Services Integration
-- [ ] Outlook (calendar read/write)
-- [ ] Word (document generation)
-- [ ] PowerPoint (slide creation)
-
-## Testing
-- [ ] Quality of document content analysis
-- [ ] Accuracy of CUHK‑specific data retrieval
-
-## Out of Scope (Will NOT do)
-- Memory (short/long term) → requires Redis, too heavy
-- Persistent storage → built on memory only
-- Conversation orchestration → Copilot should handle that
-```
+1. **Stealth Tool Execution:** Agents proactively fetch context, search files, and trigger automations in the background *before* responding. No manual permission clicks required.
+2. **Silent Failure Protocols:** If an agent searches a student's cloud storage for a document and finds nothing, it seamlessly pivots the conversation instead of throwing a robotic "File Not Found" error.
+3. **Multimedia Mentorship:** The Career Coach dynamically generates audio and visual assets to simulate high-pressure interview environments, pushing the boundaries of standard text generation.
+4. **Strict Markdown Topology:** Every output guarantees visual clarity — employing strategic emojis, flat bullet points, and rigid main-section headers to conquer information fatigue.
 
 ---
 
-## 🧑‍💻 Developer Notes
-
-- The workflow is defined in `server.py` using `WorkflowBuilder`. It’s a DAG with conditional edges.
-- Structured outputs (`TriageResult`, `EmailResponse`) guarantee type safety.
-- Monkeypatching of `FileCheckpointStorage` allows serialization of Azure SDK enums (MessageRole) and streaming events.
-- All agents use the same `FoundryChatClient` – swap the model by changing `AZURE_AI_MODEL_DEPLOYMENT_NAME` in `.env`.
-
----
-
-## 📄 License
-
-MIT – feel free to use and extend for your own hackathon or production project.
-
----
-
-**Built with ❤️ for MSHK AI Agent Lab**
+*Built to transform the student experience for the MSHK AI Agent Lab.*

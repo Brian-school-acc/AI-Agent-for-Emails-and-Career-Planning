@@ -82,7 +82,7 @@ def retrieve_student_emails(
                     "sender": sender_name,
                     "subject": subject,
                     "snippet": (
-                        snippet[:150] + "..." if len(snippet) > 150 else snippet
+                        snippet[:500] + "..." if len(snippet) > 500 else snippet
                     ),  # Truncate for UI
                 }
             )
@@ -135,7 +135,7 @@ def retrieve_student_emailss(
         # Search messages using query parameters
         query_params = {
             "search_query_native": search_query,
-            "limit": 30,  # Keep context small and relevant
+            "limit": 15,  # Keep context small and relevant
         }
 
         # Fetch messages from the Nylas API
