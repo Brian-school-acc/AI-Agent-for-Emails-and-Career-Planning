@@ -243,7 +243,6 @@ async def create_archivist_agent(
             "store": False,
             "reasoning": None,
             "allow_multiple_tool_calls": allow_multiple_tool_calls,
-            "stream_options": True,
         },  # type: ignore
         require_per_service_call_history_persistence=True,
     )
@@ -283,7 +282,6 @@ async def create_secretary_agent(
             "store": False,
             "reasoning": None,
             "allow_multiple_tool_calls": allow_multiple_tool_calls,
-            "stream_options": True,
         },  # type: ignore
         require_per_service_call_history_persistence=True,
     )
@@ -324,7 +322,6 @@ async def create_career_coach_agent(
             "store": False,
             "reasoning": None,
             "allow_multiple_tool_calls": allow_multiple_tool_calls,
-            "stream_options": True,
         },  # type: ignore
         require_per_service_call_history_persistence=True,
     )
@@ -368,7 +365,6 @@ async def create_front_desk_agent(
             "store": False,
             "reasoning": None,
             "allow_multiple_tool_calls": allow_multiple_tool_calls,
-            "stream_options": True,
         },  # type: ignore
         require_per_service_call_history_persistence=True,
     )
