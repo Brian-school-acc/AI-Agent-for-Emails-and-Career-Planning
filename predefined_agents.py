@@ -332,17 +332,16 @@ async def create_front_desk_agent(
         }
     )
     memory_search_preview_tool = _get_cached_memory_search_preview_tool()
-    file_search_tool = await _get_cached_file_search_tool(client)
+    # file_search_tool = await _get_cached_file_search_tool(client)
     # code_interpreter_tool = client.get_code_interpreter_tool()
 
     tool_list: list[Any] = [
         web_search_tool,
         memory_search_preview_tool,
-        file_search_tool,
+        # file_search_tool,
         # code_interpreter_tool,
         # upload_sandbox_file_to_azure,
         inquire_abbreviations,
-        # show_agent_selection_menu,
         get_weather,
         get_current_time,
         get_general_faq,
