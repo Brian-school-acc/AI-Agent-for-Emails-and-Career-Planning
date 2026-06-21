@@ -161,15 +161,16 @@ from tools.general_tools import upload_and_link
         "Use this tool when a user explicitly requests a text report, formal summary, or essay download. "
         "The file extension '.docx' is automatically appended if missing."
     ),
-    approval_mode="never_require"
+    approval_mode="never_require",
 )
 def generate_docx(filename: str, content: str) -> str:
     """
-    Generates a Word file from text, pushes it to Azure Storage, and outputs a download URL.
+    Generates a beautifully formatted Word file from text, pushes it to Azure Storage, and outputs a download URL.
+    Supports basic Markdown syntax (# Title, ## Heading 1, ### Heading 2, and bullet points) to create professional hierarchies.
 
     Args:
         filename (str): Desired output name (e.g., 'academic_report.docx').
-        content (str): Plain text file data. Newlines create individual document paragraphs.
+        content (str): Plain text file data supporting light Markdown for structure.
 
     Returns:
         str: A Markdown string embedding the functional file download hyperlink.
@@ -178,9 +179,33 @@ def generate_docx(filename: str, content: str) -> str:
         filename += ".docx"
 
     doc = Document()
+
+    # Parse content line by line to map plain text to native Word styles
     for line in content.split("\n"):
-        if line.strip():
-            doc.add_paragraph(line.strip())
+        cleaned_line = line.strip()
+        if not cleaned_line:
+            continue
+
+        # Map Markdown syntax to python-docx built-in styles
+        if cleaned_line.startswith("# "):
+            # level=0 automatically applies the 'Title' style
+            doc.add_heading(cleaned_line[2:], level=0)
+
+        elif cleaned_line.startswith("## "):
+            # level=1 applies 'Heading 1'
+            doc.add_heading(cleaned_line[3:], level=1)
+
+        elif cleaned_line.startswith("### "):
+            # level=2 applies 'Heading 2'
+            doc.add_heading(cleaned_line[4:], level=2)
+
+        elif cleaned_line.startswith("- ") or cleaned_line.startswith("* "):
+            # Maps to Word's native bulleted list format
+            doc.add_paragraph(cleaned_line[2:], style="List Bullet")
+
+        else:
+            # Standard body paragraph
+            doc.add_paragraph(cleaned_line)
 
     temp_path = os.path.join(tempfile.gettempdir(), filename)
     doc.save(temp_path)
@@ -283,11 +308,12 @@ def generate_pptx(filename: str, slides_json: str) -> str:
 )
 def generate_pdf(filename: str, content: str) -> str:
     """
-    Constructs a structurally sound PDF document out of plaintext content, managing layouts elegantly via ReportLab.
+    Constructs a structurally sound, beautifully formatted PDF document out of plaintext content.
+    Supports basic Markdown syntax (# for Title, ## for H1, ### for H2) to generate professional layouts.
 
     Args:
         filename (str): Target PDF filename constraint (e.g., 'official_notice.pdf').
-        content (str): Plain text asset blocks. Newlines represent layout spacers or structural paragraph breaks.
+        content (str): Plain text asset blocks supporting light Markdown headings.
 
     Returns:
         str: Hyperlink payload pointing directly to the compiled cloud-hosted PDF.
@@ -296,25 +322,83 @@ def generate_pdf(filename: str, content: str) -> str:
         filename += ".pdf"
 
     temp_path = os.path.join(tempfile.gettempdir(), filename)
-    font_path = os.path.join("tools", "Arial-Unicode-MS.ttf")  # Register a font that supports the symbols
-    pdfmetrics.registerFont(TTFont('CustomFont', font_path))
+    font_path = os.path.join(
+        "tools", "Arial-Unicode-MS.ttf"
+    )  # Register a font supporting symbols
+    pdfmetrics.registerFont(TTFont("CustomFont", font_path))
 
-    doc = SimpleDocTemplate(temp_path, pagesize=letter)
-    styles = getSampleStyleSheet()
-    # 2. Create a style that uses your new font
-    style = ParagraphStyle(
-        "NormalWithSymbols", parent=styles["Normal"], fontName="CustomFont"
+    # Initialize document with standard 0.75-inch (54 points) margins
+    doc = SimpleDocTemplate(
+        temp_path,
+        pagesize=letter,
+        rightMargin=54,
+        leftMargin=54,
+        topMargin=54,
+        bottomMargin=54,
     )
+
+    styles = getSampleStyleSheet()
+
+    # 1. Define a polished typographic hierarchy with proportional leading
+    title_style = ParagraphStyle(
+        "CustomTitle",
+        parent=styles["Title"],
+        fontName="CustomFont",
+        fontSize=24,
+        leading=28,
+        spaceAfter=18,
+        alignment=1,  # Centered
+    )
+    h1_style = ParagraphStyle(
+        "CustomH1",
+        parent=styles["Heading1"],
+        fontName="CustomFont",
+        fontSize=16,
+        leading=20,
+        spaceBefore=16,
+        spaceAfter=6,
+        keepWithNext=True,  # Prevents orphan headings at the bottom of pages
+    )
+    h2_style = ParagraphStyle(
+        "CustomH2",
+        parent=styles["Heading2"],
+        fontName="CustomFont",
+        fontSize=12,
+        leading=16,
+        spaceBefore=12,
+        spaceAfter=4,
+        keepWithNext=True,
+    )
+    body_style = ParagraphStyle(
+        "CustomBody",
+        parent=styles["Normal"],
+        fontName="CustomFont",
+        fontSize=10,
+        leading=14,
+        spaceAfter=8,
+    )
+
     story = []
 
-    # 3. Use that style in your loop
+    # 2. Parse content line by line to map plain text to proper PDF styles
     for line in content.split("\n"):
-        if line.strip():
-            p = Paragraph(line.strip(), style)  # Use the custom style
+        cleaned_line = line.strip()
+        if not cleaned_line:
+            continue  # Let ParagraphStyle handle vertical spacing instead of blank lines
+
+        # Basic Markdown syntax parsing
+        if cleaned_line.startswith("# "):
+            p = Paragraph(cleaned_line[2:], title_style)
             story.append(p)
-            story.append(
-                Spacer(1, 12)
-            ) # Consistent standard typographic spacing padding
+        elif cleaned_line.startswith("## "):
+            p = Paragraph(cleaned_line[3:], h1_style)
+            story.append(p)
+        elif cleaned_line.startswith("### "):
+            p = Paragraph(cleaned_line[4:], h2_style)
+            story.append(p)
+        else:
+            p = Paragraph(cleaned_line, body_style)
+            story.append(p)
 
     doc.build(story)
 
