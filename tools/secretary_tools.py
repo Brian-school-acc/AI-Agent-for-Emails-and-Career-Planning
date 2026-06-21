@@ -13,6 +13,7 @@ from random import randint
 from datetime import datetime, timedelta, timezone
 
 from docx import Document
+from docxtpl import DocxTemplate
 from pptx import Presentation
 from typing import Annotated
 from reportlab.lib.pagesizes import letter
@@ -20,6 +21,17 @@ from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
+from reportlab.lib import colors
+from reportlab.platypus import (
+    SimpleDocTemplate,
+    Paragraph,
+    Spacer,
+    HRFlowable,
+    Table,
+    TableStyle,
+)
+from reportlab.lib.enums import TA_CENTER, TA_LEFT
+
 
 load_dotenv()
 
@@ -404,3 +416,263 @@ def generate_pdf(filename: str, content: str) -> str:
 
     url = upload_and_link(temp_path, filename)
     return f"PDF Asset generated successfully: [Download {filename}]({url})"
+
+
+# 4E - Resume
+@tool(
+    name="generate_resume",
+    description=(
+        "Generates a beautifully formatted, ATS-friendly Word (.docx) resume from a structured JSON dataset. "
+        "The JSON must include 'name', 'contact_info', 'summary', 'experience', 'education', and 'skills'."
+        "If your resume_data_json contains '%', you MUST replace it with '%%' to fit the Jinja2 format"
+    ),
+    approval_mode="never_require",
+)
+def generate_resume(
+    filename: Annotated[
+        str, Field(description="Target output filename (e.g., 'resume_name.docx').")
+    ],
+    resume_data_json: Annotated[
+        str,
+        Field(
+            description=(
+                "A serialized JSON string containing the resume data. You MUST use these exact keys "
+                "to match the Jinja2 template:\n"
+                "{\n"
+                "  'name': 'string',\n"
+                "  'region': 'string',\n"
+                "  'contact_info': 'string',\n"
+                "  'experience': [{\n"
+                "     'title': 'string',\n"
+                "     'company': 'string',\n"
+                "     'dates': 'string',\n"
+                "     'details': ['bullet 1', 'bullet 2']\n"
+                "  }],\n"
+                "  'education': [{\n"
+                "     'institution': 'string',\n"
+                "     'degree': 'string',\n"
+                "     'dates': 'string',\n"
+                "     'details': 'string'\n"
+                "  }],\n"
+                "  'awards': [{'name': 'string', 'year': 'string'}],\n"
+                "  'projects': [{'name': 'string', 'details': 'string'}]\n"
+                "}\n"
+                "If any section like awards or projects is blank, pass an empty list [] for it."
+            )
+        ),
+    ],
+) -> str:
+    """
+    Injects JSON data into a pre-designed Microsoft Word template to generate a professional CV.
+    """
+    if not filename.lower().endswith(".docx"):
+        filename += ".docx"
+
+    try:
+        context = json.loads(resume_data_json)
+    except json.JSONDecodeError as e:
+        return f"Error parsing resume JSON data: {str(e)}. Please provide a valid, raw JSON schema structure."
+
+    # --- DEFENSIVE DATA PATCHING FOR JINJA2 SAFETY ---
+    # Ensure mandatory template loop keys exist as iterable arrays to prevent engine crashes
+    for list_key in ["experience", "education", "awards", "projects"]:
+        if list_key not in context or not isinstance(context[list_key], list):
+            context[list_key] = []
+
+    # Normalize skills to always be an iterable list
+    if "skills" in context:
+        if isinstance(context["skills"], str):
+            context["skills"] = [
+                s.strip() for s in context["skills"].split(",") if s.strip()
+            ]
+    else:
+        context["skills"] = []
+    # -------------------------------------------------
+
+    # 1. Load your pre-designed Word document template
+    template_path = os.path.join("tools", "templates", "resume_template.docx")
+    if not os.path.exists(template_path):
+        return "Error: Resume template file not found."
+
+    try:
+        doc = DocxTemplate(template_path)
+
+        # 2. Render the document (injects the JSON dict into the {{ tags }})
+        doc.render(context)
+
+        # 3. Save to temp directory
+        temp_path = os.path.join(tempfile.gettempdir(), filename)
+        doc.save(temp_path)
+    except Exception as e:
+        return f"Template compilation failure: {str(e)}. Ensure data formats cleanly match internal variable definitions."
+
+    # 4. Upload and return link
+    url = upload_and_link(temp_path, filename)
+    return f"Resume generated successfully: [Download {filename}]({url})"
+
+
+# @tool(
+#     name="generate_resume",
+#     description=(
+#         "Generates a beautifully designed, professional PDF resume/CV from a structured JSON dataset. "
+#         "The JSON must include 'name', 'contact' (string or list), 'summary', 'experience' (list of dicts with "
+#         "'title', 'company', 'dates', 'details'), 'education' (list of dicts), and 'skills' (list of strings)."
+#     ),
+#     approval_mode="never_require",
+# )
+# def generate_resume(
+#     filename: Annotated[
+#         str, Field(description="Target output filename (e.g., 'john_doe_resume.pdf').")
+#     ],
+#     resume_data_json: Annotated[
+#         str,
+#         Field(
+#             description="A serialized JSON string containing the structured resume data."
+#         ),
+#     ],
+# ) -> str:
+#     """
+#     Constructs a visually striking, professionally designed PDF CV using ReportLab.
+
+#     Args:
+#         filename (str): The desired output filename.
+#         resume_data_json (str): JSON string containing the resume content payload.
+
+#     Returns:
+#         str: Hyperlink payload pointing directly to the compiled cloud-hosted PDF CV.
+#     """
+#     if not filename.lower().endswith(".pdf"):
+#         filename += ".pdf"
+
+#     try:
+#         data = json.loads(resume_data_json)
+#     except json.JSONDecodeError as e:
+#         return f"Error parsing resume JSON data: {str(e)}"
+
+#     temp_path = os.path.join(tempfile.gettempdir(), filename)
+
+#     # Initialize document with standard 0.5-inch margins for optimal page usage
+#     doc = SimpleDocTemplate(
+#         temp_path,
+#         pagesize=letter,
+#         rightMargin=36,
+#         leftMargin=36,
+#         topMargin=36,
+#         bottomMargin=36,
+#     )
+
+#     styles = getSampleStyleSheet()
+
+#     # Define polished typography tailored for a CV
+#     name_style = ParagraphStyle(
+#         "NameStyle",
+#         parent=styles["Heading1"],
+#         fontName="Helvetica-Bold",
+#         fontSize=24,
+#         leading=28,
+#         spaceAfter=6,
+#         alignment=TA_CENTER,
+#         textColor=colors.HexColor("#2C3E50"),
+#     )
+
+#     contact_style = ParagraphStyle(
+#         "ContactStyle",
+#         parent=styles["Normal"],
+#         fontName="Helvetica",
+#         fontSize=10,
+#         alignment=TA_CENTER,
+#         textColor=colors.HexColor("#7F8C8D"),
+#         spaceAfter=12,
+#     )
+
+#     section_header_style = ParagraphStyle(
+#         "SectionHeader",
+#         parent=styles["Heading2"],
+#         fontName="Helvetica-Bold",
+#         fontSize=14,
+#         textColor=colors.HexColor("#2980B9"),
+#         spaceBefore=16,
+#         spaceAfter=4,
+#         textTransform="uppercase",
+#     )
+
+#     job_title_style = ParagraphStyle(
+#         "JobTitle",
+#         parent=styles["Heading3"],
+#         fontName="Helvetica-Bold",
+#         fontSize=11,
+#         spaceBefore=8,
+#         spaceAfter=2,
+#         textColor=colors.black,
+#     )
+
+#     body_style = ParagraphStyle(
+#         "ResumeBody",
+#         parent=styles["Normal"],
+#         fontName="Helvetica",
+#         fontSize=10,
+#         leading=14,
+#         spaceAfter=4,
+#     )
+
+#     bullet_style = ParagraphStyle(
+#         "ResumeBullet", parent=body_style, leftIndent=15, bulletIndent=5
+#     )
+
+#     story = []
+
+#     # 1. Header Section (Name & Contact)
+#     story.append(Paragraph(data.get("name", "Name Not Provided"), name_style))
+#     contact_info = data.get("contact", "")
+#     if isinstance(contact_info, list):
+#         contact_info = " | ".join(contact_info)
+#     story.append(Paragraph(contact_info, contact_style))
+#     story.append(
+#         HRFlowable(
+#             width="100%", thickness=1, color=colors.HexColor("#BDC3C7"), spaceAfter=12
+#         )
+#     )
+
+#     # 2. Professional Summary
+#     if "summary" in data:
+#         story.append(Paragraph("Professional Summary", section_header_style))
+#         story.append(Paragraph(data["summary"], body_style))
+
+#     # 3. Experience
+#     if "experience" in data and isinstance(data["experience"], list):
+#         story.append(Paragraph("Experience", section_header_style))
+#         for job in data["experience"]:
+#             # Format: Title - Company (Right aligned dates via tables or simple text)
+#             title_text = f"<b>{job.get('title', '')}</b> | {job.get('company', '')} <font color='#7F8C8D'>({job.get('dates', '')})</font>"
+#             story.append(Paragraph(title_text, job_title_style))
+
+#             details = job.get("details", [])
+#             if isinstance(details, str):
+#                 details = [details]
+
+#             for detail in details:
+#                 story.append(Paragraph(f"• {detail}", bullet_style))
+
+#     # 4. Education
+#     if "education" in data and isinstance(data["education"], list):
+#         story.append(Paragraph("Education", section_header_style))
+#         for edu in data["education"]:
+#             edu_text = f"<b>{edu.get('degree', '')}</b> — {edu.get('institution', '')} <font color='#7F8C8D'>({edu.get('dates', '')})</font>"
+#             story.append(Paragraph(edu_text, job_title_style))
+#             if "details" in edu:
+#                 story.append(Paragraph(edu["details"], body_style))
+
+#     # 5. Skills
+#     if "skills" in data:
+#         story.append(Paragraph("Skills & Expertise", section_header_style))
+#         skills = data["skills"]
+#         if isinstance(skills, list):
+#             skills = ", ".join(skills)
+#         story.append(Paragraph(skills, body_style))
+
+#     # Build PDF
+#     doc.build(story)
+
+#     # Upload and return Markdown link
+#     url = upload_and_link(temp_path, filename)
+#     return f"CV Asset generated successfully: [Download {filename}]({url})"

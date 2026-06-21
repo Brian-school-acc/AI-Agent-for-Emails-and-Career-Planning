@@ -1,14 +1,17 @@
 import json
 import os
 import random
+import tempfile
+
+from agent_framework import tool
+
 from typing import Annotated, List, Dict, Any, Optional
 from pydantic import Field
-from agent_framework import tool
+
 
 # ==========================================
 # TOOL 1: RESUME SKILL GAP ANALYZER
 # ==========================================
-
 
 @tool(
     name="analyze_resume_skill_gaps",
