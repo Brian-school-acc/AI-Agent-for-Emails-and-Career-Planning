@@ -239,8 +239,12 @@ async def create_archivist_agent(
         instructions=ARCHIVIST_PROMPT,
         name="archivist_agent",
         tools=tool_list,
-        default_options={"store": False, "reasoning": None,
-                         "allow_multiple_tool_calls": allow_multiple_tool_calls},  # type: ignore
+        default_options={
+            "store": False,
+            "reasoning": None,
+            "allow_multiple_tool_calls": allow_multiple_tool_calls,
+            "stream_options": True,
+        },  # type: ignore
         require_per_service_call_history_persistence=True,
     )
 
@@ -275,8 +279,12 @@ async def create_secretary_agent(
         instructions=SECRETARY_PROMPT,
         name="secretary_agent",
         tools=tool_list,
-        default_options={"store": False, "reasoning": None,
-                         "allow_multiple_tool_calls": allow_multiple_tool_calls,},  # type: ignore
+        default_options={
+            "store": False,
+            "reasoning": None,
+            "allow_multiple_tool_calls": allow_multiple_tool_calls,
+            "stream_options": True,
+        },  # type: ignore
         require_per_service_call_history_persistence=True,
     )
 
@@ -312,8 +320,12 @@ async def create_career_coach_agent(
         instructions=CAREER_COACH_PROMPT,
         name="career_coach_agent",
         tools=tool_list,
-        default_options={"store": False, "reasoning": None,
-                         "allow_multiple_tool_calls": allow_multiple_tool_calls},  # type: ignore
+        default_options={
+            "store": False,
+            "reasoning": None,
+            "allow_multiple_tool_calls": allow_multiple_tool_calls,
+            "stream_options": True,
+        },  # type: ignore
         require_per_service_call_history_persistence=True,
     )
 
@@ -352,7 +364,11 @@ async def create_front_desk_agent(
         instructions=FRONTDESK_PROMPT,
         name="front_desk_agent",
         tools=tool_list,
-        default_options={"store": False, "reasoning": None,
-                         "allow_multiple_tool_calls": allow_multiple_tool_calls},  # type: ignore
+        default_options={
+            "store": False,
+            "reasoning": None,
+            "allow_multiple_tool_calls": allow_multiple_tool_calls,
+            "stream_options": True,
+        },  # type: ignore
         require_per_service_call_history_persistence=True,
     )
